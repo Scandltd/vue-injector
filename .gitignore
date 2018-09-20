@@ -1,0 +1,10 @@
+.idea
+node_modules
+coverage
+test/e2e/reports
+test/e2e/screenshots
+selenium-debug.log
+dist/*.gz
+dist/*.map
+explorations
+docs-gitbook

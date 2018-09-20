@@ -1,0 +1,14 @@
+{
+  "presets": ["env", "flow-vue"],
+  "plugins": [
+    "syntax-dynamic-import",
+    "transform-decorators-legacy"
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "istanbul"
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+[ignore]
+.*/node_modules/.*
+.*/test/.*
+.*/dist/.*
+.*/examples/.*
+
+[include]
+src
+
+[libs]
+flow
+
+[options]
+suppress_comment= \\(.\\|\n\\)*\\$flow-disable-line
+module.system.node.resolve_dirname=.
+module.system.node.resolve_dirname=src
+module.system.node.resolve_dirname=node_modules
