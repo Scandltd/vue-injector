@@ -133,6 +133,6 @@ npm run docs
 
 [GPL-2.0](https://opensource.org/licenses/GPL-2.0)
 
-Copyright (c) 2018-present NotPrometey
+Copyright (c) 2018-present Scandltd
 
 
