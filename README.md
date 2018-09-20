@@ -17,7 +17,7 @@ If you use TypeScript, enable `--experimentalDecorators` flag.
 ##### Installation
 
 ``` js
-npm i vue-injector
+npm i @scandltd/vue-injector
 ```
 
 ##### Import module
