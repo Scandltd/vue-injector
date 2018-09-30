@@ -73,19 +73,19 @@ workflows:
     jobs:
       - install
       - test-unit:
-          requires:
-            - install
+        requires:
+          - install
       - lint-flow-types:
-          requires:
-            - install
+        requires:
+          - install
       - test-e2e:
-          requires:
-            - install
+        requires:
+          - install
       - deploy:
-          requires:
-            - install
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+        requires:
+          - install
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
