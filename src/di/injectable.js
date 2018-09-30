@@ -4,7 +4,6 @@ function injectableFactory (target, options = {}) {
   return class Injectable extends target implements InjectableClass {
     static service: InjectableClass;
 
-    +name: string = target.name;
     +isVueService: boolean = true;
 
     static getName (): string {
@@ -12,9 +11,16 @@ function injectableFactory (target, options = {}) {
     }
 
     constructor (root: GlobalAPI) {
+      Reflect.defineProperty(target.prototype, 'name', {
+        enumerable: false,
+        get () {
+          return target.name
+        }
+      })
+
       if (options && options.hasOwnProperty('context')) {
         Reflect.defineProperty(target.prototype, 'context', {
-          enumerable: true,
+          enumerable: false,
           get () {
             return options.context
           }
@@ -31,7 +37,7 @@ function injectableFactory (target, options = {}) {
       }
 
       Reflect.defineProperty(target.prototype, 'vm', {
-        enumerable: true,
+        enumerable: false,
         get () {
           return root
         }
