@@ -101,6 +101,7 @@
     "typescript": "^2.7.2",
     "uglify-js": "^3.3.13",
     "vue": "^2.5.16",
+    "vue-class-component": "^6.2.0",
     "vue-loader": "^15.2.1",
     "vue-template-compiler": "^2.5.16",
     "vuepress": "^0.10.0",
