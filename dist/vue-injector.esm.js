@@ -238,9 +238,16 @@ function injectableFactory(target) {
     function Injectable(root) {
       classCallCheck(this, Injectable);
 
+      Reflect.defineProperty(target.prototype, 'name', {
+        enumerable: false,
+        get: function get$$1() {
+          return target.name;
+        }
+      });
+
       if (options && options.hasOwnProperty('context')) {
         Reflect.defineProperty(target.prototype, 'context', {
-          enumerable: true,
+          enumerable: false,
           get: function get$$1() {
             return options.context;
           }
@@ -257,7 +264,7 @@ function injectableFactory(target) {
       }
 
       Reflect.defineProperty(target.prototype, 'vm', {
-        enumerable: true,
+        enumerable: false,
         get: function get$$1() {
           return root;
         }
@@ -265,7 +272,6 @@ function injectableFactory(target) {
 
       var _this = possibleConstructorReturn(this, (Injectable.__proto__ || Object.getPrototypeOf(Injectable)).call(this));
 
-      _this.name = target.name;
       _this.isVueService = true;
       return _this;
     }
