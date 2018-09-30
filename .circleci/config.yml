@@ -75,12 +75,21 @@ workflows:
       - test-unit:
           requires:
             - install
+          filters:
+            tags:
+              only: /.*/
       - lint-flow-types:
           requires:
             - install
+          filters:
+            tags:
+              only: /.*/
       - test-e2e:
           requires:
             - install
+          filters:
+            tags:
+              only: /.*/
       - deploy:
           requires:
             - test-unit
