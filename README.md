@@ -58,7 +58,8 @@ class AnyService extends Inject {}
 class Inject {
   isVueService: boolean;
   name: string;
-  vm: Context;
+  vm: VueRoot;
+  context: Any
 }
 ```
 
@@ -95,19 +96,41 @@ Vue.component('ServiceComponent', {
 })
 ```
 
-Define components with `$injector`:
-
-``` js
-this.$injector.get(ServiceClass)
-```
-
-If you use the `vue-class-component`, it is possible to add the service to the component using the `@Service` decorator:
+It is possible to add the service to the component using the `@Service` decorator:
 
 ``` js
 @Component()
 class AnyComponent extends Vue {
   @Service(AnyService) service;
 }
+```
+
+Define components with `$injector`:
+
+``` js
+this.$injector.get(ServiceClass)
+```
+
+### Nuxt plugin
+#### Create plugin
+Add a plug-in file to the plugins folder:
+``` js
+// injector.js
+import Vue from 'vue'
+import VueInjector from 'vue-injector'
+
+Vue.use(VueInjector)
+```
+#### Use plugin
+Now let's add the created plugin to the nuxt configuration file:
+``` js
+// nuxt.config.js
+...
+plugins: [
+    ...
+    '~/plugins/injector.js'
+]
+...
 ```
 
 ### Development Setup
