@@ -87,7 +87,7 @@ workflows:
             - lint-flow-types
             - test-e2e
           filters:
-            tags:
-              only: /^v.*/
             branches:
               ignore: /.*/
+            tags:
+              only: /^v.*/
