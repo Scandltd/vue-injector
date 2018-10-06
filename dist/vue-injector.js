@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v1.0.1
+  * @scandltd/vue-injector v1.0.2
   * (c) 2018 Scandltd
   * @license GPL-2.0
   */
@@ -176,7 +176,7 @@ var Provider = function () {
     value: function registerService(target, name, Service) {
       var _this2 = this;
 
-      if (!this.services.has(Service)) {
+      if (!this.services.has(Service) && Service.name === 'Injectable') {
         this.services.set(Service, new Service(this.app));
       }
 
@@ -356,7 +356,7 @@ var VueInjector = function () {
 
 
 VueInjector.install = install;
-VueInjector.version = '1.0.1';
+VueInjector.version = '1.0.2';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueInjector);
