@@ -47,7 +47,7 @@ export class Provider {
   }
 
   registerService (target: InjectedObject, name: string, Service: typeof InjectableClass): Inject | void {
-    if (!this.services.has(Service)) {
+    if (!this.services.has(Service) && Service.name === 'Injectable') {
       this.services.set(Service, new Service(this.app))
     }
 
