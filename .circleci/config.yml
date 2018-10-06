@@ -83,11 +83,7 @@ workflows:
             - install
       - deploy:
           requires:
-            - test-unit
-            - lint-flow-types
-            - test-e2e
+            - install
           filters:
             tags:
               only: /^v.*/
-            branches:
-              ignore: /.*/
