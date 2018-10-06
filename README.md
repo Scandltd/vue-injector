@@ -14,6 +14,9 @@ Dependency Injection for [Vue.js](http://vuejs.org).
 If you use Babel, [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) is needed.
 If you use TypeScript, enable `--experimentalDecorators` flag.
 
+##### Examples
+You can look at the examples [here](https://github.com/Scandltd/vue-injector/tree/master/examples).
+
 ##### Installation
 
 ``` js
@@ -99,6 +102,9 @@ Vue.component('ServiceComponent', {
 It is possible to add the service to the component using the `@Service` decorator:
 
 ``` js
+import Component from 'vue-class-component'
+import { Service } from '@scandltd/vue-injector'
+
 @Component()
 class AnyComponent extends Vue {
   @Service(AnyService) service;
