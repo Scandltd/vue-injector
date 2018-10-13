@@ -86,6 +86,30 @@ Use `context` property for set other context:
 class AnyService extends Inject {}
 ```
 
+##### Global providers in components
+Define `VueInjector` instance with arguments. Providers fall into the instance of all component:
+
+``` js
+@Injectable
+class AnyService extends Inject {}
+
+@Injectable
+class OtherService extends Inject {}
+
+const injector = new VueInjector(AnyService, OtherService)
+
+new Vue({
+    injector
+}).$mount('#app')
+```
+
+``` js
+Vue.component('ServiceComponent', {
+  name: 'ServiceComponent',
+  template: '<h1>{{ AnyService.name }} {{ OtherService.name }}</h1>'
+})
+```
+
 ##### Providers in components
 Define components with `providers`. Providers fall into the instance of the component:
 
