@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v1.0.3
+  * @scandltd/vue-injector v1.0.4
   * (c) 2018 Scandltd
   * @license GPL-2.0
   */
@@ -399,7 +399,7 @@ var VueInjector = function () {
 
 
 VueInjector.install = install;
-VueInjector.version = '1.0.3';
+VueInjector.version = '1.0.4';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueInjector);
