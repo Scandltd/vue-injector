@@ -1,9 +1,3 @@
-# Регистрация сервиса
-
-## Создание сервиса по умолчанию
-
-Для создания сервиса используется декоратор `@Injectable` и базовый класс `Inject`
-
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
 
@@ -11,9 +5,9 @@ import { Injectable, Inject } from '@scandltd/vue-injector'
 class LogService extends Inject {}
 ```
 
-## Внедрение контекста
+## Context Injection
 
-В декоратор `@Injectable` можно передать контекст который будет доступен в свойстве `context`.
+Context that will be available in the `context` properties can be imported to the decorator `@Injectable`.
 
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
@@ -30,9 +24,9 @@ class UserService extends Inject {
 }
 ```
 
-## Внедрение зависимостей
+## Dependency Injection
 
-В сервис, так же как и в компонент, возможно внедрить зависимости. Сделать это можно передав зависимости в свойстве `import` декоратора `@Injectable`.
+Dependencies could be injected not only into components, but into a service as well. To do so, you have to import dependencies by choosing `import` in the properties of the decorator `@Injectable`.
 
 ``` js
 @Injectable({

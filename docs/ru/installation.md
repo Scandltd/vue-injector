@@ -5,10 +5,10 @@
 [https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js](https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js)
 
 <!--email_off-->
-[Unpkg.com](https://unpkg.com) предоставляет CDN-ссылки для NPM-пакетов. Ссылка выше всегда указывает на самую последнюю версию Vue-router на NPM. Вы можете также использовать конкретную версию, используя ссылки вида  `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
+[Unpkg.com](https://unpkg.com) предоставляет CDN-ссылки для NPM-пакетов. Ссылка выше всегда указывает на самую последнюю версию Vue-injector на NPM. Вы можете также использовать конкретную версию, используя ссылки вида  `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
 <!--/email_off-->
 
-Подключите `vue-router` после Vue, и установка произойдёт автоматически:
+Подключите `vue-injector` после Vue, и установка произойдёт автоматически:
 
 ``` html
 <script src="/path/to/vue.js"></script>

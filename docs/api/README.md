@@ -2,20 +2,20 @@
 sidebar: auto
 ---
 
-# Справочник API
+# API
 
 ## `@Injectable`
 
-`@Injectable` — это декоратор предназначенный для объявления сервиса. По умолчанию в созданном сервисе в свойстве `vm` доступно приложение `Vue`. Кроме того, существует возможность внедрить дополненные сервисы в текущий и добавить собственный контекст.
+`@Injectable` — is a decorator used for a service declaration. By default, a created service includes `Vue` application that can be found in `vm` properties. It is also possible to inject an updated services to an on-going one and add a context needed.
 
-`@Injectable` должен быть обязательно указан для создаваемого сервиса.
+`@Injectable` must be specified for a service you create.
 
 ### import
 
-- тип: `Array<Service>`
-- не обязательный
+- type: `Array<Service>`
+- unnecessary
 
-  Иногда может потребоваться, чтобы создаваемый сервис также имел встраиваемые зависимости внутри себя, в этом случае вы можете указать зависимости с помощью свойства декоратора `import`.
+  Sometimes you need to include injected dependencies into a service you create. In such case, you can specify dependencies with the help of properties of the `import` decorator.
 
   ``` js
   @Injectable({
@@ -30,10 +30,10 @@ sidebar: auto
 
 ### context
 
-- тип: `any`
-- не обязательный
+- type: `any`
+- unnecessary
 
-  Установка дополнительного контекста для сервиса. Доступен через свойство `context`.
+  Installation of additional context for a service is available through `context` property.
 
   ``` js
     @Injectable({
@@ -49,7 +49,7 @@ sidebar: auto
     ```
 
 ## `Inject`
-  При создании сервиса необходимо расширить класс `Inject`. Определяет общие свойства всех сервисов.
+  When creating a service you must expand the `Inject` class that defines general properties of all services.
 
   ``` js
     @Injectable
@@ -57,17 +57,17 @@ sidebar: auto
   ```
 ### name
 
-- тип: `string`
+- type: `string`
 
-  Имя текущего сервиса.
+  Name of an on-going service.
 
 ### isVueService
 
-- тип: `boolean`
+- type: `boolean`
 
-- по умолчанию: `true`
+- by default: `true`
 
-  Показывает является ли объект сервисом.
+  Shows if an object is a service.
 
 ### vm
 
@@ -80,64 +80,64 @@ sidebar: auto
 
 ### app
 
-- тип: `Vue instance`
+- type: `Vue instance`
 
-  Корневой экземпляр Vue, в который внедряется `injector`.
+  Root instance of Vue, in which `injector` is incorporated.
 
 ### provider
 
-- тип: `Provider`
+- type: `Provider`
 
-  Провайдер предоставляющий доступ к сервисам в виде [объекта Provider](#provider-2).
+  Provider that makes services in the form of [Provider](#provider-2) objects available.
 
 ### initComponent
 
-Сигнатура:
+Signature:
 
 ``` js
 initComponent(component: Component)
 ```
 
-Внедрение в компонент указанных в свойстве `providers` сервисов.
+Injection of services specified in the `providers` properties into components.  
 
 ### get
 
-Сигнатура:
+Signature:
 
 ``` js
 get(service: Inject)
 ```
 
-Возвращает экземпляр запрашиваемого сервиса. Создает экземпляр, если его еще не существует, и внедряет его в корневой экземпляр Vue.
+Rolls back an instance of the requested service. If there is no instance yet, creates it and injects into the root instance of Vue.
 
 ## `Provider`
 
-**Объект (Provider)** регистрирует сервисы и предоставляет к ним доступ.
+**Object (Provider)** registers services and provides access to them.
 
-Объект `Provider` иммутабелен. Каждая регистрация компонента будет создавать необходимые ему сервисы.
+Object `Provider` is immutable. Each registration of a component will include the creation of the services needed.
 
 ### app
 
-  - тип: `Vue instance`
+  - type: `Vue instance`
 
-    Корневой экземпляр Vue, в который внедряется `injector`.
+    Root instance of Vue, in which `injector` is incorporated.
 
 ### services
 
-  - тип: `Map<typeof Inject, Inject>`
+  - type: `Map<typeof Inject, Inject>`
 
-    Объект, который содержит пары ключ/значение подключенных сервисов. Если параметров нет, то значением будет пустой объект.
+    Object that include key/value pairs of the connected services. If there are no specifications, an empty object will be a value.
 
 
 ### initComponent
 
-Сигнатура:
+Signature:
 
 ``` js
 initComponent(component: Component)
 ```
 
-Внедрение в компонент указанных в свойстве `providers` сервисов.
+Injection of the specified in a `providers` properties services into component. 
 
 ### registerService
 
@@ -151,19 +151,19 @@ registerService(target: InjectedObject, name: string, Service: typeof Injectable
 
 ### get
 
-Сигнатура:
+Signature:
 
 ``` js
 get(service: Inject)
 ```
 
-Возвращает экземпляр запрашиваемого сервиса. Создает экземпляр, если его еще не существует, и внедряет его в корневой экземпляр Vue.
+Rolls back an instance of the requested service. If there is no instance yet, creates it and injects into the root instance of Vue.
 
-## Интеграция в компоненты
+## Integration for components
 
-Для внедрении зависимости можно использовать два метода:
- - используя свойство компронента `providers`
- - используя декаратор `@Service`
+There are two methods you can use to inject dependencies:
+ - using `providers` component properties
+ - using decorator `@Service`
 
  ``` js
     import { Injectable, Inject, Service } from 'vue-injector'
@@ -171,31 +171,28 @@ get(service: Inject)
     @Injectable
     class LogService extends Inject {}
 
-    // Используя свойство `providers`
+    // Using property `providers`
     default {
         providers: {
             LogService
         }
     }
 
-    // Используя декаратор
+    // Using decorator
     @Component
     class Component extends Vue {
         @Service(LogService) service;
     }
  ```
 
-## Внедряемые в компоненты свойства
+## Injection of properties for components
 
-Эти свойства внедряются в каждый дочерний компонент, передавая экземпляр маршрутизатора в корневой экземпляр в качестве опции `router`.
+Such properties are injecting in each child component, sending an instance of DI to a root instance as a `injector` option.
 
 - **this.$injector**
 
-  Экземпляр инжектора.
+  Instance of injector.
 
 - **this.< ServiceName >**
 
-  Предоставляемые сервисы. Эти свойства только для чтения.
-
-
-
+  Provided services. These properties are read-only.

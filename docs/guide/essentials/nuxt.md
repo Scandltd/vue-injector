@@ -1,8 +1,8 @@
 # Nuxt plugin
 
-## Создание плагина
+## Plugin creation
 
-Добавим в папку `plugins` файл плагина для подключения `vue-injector`.
+To be connected to `vue-injector`, a file with a plugin is to be added to the `plugins` folder.
 
 ``` js
 ``` js
@@ -13,9 +13,9 @@ import VueInjector from '@scandltd/vue-injector'
 Vue.use(VueInjector)
 ```
 
-## Подключение плагина
+## Connection with plugin
 
-Теперь добавим созданный плагин в конфигурационный файл `nuxt`.
+Now we have to add the created plugin to the `nuxt` configuration file.
 
 ``` js
 // nuxt.config.js

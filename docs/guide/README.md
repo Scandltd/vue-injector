@@ -1,12 +1,18 @@
-# Начало работы
+# Getting Started
 
-::: tip Примечание
-Мы будем использовать синтаксис [ES2015](https://github.com/lukehoban/es6features) в примерах кода в этом руководстве.
+::: tip Note
+We will be using [ES2015](https://github.com/lukehoban/es6features) in the code samples in the guide.
 
-Кроме того, все примеры будут использовать полную сборку Vue, чтобы позволить компиляцию шаблонов на лету. Подробнее о различиях сборок читайте [здесь](https://ru.vuejs.org/v2/guide/installation.html#Runtime-Компилятор-vs-Runtime-only).
+Also, all examples will be using the full version of Vue to make on-the-fly template compilation possible. See more details [here](https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only).
 :::
 
-Использовать DI при помощи Vue Injector очень просто. Пример:
+::: tip **Required**
+[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+If you use Babel, [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) is needed.
+If you use TypeScript, enable `--experimentalDecorators` flag.
+:::
+
+Using DI with Vue Injector is dead simple. Here’s a basic example:
 
 ## HTML
 
@@ -15,9 +21,9 @@
 <script src="https://unpkg.com/@scandltd/vue-injector/dist/vue-injector.js"></script>
 
 <div id="app">
-  <h1>Первое приложение!</h1>
+  <h1>First Application!</h1>
   <p>
-    <!-- отображаем тут зарегестрирований компонент -->
+    <!-- the registered component is to be illustrated here -->
     <logger/>
   </p>
 </div>
@@ -26,35 +32,35 @@
 ## JavaScript
 
 ``` js
-// 0. Если используем модульную систему (например через vue-cli), 
-// импортируем Vue и VueInjector и затем вызываем `Vue.use(VueInjector)`.
+// 0. When using modular system (for ex. through vue-cli),
+//  import Vue and VueInjector, and then call `Vue.use(VueInjector)`.
 
-// 1. Создаём экземпляр инжектора
+// 1. Construct injector instance
 const injector = new VueInjector()
 
-// 2. Создаём и монтируем корневой экземпляр приложения.
-// Убедитесь, что передали экземпляр плагина в опции
-// `injector`, чтобы позволить приложению знать о его наличии.
+// 2. Construct and mount a application’s root instance.
+// Make sure you transferred the instance of the plugin using the option
+// `injector`, so the application accommodates its existence.
 const app = new Vue({
   injector
 }).$mount('#app')
 
-// Всё, приложение работает! ;)
+// Your application works! ;)
 ```
 
-Теперь мы можем создавать сервисы и внедрять их в компоненты нашего приложения.
+Now you can construct services and inject them into components of the application.
 
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
 
-// Регестрируем новый сервис
+// Register a new service
 @Injectable
 class LogService extends Inject {}
 ```
 
 ``` html
 <template>
-    // Выведим имя нашего сервиса
+    // Enter the name of the service
     {{ LogService.name }}
 </template>
 ```
@@ -62,7 +68,7 @@ class LogService extends Inject {}
 ``` js
 import LogService from 'logger'
 
-// Внедряем зависимость в компонент.
+// Inject dependency into the component.
 Vue.component('logger', {
   name: 'logger',
   providers: {
@@ -71,18 +77,18 @@ Vue.component('logger', {
 })
 ```
 
-Внедряя инжектор, мы сможем получить к нему доступ через `this.$injector`, а также к внедренным сервисам `this.<ServiceName>` внутри любого компонента:
+By incorporating the injector, we ensure its accessibility through `this.$injector`, as well as ensure assessability of the injected services within any component through `this.<ServiceName>`:
 
 ```js
 // Home.vue
 export default {
   computed: {
     logger () {
-      // Мы скоро разберём что такое `get`
+      // Soon we'll discuss the `get` purpose
       return this.$injector.get(LogService)
     }
   }
 }
 ```
 
-В документации мы будем часто использовать экземпляр `injector`. Имейте ввиду, что `this.$injector` в точности то же самое, что и `injector`.
+In documentation, we’ll often refer to `injector` instance. Note that `this.$injector`is still the same `injector`.

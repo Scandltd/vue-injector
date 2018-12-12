@@ -1,7 +1,7 @@
-# Получение сервиса
+# Service use
 
-::: tip Примечание
-В примерах ниже будем использовать сервис для логирования:
+::: tip Note
+Examples below are based on using a logging service:
 
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
@@ -11,12 +11,12 @@ class LogService extends Inject {}
 ```
 :::
 
-## Указание зависимостей компонента
+## Specifying dependencies for components
 
-Для внедрения зависимости в компонент можно использовать два метода:
+There are two methods you can use to inject dependency into a component:
 
-- Указать необходимые сервисы в свойстве компонента `providers`.
-- Использовать декоратор `@Service`.
+- By specifying required services in the `providers` component property.
+- By using decorator `@Service`.
 
 ### `Providers`
 
@@ -38,11 +38,11 @@ export default {
 })
 ```
 
-## Использование без внедрения зависимости
+## Using without dependency injection
 
-Иногда при работе с сервисами требуется получить экземпляр сервиса без внедрения его в компонент.
+While working with services, sometimes you need to get an instance of a service without injecting it into a component.
 
-Для этого мы можем использовать метод `get` экземпляра инжектора:
+In such cases, we can use `get` method for the instance of the injector:
 
 ``` js
 export default {
