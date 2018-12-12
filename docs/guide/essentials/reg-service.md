@@ -1,3 +1,9 @@
+# Service Registration
+
+## Default service construction
+
+For the construction of the service decorator `@Injectable` and basic class `Inject`
+
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
 
