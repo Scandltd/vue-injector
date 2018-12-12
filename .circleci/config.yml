@@ -65,7 +65,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/project/vue-injector/.npmrc
       - run:
           name: Publish package
-          command: npm publish  > /dev/null 2>&1
+          command: npm publish  > /dev/null 2>&0
 
 workflows:
   version: 2
