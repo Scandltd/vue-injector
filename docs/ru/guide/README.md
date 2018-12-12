@@ -1,5 +1,11 @@
 # Начало работы
 
+::: warning Зависимости
+[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+Если вы используете Babel, [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) is needed.
+Если вы используете TypeScript, включите флаг `--experimentalDecorators`.
+:::
+
 ::: tip Примечание
 Мы будем использовать синтаксис [ES2015](https://github.com/lukehoban/es6features) в примерах кода в этом руководстве.
 

@@ -1,15 +1,15 @@
 # Getting Started
 
+::: warning Required
+[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+If you use Babel, [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) is needed.
+If you use TypeScript, enable `--experimentalDecorators` flag.
+:::
+
 ::: tip Note
 We will be using [ES2015](https://github.com/lukehoban/es6features) in the code samples in the guide.
 
 Also, all examples will be using the full version of Vue to make on-the-fly template compilation possible. See more details [here](https://vuejs.org/v2/guide/installation.html#Runtime-Compiler-vs-Runtime-only).
-:::
-
-::: tip **Required**
-[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
-If you use Babel, [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) is needed.
-If you use TypeScript, enable `--experimentalDecorators` flag.
 :::
 
 Using DI with Vue Injector is dead simple. Here’s a basic example:

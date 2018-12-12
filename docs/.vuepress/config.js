@@ -49,7 +49,7 @@ module.exports = {
           '/installation.md',
           '/',
           {
-            title: 'The basics',
+            title: 'Guide',
             collapsable: false,
             children: [
               '/guide/',
