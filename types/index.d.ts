@@ -19,6 +19,7 @@ export function Service(service: typeof Inject): PropertyDecorator
 
 export declare class Provider {
     app: Vue;
+    rootProviders: Array<typeof Injectable>;
     services: Map<typeof Inject, Inject>;
 
     registerComponent (component: Component): void;
@@ -32,6 +33,7 @@ export default class VueInjector {
     app: Vue | null;
     apps: Array<Vue>;
     provider: Provider | null;
+    rootProviders: Array<typeof Injectable>;
 
     init(app: Vue): void;
     initComponent(component: Component): void

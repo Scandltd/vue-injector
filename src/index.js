@@ -23,10 +23,14 @@ export default class VueInjector {
   apps: Array<GlobalAPI>;
   provider: Provider | null;
 
-  constructor () {
+  rootProviders: Array<typeof InjectableClass> = [];
+
+  constructor (...args) {
     this.app = null
     this.provider = null
     this.apps = []
+
+    this.rootProviders = args
   }
 
   init (app: GlobalAPI) {
@@ -44,7 +48,7 @@ export default class VueInjector {
     }
 
     this.app = app
-    this.provider = new Provider(this.app)
+    this.provider = new Provider(this.app, this.rootProviders)
   }
 
   initComponent (component: Component) {

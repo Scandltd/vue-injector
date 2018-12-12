@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v1.0.2
+  * @scandltd/vue-injector v1.0.4
   * (c) 2018 Scandltd
   * @license GPL-2.0
   */
@@ -58,6 +58,12 @@ function install(Vue) {
 function assert(condition, message) {
   if (!condition) {
     throw new Error('[@scandltd/vue-injector] ' + message);
+  }
+}
+
+function warn(condition, message) {
+  if (process.env.NODE_ENV !== 'production' && !condition) {
+    typeof console !== 'undefined' && console.warn('[@scandltd/vue-injector] ' + message);
   }
 }
 
@@ -122,10 +128,13 @@ var Inject = function Inject() {
 };
 
 var Provider = function () {
-  function Provider(app) {
+  function Provider(app, rootProviders) {
     classCallCheck(this, Provider);
+    this.rootProviders = [];
 
     this.app = app;
+    this.rootProviders = rootProviders;
+
     this.services = new Map();
   }
 
@@ -151,6 +160,16 @@ var Provider = function () {
       return !Array.isArray(obj) && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj !== null;
     }
   }, {
+    key: '_checkGetName',
+    value: function _checkGetName(provider) {
+      if (Object.hasOwnProperty.call(provider, 'getName') && typeof provider.getName === 'function') {
+        return true;
+      } else {
+        warn(false, 'no decorator Injectable or extends Inject');
+        return false;
+      }
+    }
+  }, {
     key: 'registerComponent',
     value: function registerComponent(component) {
       var _this = this;
@@ -167,6 +186,14 @@ var Provider = function () {
         } else {
           assert(false, 'providers not object');
         }
+      }
+
+      if (this.rootProviders.length) {
+        this.rootProviders.forEach(function (provider) {
+          if (_this._checkGetName(provider)) {
+            _this.registerService(component, provider.getName(), provider);
+          }
+        });
       }
     }
   }, {
@@ -211,17 +238,24 @@ var Provider = function () {
       assert(false, 'no decorator Injectable or extends Inject');
     }
   }, {
-    key: 'get',
-    value: function get$$1(Servise) {
-      if (!this.services.has(Servise)) {
-        var provider = this.registerService(this.app, Servise.getName(), Servise);
+    key: 'set',
+    value: function set$$1(Service) {
+      if (this._checkGetName(Service)) {
+        var provider = this.registerService(this.app, Service.getName(), Service);
 
         if (provider && provider instanceof Inject) {
-          this.services.set(Servise, provider);
+          this.services.set(Service, provider);
         }
       }
+    }
+  }, {
+    key: 'get',
+    value: function get$$1(Service) {
+      if (!this.services.has(Service)) {
+        this.set(Service);
+      }
 
-      return this.services.get(Servise);
+      return this.services.get(Service);
     }
   }]);
   return Provider;
@@ -316,11 +350,20 @@ function Service(service) {
 
 var VueInjector = function () {
   function VueInjector() {
+    var arguments$1 = arguments;
+
     classCallCheck(this, VueInjector);
+    this.rootProviders = [];
 
     this.app = null;
     this.provider = null;
     this.apps = [];
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments$1[_key];
+    }
+
+    this.rootProviders = args;
   }
 
   createClass(VueInjector, [{
@@ -336,7 +379,7 @@ var VueInjector = function () {
       }
 
       this.app = app;
-      this.provider = new Provider(this.app);
+      this.provider = new Provider(this.app, this.rootProviders);
     }
   }, {
     key: 'initComponent',
@@ -354,7 +397,7 @@ var VueInjector = function () {
 
 
 VueInjector.install = install;
-VueInjector.version = '1.0.2';
+VueInjector.version = '1.0.4';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueInjector);

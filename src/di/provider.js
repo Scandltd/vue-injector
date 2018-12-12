@@ -1,13 +1,17 @@
 /* @flow */
-import { assert } from '../util/warn'
+import { assert, warn } from '../util/warn'
 import { Inject } from './inject'
 
 export class Provider {
   app: GlobalAPI;
   services: Map<typeof InjectableClass, Inject>;
 
-  constructor (app: GlobalAPI) {
+  rootProviders: Array<typeof InjectableClass> = [];
+
+  constructor (app: GlobalAPI, rootProviders) {
     this.app = app
+    this.rootProviders = rootProviders
+
     this.services = new Map()
   }
 
@@ -30,6 +34,15 @@ export class Provider {
     return !Array.isArray(obj) && typeof obj === 'object' && obj !== null
   }
 
+  _checkGetName (provider: any): boolean {
+    if (Object.hasOwnProperty.call(provider, 'getName') && typeof provider.getName === 'function') {
+      return true
+    } else {
+      warn(false, 'no decorator Injectable or extends Inject')
+      return false
+    }
+  }
+
   registerComponent (component: Component) {
     if (component.hasOwnProperty('_providers')) {
       const providers = component._providers
@@ -43,6 +56,14 @@ export class Provider {
       } else {
         assert(false, 'providers not object')
       }
+    }
+
+    if (this.rootProviders.length) {
+      this.rootProviders.forEach(provider => {
+        if (this._checkGetName(provider)) {
+          this.registerService(component, provider.getName(), provider)
+        }
+      })
     }
   }
 
@@ -84,15 +105,21 @@ export class Provider {
     assert(false, 'no decorator Injectable or extends Inject')
   }
 
-  get (Servise: typeof InjectableClass) {
-    if (!this.services.has(Servise)) {
-      const provider = this.registerService(this.app, Servise.getName(), Servise)
+  set (Service: typeof InjectableClass) {
+    if (this._checkGetName(Service)) {
+      const provider = this.registerService(this.app, Service.getName(), Service)
 
       if (provider && provider instanceof Inject) {
-        this.services.set(Servise, provider)
+        this.services.set(Service, provider)
       }
     }
+  }
 
-    return this.services.get(Servise)
+  get (Service: typeof InjectableClass) {
+    if (!this.services.has(Service)) {
+      this.set(Service)
+    }
+
+    return this.services.get(Service)
   }
 }
