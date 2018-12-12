@@ -1,10 +1,10 @@
-# Введение
+# Introduction
 
-Vue Injector — библиотека Dependency Injection для [Vue.js](https://ru.vuejs.org/). Включает следующие возможности:
+Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/). Includes the following:
 
-- Внедрение зависимостей для ваших компонентов.
-- Конструирование внедряемых сервисов.
-- Доступ к приложению Vue из сервиса.
-- Использование декораторов для удобной работы.
+- Dependency injection for components.
+- Construction of the injected services.
+- Accessibility of Vue application from a service.
+- Utilization of decorators for convenient operation.
 
-[Начать знакомство](./guide/) или поиграться с [примерами](https://github.com/Scandltd/vue-injector/tree/develop/examples) (см. [`README.md`](https://github.com/Scandltd/vue-injector) для их запуска).
+[Start acquaintance](./guide/) or try [samples](https://github.com/Scandltd/vue-injector/tree/develop/examples) (check [`README.md`](https://github.com/Scandltd/vue-injector) before launching them).

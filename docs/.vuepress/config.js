@@ -29,19 +29,19 @@ module.exports = {
     locales: {
       '/': {
         label: 'English',
-        selectText: 'Переводы',
-        editLinkText: 'Изменить эту страницу на GitHub',
+        selectText: 'Translations',
+        editLinkText: 'Edit this page on GitHub',
         nav: [
           {
-            text: 'Руководство',
+            text: 'Guide',
             link: '/guide/'
           },
           {
-            text: 'Справочник APIe',
+            text: 'API',
             link: '/api/'
           },
           {
-            text: 'История изменений',
+            text: 'Change history',
             link: 'https://github.com/Scandltd/vue-injector/releases'
           }
         ],
@@ -49,7 +49,7 @@ module.exports = {
           '/installation.md',
           '/',
           {
-            title: 'Основы',
+            title: 'Guide',
             collapsable: false,
             children: [
               '/guide/',

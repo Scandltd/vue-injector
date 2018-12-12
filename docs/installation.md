@@ -1,14 +1,14 @@
-# Установка
+# Installation
 
-## Скачивание напрямую / CDN
+## Direct Download / CDN
 
 [https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js](https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js)
 
 <!--email_off-->
-[Unpkg.com](https://unpkg.com) предоставляет CDN-ссылки для NPM-пакетов. Ссылка выше всегда указывает на самую последнюю версию Vue-router на NPM. Вы можете также использовать конкретную версию, используя ссылки вида  `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
+[Unpkg.com](https://unpkg.com) Provides npm-based CDN links. The above link will always point to the latest release on npm. You can also use a specific version/tag via URLs like:  `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
 <!--/email_off-->
 
-Подключите `vue-router` после Vue, и установка произойдёт автоматически:
+Include `vue-injector` after Vue and it will install itself automatically:
 
 ``` html
 <script src="/path/to/vue.js"></script>
@@ -21,7 +21,7 @@
 npm install @scandltd/vue-injector
 ```
 
-При использовании модульной системы, необходимо явно обозначить использование инжектора при помощи `Vue.use()`:
+When used with a module system, you must explicitly install the injector via `Vue.use()`:
 
 ``` js
 import Vue from 'vue'
@@ -30,11 +30,11 @@ import VueInjector from '@scandltd/vue-injector'
 Vue.use(VueInjector)
 ```
 
-Это не требуется при подключении через глобальный тег `script`.
+You don't need to do this when using global `script` tags.
 
-## Версия для разработки
+## Dev Build
 
-Если вы хотите использовать самую новую dev-сборку `vue-injector`, то придётся вручную склонировать репозиторий с GitHub и запустить сборку:
+You will have to clone directly from GitHub and build `vue-injector` yourself if you want to use the latest dev build:
 
 ``` bash
 git clone https://github.com/Scandltd/vue-injector.git node_modules/@scandltd/vue-injector
