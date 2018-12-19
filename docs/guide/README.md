@@ -33,12 +33,12 @@ Using DI with Vue Injector is dead simple. Here’s a basic example:
 
 ``` js
 // 0. When using modular system (for ex. through vue-cli),
-//  import Vue and VueInjector, and then call `Vue.use(VueInjector)`.
+//  import Vue and VueInjector and then call `Vue.use(VueInjector)`.
 
 // 1. Construct injector instance
 const injector = new VueInjector()
 
-// 2. Construct and mount a application’s root instance.
+// 2. Construct and mount an application’s root instance.
 // Make sure you transferred the instance of the plugin using the option
 // `injector`, so the application accommodates its existence.
 const app = new Vue({
@@ -77,7 +77,7 @@ Vue.component('logger', {
 })
 ```
 
-By incorporating the injector, we ensure its accessibility through `this.$injector`, as well as ensure assessability of the injected services within any component through `this.<ServiceName>`:
+By incorporating the injector, we ensure its accessibility through `this.$injector`, as well as ensure accessibility of the injected services within any component through `this.<ServiceName>`:
 
 ```js
 // Home.vue

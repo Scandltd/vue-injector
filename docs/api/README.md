@@ -6,7 +6,7 @@ sidebar: auto
 
 ## `@Injectable`
 
-`@Injectable` — is a decorator used for a service declaration. By default, a created service includes `Vue` application that can be found in `vm` properties. It is also possible to inject an updated services to an on-going one and add a context needed.
+`@Injectable` — is a decorator used for a service declaration. By default, the created service includes `Vue` application that can be found in `vm` properties. It is also possible to inject the updated service to an on-going one and add a context needed.
 
 `@Injectable` must be specified for a service you create.
 
@@ -71,9 +71,9 @@ sidebar: auto
 
 ### vm
 
-- тип: `Vue instance`
+- type: `Vue instance`
 
-  Корневой экземпляр Vue, в который внедряется `injector`.
+  Root instance of Vue, in which `injector` is incorporated.
 
 
 ## `VueInjector`
@@ -126,7 +126,7 @@ Object `Provider` is immutable. Each registration of a component will include th
 
   - type: `Map<typeof Inject, Inject>`
 
-    Object that include key/value pairs of the connected services. If there are no specifications, an empty object will be a value.
+    Object that includes key/value pairs of the connected services. If there are no specifications, an empty object will be a value.
 
 
 ### initComponent
@@ -137,17 +137,17 @@ Signature:
 initComponent(component: Component)
 ```
 
-Injection of the specified in a `providers` properties services into component. 
+Injection of the specified in the `providers` properties services into the component. 
 
 ### registerService
 
-Сигнатура:
+Signature:
 
 ``` js
 registerService(target: InjectedObject, name: string, Service: typeof InjectableClass)
 ```
 
-Внедрение в сервиса в указаный объект. Возврощает экземпляр сервиса.
+Injection of the service into the specified object. Returns an instance of the service.
 
 ### get
 
@@ -187,7 +187,7 @@ There are two methods you can use to inject dependencies:
 
 ## Injection of properties for components
 
-Such properties are injecting in each child component, sending an instance of DI to a root instance as a `injector` option.
+Such properties are injecting in each child component, sending an instance of DI to a root instance as an `injector` option.
 
 - **this.$injector**
 

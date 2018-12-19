@@ -5,7 +5,7 @@
 [https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js](https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js)
 
 <!--email_off-->
-[Unpkg.com](https://unpkg.com) предоставляет CDN-ссылки для NPM-пакетов. Ссылка выше всегда указывает на самую последнюю версию Vue-injector на NPM. Вы можете также использовать конкретную версию, используя ссылки вида  `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
+[Unpkg.com](https://unpkg.com) предоставляет CDN-ссылки для NPM-пакетов. Ссылка выше всегда указывает на самую последнюю версию Vue-injector на NPM. Вы можете также использовать конкретную версию с помощью ссылок вида `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
 <!--/email_off-->
 
 Подключите `vue-injector` после Vue, и установка произойдёт автоматически:
@@ -21,7 +21,7 @@
 npm install @scandltd/vue-injector
 ```
 
-При использовании модульной системы, необходимо явно обозначить использование инжектора при помощи `Vue.use()`:
+При использовании модульной системы необходимо явно обозначить использование инжектора при помощи `Vue.use()`:
 
 ``` js
 import Vue from 'vue'

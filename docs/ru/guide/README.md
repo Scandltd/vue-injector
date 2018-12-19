@@ -2,7 +2,7 @@
 
 ::: warning Зависимости
 [ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
-Если вы используете Babel, [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) is needed.
+Если вы используете Babel, необходим [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy).
 Если вы используете TypeScript, включите флаг `--experimentalDecorators`.
 :::
 
@@ -23,7 +23,7 @@
 <div id="app">
   <h1>Первое приложение!</h1>
   <p>
-    <!-- отображаем тут зарегестрирований компонент -->
+    <!-- отображаем тут зарегистрированный компонент-->
     <logger/>
   </p>
 </div>
@@ -53,7 +53,7 @@ const app = new Vue({
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
 
-// Регестрируем новый сервис
+// Регистрируем новый сервис
 @Injectable
 class LogService extends Inject {}
 ```
@@ -84,7 +84,7 @@ Vue.component('logger', {
 export default {
   computed: {
     logger () {
-      // Мы скоро разберём что такое `get`
+      // Мы скоро разберём, что такое `get`
       return this.$injector.get(LogService)
     }
   }

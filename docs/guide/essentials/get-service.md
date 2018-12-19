@@ -38,7 +38,7 @@ export default {
 })
 ```
 
-## Using without dependency injection
+## Usage without dependency injection
 
 While working with services, sometimes you need to get an instance of a service without injecting it into a component.
 

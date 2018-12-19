@@ -13,7 +13,7 @@ class LogService extends Inject {}
 
 ## Внедрение контекста
 
-В декоратор `@Injectable` можно передать контекст который будет доступен в свойстве `context`.
+В декоратор `@Injectable` можно передать контекст, который будет доступен в свойстве `context`.
 
 ``` js
 import { Injectable, Inject } from '@scandltd/vue-injector'
