@@ -40,6 +40,23 @@ module.exports = {
         use: 'vue-loader'
       },
       {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/]
+        }
+      },
+      {
+        test: /\.ts$/,
+        enforce: 'pre',
+        use: [
+          {
+            loader: 'tslint-loader'
+          }
+        ]
+      },
+      {
         test: /\.css$/,
         use: [
           'vue-style-loader',
@@ -50,6 +67,7 @@ module.exports = {
   },
 
   resolve: {
+    extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
       vue: 'vue/dist/vue.esm.js',
       '@scandltd/vue-injector': path.join(__dirname, '..', 'src')

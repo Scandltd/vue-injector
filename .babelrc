@@ -1,8 +1,9 @@
 {
-  "presets": ["env", "flow-vue"],
+  "presets": ["env"],
   "plugins": [
     "syntax-dynamic-import",
-    "transform-decorators-legacy"
+    "transform-decorators-legacy",
+    "transform-class-properties"
   ],
   "env": {
     "test": {

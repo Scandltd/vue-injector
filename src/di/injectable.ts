@@ -1,58 +1,62 @@
-/* @flow */
+import Vue from 'vue';
+import { Inject } from './inject';
+import { InjectableClass } from '../../types';
 
-function injectableFactory (target, options = {}) {
-  return class Injectable extends target implements InjectableClass {
+function injectableFactory (target: typeof Inject, options: any = {}) {
+  return class Injectable extends target {
     static service: InjectableClass;
 
-    +isVueService: boolean = true;
+    readonly isVueService: boolean = true;
 
-    static getName (): string {
-      return target.name
-    }
+    constructor (root: Vue) {
+      super();
 
-    constructor (root: GlobalAPI) {
       Reflect.defineProperty(target.prototype, 'name', {
         enumerable: false,
         get () {
-          return target.name
+          return target.name;
         }
-      })
+      });
 
       if (options && options.hasOwnProperty('context')) {
         Reflect.defineProperty(target.prototype, 'context', {
           enumerable: false,
           get () {
-            return options.context
+            return options.context;
           }
-        })
+        });
       }
 
       if (options && options.hasOwnProperty('import')) {
         Reflect.defineProperty(target.prototype, 'import', {
           enumerable: false,
           get () {
-            return options.import
+            return options.import;
           }
-        })
+        });
       }
 
       Reflect.defineProperty(target.prototype, 'vm', {
         enumerable: false,
         get () {
-          return root
+          return root;
         }
-      })
+      });
 
-      super()
+      super();
     }
-  }
+
+    static getName (): string {
+      return target.name;
+    }
+  };
 }
 
 export function Injectable (options: any) {
   if (typeof options === 'function') {
-    return injectableFactory(options)
+    return injectableFactory(options);
   }
   return function (Service: any) {
-    return injectableFactory(Service, options)
-  }
+    return injectableFactory(Service, options);
+  };
 }

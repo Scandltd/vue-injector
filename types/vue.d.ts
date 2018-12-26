@@ -3,7 +3,13 @@
  */
 
 import Vue from "vue";
-import VueInjector, { Inject } from "./index";
+import VueInjector from "../src/index";
+import {Inject} from "../src";
+
+declare module "*.vue" {
+    import Vue from "vue";
+    export default Vue;
+}
 
 declare module "vue/types/vue" {
     interface Vue {
@@ -17,3 +23,10 @@ declare module "vue/types/options" {
         readonly providers?: {[key: string]: Inject}
     }
 }
+
+declare global {
+    interface Window {
+        Vue: typeof Vue
+    }
+}
+
