@@ -5,10 +5,26 @@ import { inBrowser } from './util/dom';
 import { Provider } from './di/provider';
 
 import { Injectable } from './di/injectable';
-import { Inject } from './di/inject';
+import { Inject as I } from './di/inject';
 import { Service } from './di/service';
 import Vue, { Component } from 'vue';
-import { InjectableClass } from '../types';
+
+class Inject implements I {
+  readonly isVueService: boolean;
+  readonly name: string;
+  readonly vm: Vue;
+  readonly context: Object;
+
+  import: { [key: string]: typeof Inject };
+
+  constructor (root: Vue) {
+    return this;
+  }
+
+  static getName (): string {
+    return this.name;
+  }
+}
 
 export {
   Injectable,
@@ -24,7 +40,7 @@ export default class VueInjector {
   apps: Array<Vue>;
   provider: Provider | null;
 
-  rootProviders: Array<typeof InjectableClass> = [];
+  rootProviders: Array<Inject> = [];
 
   constructor (...args) {
     this.app = null;
@@ -56,7 +72,7 @@ export default class VueInjector {
     this.provider && this.provider.registerComponent(component);
   }
 
-  get (Provider: typeof InjectableClass) {
+  get (Provider: typeof Inject) {
     return this.provider && this.provider.get(Provider);
   }
 }

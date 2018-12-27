@@ -1,13 +1,13 @@
 import { assert, warn } from '../util/warn';
-import { Inject } from './inject';
 import Vue, { Component } from 'vue';
-import { InjectableClass, InjectedObject } from '../../types';
+import { InjectedObject } from '../../types';
+import { Inject } from '../index';
 
 export class Provider {
   app: Vue;
-  services: Map<typeof InjectableClass, Inject>;
+  services: Map<typeof Inject, Inject>;
 
-  rootProviders: Array<typeof InjectableClass> = [];
+  rootProviders: Array<typeof Inject> = [];
 
   constructor (app: Vue, rootProviders) {
     this.app = app;
@@ -68,7 +68,7 @@ export class Provider {
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: typeof InjectableClass): Inject {
+  registerService (target: InjectedObject, name: string, Service: typeof Inject): Inject {
     if (!this.services.has(Service) && Service.name === 'Injectable') {
       this.services.set(Service, new Service(this.app));
     }
@@ -106,7 +106,7 @@ export class Provider {
     assert(false, 'no decorator Injectable or extends Inject');
   }
 
-  set (Service: typeof InjectableClass) {
+  set (Service: typeof Inject) {
     if (this._checkGetName(Service)) {
       const provider = this.registerService(this.app, Service.getName(), Service);
 
@@ -116,7 +116,7 @@ export class Provider {
     }
   }
 
-  get (Service: typeof InjectableClass) {
+  get (Service: typeof Inject) {
     if (!this.services.has(Service)) {
       this.set(Service);
     }

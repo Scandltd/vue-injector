@@ -1,12 +1,15 @@
 import Vue from 'vue';
-import { InjectableClass } from '../../types';
 
-export class Inject {
+export interface InjectConstructor {
+  new (root: Vue): Inject;
+}
 
-  static getName: () => string;
+export interface Inject {
   readonly isVueService: boolean;
   readonly name: string;
+
+  readonly context: Object;
   readonly vm: Vue;
 
-  import: { [key: string]: typeof InjectableClass };
+  import: { [key: string]: any };
 }

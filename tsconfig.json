@@ -12,6 +12,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "baseUrl": ".",
     "rootDirs": ["./"],
     "typeRoots": [
@@ -19,7 +20,8 @@
       "types"
     ],
     "types": [
-      "node"
+      "node",
+      "jasmine"
     ]
   },
   "include": [
