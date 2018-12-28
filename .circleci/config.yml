@@ -87,7 +87,6 @@ workflows:
           requires:
             - test-unit
             - lint-types
-            - deploy
           context: org-global
           filters:
             tags:
