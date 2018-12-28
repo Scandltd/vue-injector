@@ -82,7 +82,9 @@ workflows:
             - install
       - deploy:
           requires:
-            - install
+            - test-unit
+            - lint-types
+            - deploy
           filters:
             tags:
               only: /^v.*/
