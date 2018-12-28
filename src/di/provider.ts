@@ -6,7 +6,7 @@ import { InjectConstructor } from './inject';
 
 export class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject>;
+  services: WeakMap<InjectConstructor, Inject>;
 
   rootProviders: Array<typeof Inject> = [];
 
@@ -14,7 +14,7 @@ export class Provider {
     this.app = app;
     this.rootProviders = rootProviders;
 
-    this.services = new Map();
+    this.services = new WeakMap();
   }
 
   registerComponent (component: Vue) {
@@ -42,6 +42,8 @@ export class Provider {
   }
 
   registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject {
+    console.log(Service.prototype, JSON.stringify(Service.prototype));
+
     if (!this.services.has(Service) && Service.name === 'Injectable') {
       Service.prototype.vm = this.app;
 
@@ -82,6 +84,9 @@ export class Provider {
   }
 
   set (Service: typeof Inject) {
+
+    console.log(Service, Service.toString());
+
     if (this.checkGetName(Service)) {
       const provider = this.registerService(this.app, Service.getName(), Service);
 

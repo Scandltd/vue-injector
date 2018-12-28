@@ -27,7 +27,7 @@ export declare class Inject implements InjectInterface {
 
 export declare class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject>;
+  services: WeakMap<InjectConstructor, Inject>;
   rootProviders: Array<typeof Inject>;
 
   constructor (app: Vue, rootProviders: Array<typeof Inject>);
