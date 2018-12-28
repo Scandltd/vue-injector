@@ -83,6 +83,7 @@ describe('registerComponent service', () => {
 
     expect(injector.provider.services.size).toBe(1);
     expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(app.Service).toEqual(injector.provider.get(Service));
   });
 
   it('get service after register', () => {

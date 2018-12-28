@@ -111,6 +111,7 @@
     "vue": "^2.5.16",
     "vue-class-component": "^6.2.0",
     "vue-loader": "^15.2.1",
+    "vue-property-decorator": "^7.2.0",
     "vue-template-compiler": "^2.5.16",
     "vuepress": "^0.10.0",
     "webpack": "^4.9.0",

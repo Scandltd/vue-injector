@@ -13,6 +13,7 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "rootDirs": ["./"],
     "typeRoots": [
@@ -25,6 +26,11 @@
     ]
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.vue"
+  ],
+  "files": [
+    "types/index.d.ts",
+    "types/vue.d.ts"
   ]
 }

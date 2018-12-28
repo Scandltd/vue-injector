@@ -13,6 +13,8 @@ describe('register component', () => {
     app = new Vue({
       injector
     });
+
+    app.$forceUpdate();
   });
 
   it('register one', () => {

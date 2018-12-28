@@ -2,10 +2,11 @@ import { assert, warn } from '../util/warn';
 import Vue, { Component } from 'vue';
 import { InjectedObject } from '../../types';
 import { Inject } from '../index';
+import { InjectConstructor } from './inject';
 
 export class Provider {
   app: Vue;
-  services: Map<typeof Inject, Inject>;
+  services: Map<InjectConstructor, Inject>;
 
   rootProviders: Array<typeof Inject> = [];
 
@@ -68,8 +69,10 @@ export class Provider {
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: typeof Inject): Inject {
+  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject {
     if (!this.services.has(Service) && Service.name === 'Injectable') {
+      Service.prototype.vm = this.app;
+
       this.services.set(Service, new Service(this.app));
     }
 

@@ -1,10 +1,10 @@
 import Vue from 'vue';
 
 export interface InjectConstructor {
-  new (root: Vue): Inject;
+  new (root: Vue): InjectInterface;
 }
 
-export interface Inject {
+export interface InjectInterface {
   readonly isVueService: boolean;
   readonly name: string;
 
@@ -12,4 +12,17 @@ export interface Inject {
   readonly vm: Vue;
 
   import: { [key: string]: any };
+}
+
+export class Inject implements InjectInterface {
+  readonly isVueService: boolean;
+  readonly name: string;
+  readonly vm: Vue;
+  readonly context: Object;
+
+  import: { [key: string]: typeof Inject };
+
+  static getName (): string {
+    return this.name;
+  }
 }

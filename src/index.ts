@@ -5,26 +5,9 @@ import { inBrowser } from './util/dom';
 import { Provider } from './di/provider';
 
 import { Injectable } from './di/injectable';
-import { Inject as I } from './di/inject';
+import { Inject, InjectConstructor } from './di/inject';
 import { Service } from './di/service';
 import Vue, { Component } from 'vue';
-
-class Inject implements I {
-  readonly isVueService: boolean;
-  readonly name: string;
-  readonly vm: Vue;
-  readonly context: Object;
-
-  import: { [key: string]: typeof Inject };
-
-  constructor (root: Vue) {
-    return this;
-  }
-
-  static getName (): string {
-    return this.name;
-  }
-}
 
 export {
   Injectable,
@@ -40,7 +23,7 @@ export default class VueInjector {
   apps: Array<Vue>;
   provider: Provider | null;
 
-  rootProviders: Array<Inject> = [];
+  rootProviders: Array<InjectConstructor> = [];
 
   constructor (...args) {
     this.app = null;

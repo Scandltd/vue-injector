@@ -1,4 +1,4 @@
-import { Inject } from './inject';
+import { InjectInterface } from './inject';
 
 function createDecorator (factory) {
   return function (target: any, key: string, index: any) {
@@ -17,7 +17,7 @@ function createDecorator (factory) {
   };
 }
 
-export function Service (service: Inject) {
+export function Service (service: any): any {
   return createDecorator((componentOptions, k, index) => {
     (componentOptions.providers || (componentOptions.providers = {}))[k] = service;
   });

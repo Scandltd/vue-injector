@@ -13,7 +13,12 @@ module.exports = {
 
   entry: fs.readdirSync(__dirname).reduce((entries, dir) => {
     const fullDir = path.join(__dirname, dir)
-    const entry = path.join(fullDir, 'app.js')
+    let entry = path.join(fullDir, 'app.js')
+
+    if (!fs.existsSync(path.join(fullDir, 'app.js'))) {
+      entry = path.join(fullDir, 'app.ts')
+    }
+
     if (fs.statSync(fullDir).isDirectory() && fs.existsSync(entry)) {
       entries[dir] = ['es6-promise/auto', entry]
     }
@@ -46,15 +51,6 @@ module.exports = {
         options: {
           appendTsSuffixTo: [/\.vue$/]
         }
-      },
-      {
-        test: /\.ts$/,
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'tslint-loader'
-          }
-        ]
       },
       {
         test: /\.css$/,
