@@ -42,8 +42,6 @@ export class Provider {
   }
 
   registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject {
-    console.log(Service.prototype, JSON.stringify(Service.prototype));
-
     if (!this.services.has(Service) && Service.name === 'Injectable') {
       Service.prototype.vm = this.app;
 
@@ -84,9 +82,6 @@ export class Provider {
   }
 
   set (Service: typeof Inject) {
-
-    console.log(Service, Service.toString());
-
     if (this.checkGetName(Service)) {
       const provider = this.registerService(this.app, Service.getName(), Service);
 
