@@ -87,6 +87,7 @@ workflows:
           requires:
             - test-unit
             - lint-types
+            - test-e2e
           context: org-global
           filters:
             tags:
