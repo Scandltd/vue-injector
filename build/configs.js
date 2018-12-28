@@ -1,6 +1,6 @@
 const path = require('path')
 const buble = require('rollup-plugin-buble')
-const flow = require('rollup-plugin-flow-no-whitespace')
+const typescript = require('rollup-plugin-typescript')
 const cjs = require('rollup-plugin-commonjs')
 const node = require('rollup-plugin-node-resolve')
 const replace = require('rollup-plugin-replace')
@@ -40,19 +40,20 @@ module.exports = [
 function genConfig (opts) {
   const config = {
     input: {
-      input: resolve('src/index.js'),
+      input: resolve('src/index.ts'),
       plugins: [
+        typescript(),
         babel({
           babelrc: false,
-          presets: [['env', { modules: false }], 'flow-vue'],
+          presets: [['env', { modules: false }]],
           exclude: 'node_modules/**',
           plugins: [
             'syntax-dynamic-import',
             'transform-decorators-legacy',
+            'transform-class-properties',
             'external-helpers'
           ]
         }),
-        flow(),
         node(),
         cjs(),
         replace({

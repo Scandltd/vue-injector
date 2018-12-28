@@ -25,13 +25,12 @@ jobs:
           paths:
             - vue-injector
 
-  lint-flow-types:
+  lint-types:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/project
       - run: npm run lint
-      - run: npm run flow
       - run: npm run test:types
 
   test-unit:
@@ -75,7 +74,7 @@ workflows:
       - test-unit:
           requires:
             - install
-      - lint-flow-types:
+      - lint-types:
           requires:
             - install
       - test-e2e:
@@ -83,7 +82,11 @@ workflows:
             - install
       - deploy:
           requires:
-            - install
+            - test-unit
+            - lint-types
+            - test-e2e
           filters:
+            branches:
+              only: master
             tags:
               only: /^v.*/

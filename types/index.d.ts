@@ -1,41 +1,58 @@
-import Vue, { Component } from "vue";
+import Vue, { Component } from 'vue';
 
-export declare class Inject {
-    readonly isVueService: boolean;
-    readonly name: string;
-    readonly vm: Vue;
+export declare interface InjectConstructor {
+  new (root: Vue): InjectInterface;
 }
 
-export declare interface InjectableClass extends Inject {
-    new (context: Vue): Inject;
+export declare interface InjectInterface {
+  readonly isVueService: boolean;
+  readonly name: string;
+
+  readonly context: Object;
+  readonly vm: Vue;
+
+  import: { [key: string]: any };
 }
 
-export type InjectClass<I> = { new (...args: any[]): I & Inject } & typeof Inject
+export declare class Inject implements InjectInterface {
+  readonly isVueService: boolean;
+  readonly name: string;
+  readonly vm: Vue;
+  readonly context: Object;
 
-export declare function Injectable <I extends Inject>(options: any): <IC extends InjectClass<I>>(target: IC) => Inject
-export declare function Injectable <IC extends InjectClass<Inject>>(target: IC): Inject
+  import: { [key: string]: typeof Inject };
 
-export function Service(service: typeof Inject): PropertyDecorator
+  static getName (): string;
+}
 
 export declare class Provider {
-    app: Vue;
-    rootProviders: Array<typeof Injectable>;
-    services: Map<typeof Inject, Inject>;
+  app: Vue;
+  services: Map<InjectConstructor, Inject>;
+  rootProviders: Array<typeof Inject>;
 
-    registerComponent (component: Component): void;
-    registerService (component: Component, name: string, Provider: InjectableClass): Inject;
+  constructor (app: Vue, rootProviders: Array<typeof Inject>);
+
+  registerComponent (component: Vue);
+  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject;
+
+  set (Service: typeof Inject);
+  get (Service: typeof Inject): Inject;
 }
 
-export default class VueInjector {
-    static install: () => void;
-    static version: string;
+export declare class VueInjector {
+  static install: (app: Vue) => void;
+  static version: string;
 
-    app: Vue | null;
-    apps: Array<Vue>;
-    provider: Provider | null;
-    rootProviders: Array<typeof Injectable>;
+  app: Vue | null;
+  apps: Array<Vue>;
+  provider: Provider | null;
+  rootProviders: Array<InjectConstructor>;
 
-    init(app: Vue): void;
-    initComponent(component: Component): void
-    get(servise: typeof Inject): Inject | null
+  init (app: Vue);
+  initComponent (component: Vue);
+  get (provider: typeof Inject): Inject;
 }
+
+export declare function Service (options: typeof Inject): PropertyDecorator;
+
+export declare type InjectedObject = Vue | Component | Inject;

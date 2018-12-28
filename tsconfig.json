@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es6",
+      "es5",
+      "dom",
+      "es2015.promise",
+      "es2015.core"
+    ],
+    "target": "es5",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "rootDirs": ["./"],
+    "paths": {
+      "@scandltd/vue-injector": ["./src"]
+    },
+    "typeRoots": [
+      "node_modules/@types",
+      "types"
+    ],
+    "types": [
+      "node",
+      "jasmine"
+    ]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.vue"
+  ],
+  "files": [
+    "types/index.d.ts",
+    "types/vue.d.ts",
+    "types/vue.options.d.ts"
+  ]
+}

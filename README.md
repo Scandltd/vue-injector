@@ -13,10 +13,10 @@ Dependency Injection for [Vue.js](http://vuejs.org).
 
 Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/). Includes the following:
 
-- Dependency injection for components.
-- Construction of the injected services.
-- Accessibility of Vue application from a service.
-- Utilization of decorators for convenient operation.
+- Dependency injection for components
+- Construction of the injected services
+- Accessibility of Vue application from a service
+- Utilization of decorators for convenient operation
 
 Get started with the [documentation](https://vue-injector.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/master/examples) (see how to run them below).
 
