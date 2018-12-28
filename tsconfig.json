@@ -31,6 +31,7 @@
   ],
   "files": [
     "types/index.d.ts",
-    "types/vue.d.ts"
+    "types/vue.d.ts",
+    "types/vue.options.d.ts"
   ]
 }

@@ -17,9 +17,9 @@ export class Provider {
     this.services = new Map();
   }
 
-  registerComponent (component: Component) {
+  registerComponent (component: Vue) {
     if (component.hasOwnProperty('_providers')) {
-      const providers = (component as any)._providers;
+      const providers = component._providers;
 
       if (providers && this.checkObject(providers)) {
         Object.keys(providers).forEach(name => {

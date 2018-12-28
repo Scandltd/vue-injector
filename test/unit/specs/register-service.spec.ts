@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
 
-Vue.use(VueInjector as any);
+Vue.use(VueInjector);
 
 describe('registerComponent service', () => {
   let injector;

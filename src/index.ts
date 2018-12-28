@@ -8,6 +8,7 @@ import { Injectable } from './di/injectable';
 import { Inject, InjectConstructor } from './di/inject';
 import { Service } from './di/service';
 import Vue, { Component } from 'vue';
+import { PluginFunction, PluginObject } from 'vue/types/plugin';
 
 export {
   Injectable,
@@ -15,8 +16,8 @@ export {
   Service
 };
 
-export default class VueInjector {
-  static install: (app: Vue) => void;
+export default class VueInjector implements PluginObject<null> {
+  static install: PluginFunction<null>;
   static version: string;
 
   app: Vue | null;
@@ -31,6 +32,10 @@ export default class VueInjector {
     this.apps = [];
 
     this.rootProviders = args;
+  }
+
+  get install (): PluginFunction<null> {
+    return VueInjector.install;
   }
 
   init (app: Vue) {
@@ -51,7 +56,7 @@ export default class VueInjector {
     this.provider = new Provider(this.app, this.rootProviders);
   }
 
-  initComponent (component: Component) {
+  initComponent (component: Vue) {
     this.provider && this.provider.registerComponent(component);
   }
 
@@ -64,5 +69,5 @@ VueInjector.install = install;
 VueInjector.version = '__VERSION__';
 
 if (inBrowser && window.Vue) {
-  window.Vue.use<VueInjector>(VueInjector as any);
+  window.Vue.use(VueInjector);
 }

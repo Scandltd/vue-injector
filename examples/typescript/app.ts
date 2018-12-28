@@ -5,7 +5,7 @@ import AnyComponent from './AnyComponent.vue';
 
 // 1. Use plugin.
 // This injects $injector to all injector-enabled child components
-Vue.use(VueInjector as any);
+Vue.use(VueInjector);
 
 
 // 2. Create the provider

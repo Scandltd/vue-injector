@@ -1,5 +1,4 @@
-import Vue, {Component, PropOptions} from 'vue';
-import {Constructor} from 'vue-property-decorator';
+import Vue, { Component } from 'vue';
 
 export declare interface InjectConstructor {
   new (root: Vue): InjectInterface;
@@ -33,7 +32,7 @@ export declare class Provider {
 
   constructor (app: Vue, rootProviders: Array<typeof Inject>);
 
-  registerComponent (component: Component);
+  registerComponent (component: Vue);
   registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject;
 
   set (Service: typeof Inject);
@@ -50,7 +49,7 @@ export declare class VueInjector {
   rootProviders: Array<InjectConstructor>;
 
   init (app: Vue);
-  initComponent (component: Component);
+  initComponent (component: Vue);
   get (provider: typeof Inject): Inject;
 }
 
