@@ -1,10 +1,11 @@
-import Vue, { Component } from 'vue';
+import Vue, {Component, PropOptions} from 'vue';
+import {Constructor} from 'vue-property-decorator';
 
-declare interface InjectConstructor {
+export declare interface InjectConstructor {
   new (root: Vue): InjectInterface;
 }
 
-declare interface InjectInterface {
+export declare interface InjectInterface {
   readonly isVueService: boolean;
   readonly name: string;
 
@@ -14,7 +15,7 @@ declare interface InjectInterface {
   import: { [key: string]: any };
 }
 
-declare class Inject implements InjectInterface {
+export declare class Inject implements InjectInterface {
   readonly isVueService: boolean;
   readonly name: string;
   readonly vm: Vue;
@@ -25,7 +26,7 @@ declare class Inject implements InjectInterface {
   static getName (): string;
 }
 
-declare class Provider {
+export declare class Provider {
   app: Vue;
   services: Map<InjectConstructor, Inject>;
   rootProviders: Array<typeof Inject>;
@@ -39,7 +40,7 @@ declare class Provider {
   get (Service: typeof Inject): Inject;
 }
 
-declare class VueInjector {
+export declare class VueInjector {
   static install: (app: Vue) => void;
   static version: string;
 
@@ -53,4 +54,6 @@ declare class VueInjector {
   get (provider: typeof Inject): Inject;
 }
 
-declare type InjectedObject = Vue | Component | Inject;
+export declare function Service (options: typeof Inject): PropertyDecorator;
+
+export declare type InjectedObject = Vue | Component | Inject;

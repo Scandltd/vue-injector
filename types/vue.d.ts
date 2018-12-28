@@ -13,14 +13,14 @@ declare module '*.vue' {
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $injector: VueInjector;
-    readonly providers: {[key: string]: typeof Inject};
+    providers: {[key: string]: typeof Inject};
   }
 }
 
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
     readonly injector: VueInjector;
-    readonly providers?: {[key: string]: typeof Inject};
+    providers?: {[key: string]: typeof Inject};
   }
 }
 
