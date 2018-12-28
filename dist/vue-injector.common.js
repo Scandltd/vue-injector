@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v1.0.5
+  * @scandltd/vue-injector v1.1.0
   * (c) 2018 Scandltd
   * @license GPL-2.0
   */
@@ -159,6 +159,13 @@ var VueInjector = /** @class */function () {
         this.apps = [];
         this.rootProviders = args;
     }
+    Object.defineProperty(VueInjector.prototype, "install", {
+        get: function get() {
+            return VueInjector.install;
+        },
+        enumerable: true,
+        configurable: true
+    });
     VueInjector.prototype.init = function (app) {
         process.env.NODE_ENV !== 'production' && assert(install.installed, "not installed. Make sure to call `Vue.use(VueInjector)` " + "before creating root instance.");
         this.apps.push(app);
@@ -178,7 +185,7 @@ var VueInjector = /** @class */function () {
     return VueInjector;
 }();
 VueInjector.install = install;
-VueInjector.version = '1.0.5';
+VueInjector.version = '1.1.0';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
@@ -305,6 +312,13 @@ var VueInjector$1 = /** @class */function () {
         this.apps = [];
         this.rootProviders = args;
     }
+    Object.defineProperty(VueInjector.prototype, "install", {
+        get: function get() {
+            return VueInjector.install;
+        },
+        enumerable: true,
+        configurable: true
+    });
     VueInjector.prototype.init = function (app) {
         process.env.NODE_ENV !== 'production' && assert(install.installed, "not installed. Make sure to call `Vue.use(VueInjector)` " + "before creating root instance.");
         this.apps.push(app);
@@ -324,7 +338,7 @@ var VueInjector$1 = /** @class */function () {
     return VueInjector;
 }();
 VueInjector$1.install = install;
-VueInjector$1.version = '1.0.5';
+VueInjector$1.version = '1.1.0';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector$1);
 }

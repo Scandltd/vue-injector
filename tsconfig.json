@@ -16,6 +16,9 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "rootDirs": ["./"],
+    "paths": {
+      "@scandltd/vue-injector": ["./src"]
+    },
     "typeRoots": [
       "node_modules/@types",
       "types"

@@ -7,8 +7,7 @@ import { Provider } from './di/provider';
 import { Injectable } from './di/injectable';
 import { Inject, InjectConstructor } from './di/inject';
 import { Service } from './di/service';
-import Vue, { Component } from 'vue';
-import { PluginFunction, PluginObject } from 'vue/types/plugin';
+import Vue, { PluginFunction, PluginObject } from 'vue';
 
 export {
   Injectable,

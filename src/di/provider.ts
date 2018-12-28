@@ -6,7 +6,7 @@ import { InjectConstructor } from './inject';
 
 export class Provider {
   app: Vue;
-  services: WeakMap<InjectConstructor, Inject>;
+  services: Map<InjectConstructor, Inject>;
 
   rootProviders: Array<typeof Inject> = [];
 
@@ -14,7 +14,7 @@ export class Provider {
     this.app = app;
     this.rootProviders = rootProviders;
 
-    this.services = new WeakMap();
+    this.services = new Map();
   }
 
   registerComponent (component: Vue) {
