@@ -74,17 +74,21 @@ workflows:
       - test-unit:
           requires:
             - install
+          context: org-global
       - lint-types:
           requires:
             - install
+          context: org-global
       - test-e2e:
           requires:
             - install
+          context: org-global
       - deploy:
           requires:
             - test-unit
             - lint-types
             - deploy
+          context: org-global
           filters:
             tags:
               only: /^v.*/
