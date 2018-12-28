@@ -39,7 +39,7 @@
     "dev": "node examples/server.js",
     "dev:dist": "rollup -wm -c build/rollup.dev.config.js",
     "build": "node build/build.js",
-    "lint": "eslint src examples && tslint 'src/**/*.ts'",
+    "lint": "eslint examples && tslint 'src/**/*.ts'",
     "test": "npm run lint && npm run test:unit && npm run test:e2e && npm run test:types",
     "test:unit": "karma start test/unit/karma.conf.js",
     "test:cover": "karma start test/unit/karma.cover.conf.js",
