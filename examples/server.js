@@ -11,6 +11,10 @@ app.use(webpackDevMiddleware(webpack(WebpackConfig), {
   stats: {
     colors: true,
     chunks: false
+  },
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
   }
 }))
 

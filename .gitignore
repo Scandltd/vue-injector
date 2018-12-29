@@ -1,4 +1,5 @@
 .idea
+.env
 node_modules
 coverage
 test/e2e/reports
