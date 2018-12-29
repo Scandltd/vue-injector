@@ -10,7 +10,7 @@ import { Component } from 'vue-property-decorator';
 
 import { Injectable, Inject, Service } from '@scandltd/vue-injector';
 
-import JSONFormatter from 'json-formatter-js'
+import JSONFormatter from 'json-formatter-js';
 
 @Injectable
 class AnyService extends Inject {}
