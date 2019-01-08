@@ -45,7 +45,17 @@ export class Provider {
     if (!this.services.has(Service) && Service.name === 'Injectable') {
       Service.prototype.vm = this.app;
 
-      this.services.set(Service, new Service(this.app));
+      if (Service.useFactory && typeof Service.useFactory === 'function') {
+        const factory = Service.useFactory();
+
+        if (factory) {
+          this.services.set(Service, factory);
+        } else {
+          assert(false, 'useFactory invalid return');
+        }
+      } else {
+        this.services.set(Service, new Service());
+      }
     }
 
     const provider = this.services.get(Service);

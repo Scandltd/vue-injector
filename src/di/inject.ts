@@ -1,7 +1,9 @@
 import Vue from 'vue';
 
 export interface InjectConstructor {
-  new (root: Vue): InjectInterface;
+  useFactory?: Function;
+
+  new (): InjectInterface;
 }
 
 export interface InjectInterface {

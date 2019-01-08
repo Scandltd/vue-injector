@@ -3,6 +3,8 @@ import { InjectInterface, InjectConstructor } from './inject';
 
 function injectableFactory (target: InjectConstructor, options: any = {}) {
   return class Injectable extends target implements InjectInterface {
+    static readonly useFactory: Function = options.useFactory;
+
     readonly isVueService: boolean = true;
     readonly name: string = target.name;
 
@@ -10,12 +12,6 @@ function injectableFactory (target: InjectConstructor, options: any = {}) {
     readonly import: { [key: string]: typeof Injectable } = options.import || null;
 
     readonly vm: Vue;
-
-    constructor (root: Vue) {
-      super(root);
-
-      this.vm = root;
-    }
 
     static getName (): string {
       return target.name;
