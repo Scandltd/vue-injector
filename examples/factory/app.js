@@ -10,17 +10,18 @@ Vue.use(VueInjector)
 
 // 2. Create services
 
-@Injectable({
-  useFactory: function () {
-    return new AnyService('TEXT')
-  }
-})
-class AnyService extends Inject {
+class A {
   constructor (text) {
-    super()
-    console.log('AnyService text --> ', text)
+    console.log('new --> ', text)
   }
 }
+
+@Injectable({
+  useFactory: function () {
+    return new A()
+  }
+})
+class AnyService extends Inject {}
 
 // 3. Define components
 Vue.component('anyComponent', {

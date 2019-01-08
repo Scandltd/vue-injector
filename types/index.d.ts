@@ -27,16 +27,16 @@ export declare class Inject implements InjectInterface {
 
 export declare class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject>;
+  services: Map<InjectConstructor, Inject | Object>;
   rootProviders: Array<typeof Inject>;
 
   constructor (app: Vue, rootProviders: Array<typeof Inject>);
 
   registerComponent (component: Vue);
-  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject;
+  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject | Object;
 
   set (Service: typeof Inject);
-  get (Service: typeof Inject): Inject;
+  get (Service: typeof Inject): Inject | Object;
 }
 
 export declare class VueInjector {
@@ -50,7 +50,7 @@ export declare class VueInjector {
 
   init (app: Vue);
   initComponent (component: Vue);
-  get (provider: typeof Inject): Inject;
+  get (provider: typeof Inject): Inject | Object;
 }
 
 export declare function Service (options: typeof Inject): PropertyDecorator;
