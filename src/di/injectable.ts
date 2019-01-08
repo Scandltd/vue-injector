@@ -11,7 +11,7 @@ function injectableFactory (target: InjectConstructor, options: any = {}) {
     readonly context: Object = options.context || null;
     readonly import: { [key: string]: typeof Injectable } = options.import || null;
 
-    readonly vm: Vue;
+    readonly vm: Vue = this.vm;
 
     static getName (): string {
       return target.name;
