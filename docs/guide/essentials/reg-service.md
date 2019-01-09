@@ -44,3 +44,36 @@ class UserService {
     }
 }
 ```
+
+## Factory provider
+
+Sometimes you need to implement dependencies from a third-party library that is not designed to work with DI. In cases like this you can use a factory provider. This can be done by passing the factory in the `useFactory` property of the` @ Injectable` decorator.
+
+``` js
+class Logger { ... }
+
+@Injectable({
+    useFactory: () => new Logger()
+})
+class UserService extends Inject {}
+```
+
+СThe `useFactory` property must be a function with a return value. Also, an instance of the root application `Vue` and an object containing embedded dependencies are passed to this function.
+
+``` js
+
+useFactory: (vm: Vue, imports: { [string]: Inject }) => {
+    return new Logger(vm, imports)
+}
+```
+
+Also, using the factory can be useful to deny access to the application from the service:
+
+``` js
+@Injectable({
+    useFactory: () => new UserService()
+})
+class UserService extends Inject {}
+```
+
+In this example, the `UserService` service instance does not have access to` Vue` and provided services.

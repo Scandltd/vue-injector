@@ -47,6 +47,36 @@ sidebar: auto
         }
     }
     ```
+### useFactory
+
+- type: `function`
+- unnecessary
+  
+  Signature:
+  
+  ``` js
+  useFactory(vm: vue, imports: { [string]: Inject })) => any
+  ```
+  
+  Using a factory to build a service.
+
+  ``` js
+  class Logger { ... }
+  
+  @Injectable({
+      useFactory: (vm, imports) => new Logger()
+  })
+  class UserService extends Inject {}
+  ```
+  
+  Restricting access to the application from the service.
+  
+    ``` js
+    @Injectable({
+        useFactory: () => new UserService()
+    })
+    class UserService extends Inject {}
+    ```
 
 ## `Inject`
   When creating a service you must expand the `Inject` class that defines general properties of all services.

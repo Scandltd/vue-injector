@@ -24,6 +24,7 @@ describe('registerComponent service', () => {
     expect(injector.provider.get(Service).name).toEqual('Service');
 
     expect(service.name).toEqual('Service');
+    expect(Service.getName()).toEqual('Service');
 
     expect(service).toEqual(injector.provider.get(Service));
   });
@@ -74,6 +75,66 @@ describe('registerComponent service', () => {
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
     expect(serviceTwo.Service).toEqual(injector.provider.get(Service));
   });
+
+  it('register with useFactory', () => {
+    class Factory {
+      get type () {
+        return 'useFactory';
+      }
+    }
+
+    @Injectable({
+      useFactory: () => new Factory()
+    })
+    class Service extends Inject {}
+
+
+    const service = injector.provider.registerService(app, 'Service', Service);
+
+    expect(injector.provider.services.size).toBe(1);
+
+    expect(injector.provider.get(Service).type).toEqual('useFactory');
+    expect(service.type).toEqual('useFactory');
+
+    expect(service).toEqual(injector.provider.get(Service));
+  });
+
+  it('useFactory get vue', () => {
+    class Factory {
+      constructor (public vm) {}
+    }
+
+    @Injectable({
+      useFactory: (vm) => new Factory(vm)
+    })
+    class Service extends Inject {}
+
+
+    const service = injector.provider.registerService(app, 'Service', Service);
+
+    expect(injector.provider.services.size).toBe(1);
+    expect(service).toEqual(injector.provider.get(Service));
+
+    expect(app).toEqual(injector.provider.get(Service).vm);
+  });
+
+  it('useFactory invalid return', () => {
+    class Factory {
+      constructor (public vm) {}
+    }
+
+    @Injectable({
+      useFactory: (vm) => {
+        const f = new Factory(vm);
+      }
+    })
+    class Service extends Inject {}
+
+    expect(
+      () => injector.provider.registerService(app, 'Service', Service)
+    ).toThrowError('[@scandltd/vue-injector] useFactory invalid return');
+  });
+
 
   it('get service before register', () => {
     @Injectable

@@ -10,8 +10,6 @@ export declare interface InjectInterface {
 
   readonly context: Object;
   readonly vm: Vue;
-
-  import: { [key: string]: any };
 }
 
 export declare class Inject implements InjectInterface {
@@ -19,8 +17,6 @@ export declare class Inject implements InjectInterface {
   readonly name: string;
   readonly vm: Vue;
   readonly context: Object;
-
-  import: { [key: string]: typeof Inject };
 
   static getName (): string;
 }

@@ -48,16 +48,20 @@ export class Provider {
     if (!this.services.has(Service) && Service.name === 'Injectable') {
       Service.prototype.vm = this.app;
 
+      if (Service.import) {
+        this.registerImport(Service.prototype, Service.import);
+      }
+
       this.services.set(Service, this.serviceFactory.getNewService(Service));
     }
 
     const provider = this.services.get(Service);
 
-    if (provider && (provider instanceof Inject || Service.useFactory)) {
-      if (provider instanceof Inject && provider.import) {
-        this.registerImport(provider);
-      }
+    if (provider && Service.import) {
+      this.registerImport(provider, Service.import);
+    }
 
+    if (provider) {
       this.injectService(target, [{
         name,
         service: provider
@@ -69,11 +73,11 @@ export class Provider {
     assert(false, 'no decorator Injectable or extends Inject');
   }
 
-  registerImport (provider) {
-    if (this.checkObject(provider.import)) {
-      const services = Object.keys(provider.import)
+  registerImport (provider, imports) {
+    if (this.checkObject(imports)) {
+      const services = Object.keys(imports)
         .map((name: string) => {
-          const service = this.registerService(provider, name, provider.import[name]);
+          const service = this.registerService(provider, name, imports[name]);
 
           return {
             name,
@@ -108,6 +112,7 @@ export class Provider {
 
       if (!Object.hasOwnProperty.call(target, injectServiceName) && Inject.service) {
         Reflect.defineProperty(target, injectServiceName, {
+          enumerable: true,
           get () {
             return Inject.service;
           }

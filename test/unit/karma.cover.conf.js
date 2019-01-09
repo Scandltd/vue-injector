@@ -11,7 +11,7 @@ module.exports = function (config) {
       { pattern: '../../test/**/*.spec.+(js|ts)' }
     ],
     preprocessors: {
-      '../../src/**/*.+(js|ts)': ['karma-typescript'],
+      '../../src/**/*.+(js|ts)': ['karma-typescript', 'coverage'],
       '../../test/**/*.spec.+(js|ts)': ['karma-typescript']
     },
     karmaTypescriptConfig: {
@@ -20,7 +20,7 @@ module.exports = function (config) {
         module: 'CommonJS'
       }
     },
-    reporters: ['mocha', 'karma-typescript'],
+    reporters: ['mocha', 'coverage', 'karma-typescript'],
     colors: true,
     singleRun: true,
     plugins: [
@@ -28,6 +28,7 @@ module.exports = function (config) {
       'karma-phantomjs-launcher',
       'karma-mocha-reporter',
       'karma-typescript',
+      'karma-coverage',
       'karma-es6-shim'
     ]
   })

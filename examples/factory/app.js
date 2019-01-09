@@ -10,15 +10,17 @@ Vue.use(VueInjector)
 
 // 2. Create services
 
-class A {
-  constructor (text) {
-    console.log('new --> ', text)
-  }
-}
+class A {}
+
+@Injectable
+class Service extends Inject {}
 
 @Injectable({
-  useFactory: function () {
-    return new A()
+  import: {
+    Service
+  },
+  useFactory: function (vm, imports) {
+    return new A(vm, imports)
   }
 })
 class AnyService extends Inject {}
