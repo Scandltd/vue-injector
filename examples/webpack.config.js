@@ -47,10 +47,12 @@ module.exports = {
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        loader: 'ts-loader',
-        options: {
-          appendTsSuffixTo: [/\.vue$/]
-        }
+        use: [{
+          loader: 'ts-loader',
+          options: {
+            appendTsSuffixTo: [/\.vue$/]
+          }
+        }, 'tslint-loader']
       },
       {
         test: /\.css$/,
@@ -84,5 +86,10 @@ module.exports = {
 
   plugins: [
     new VuePlugin()
-  ]
+  ],
+
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
+  }
 }

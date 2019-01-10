@@ -3,12 +3,15 @@ import Vue, { Component } from 'vue';
 import { InjectedObject } from '../../types';
 import { Inject } from '../index';
 import { InjectConstructor } from './inject';
+import { ServiceFactory } from './factory';
 
 export class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject>;
+  services: Map<InjectConstructor, Inject | Object>;
 
   rootProviders: Array<typeof Inject> = [];
+
+  private serviceFactory: ServiceFactory = new ServiceFactory();
 
   constructor (app: Vue, rootProviders) {
     this.app = app;
@@ -41,35 +44,24 @@ export class Provider {
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject {
+  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject | Object {
     if (!this.services.has(Service) && Service.name === 'Injectable') {
       Service.prototype.vm = this.app;
 
-      this.services.set(Service, new Service(this.app));
+      if (Service.import) {
+        this.registerImport(Service.prototype, Service.import);
+      }
+
+      this.services.set(Service, this.serviceFactory.getNewService(Service));
     }
 
     const provider = this.services.get(Service);
 
-    if (provider && provider instanceof Inject) {
-      if (provider.import) {
-        if (this.checkObject(provider.import)) {
-          const services = Object.keys(provider.import)
-            .map((name: string) => {
-              const service = this.registerService(provider, name, provider.import[name]);
+    if (provider && Service.import) {
+      this.registerImport(provider, Service.import);
+    }
 
-              return {
-                name,
-                service
-              };
-            })
-            .filter(inject => inject.service instanceof Inject);
-
-          this.injectService(provider, services);
-        } else {
-          assert(false, 'providers not object');
-        }
-      }
-
+    if (provider) {
       this.injectService(target, [{
         name,
         service: provider
@@ -81,13 +73,28 @@ export class Provider {
     assert(false, 'no decorator Injectable or extends Inject');
   }
 
+  registerImport (provider, imports) {
+    if (this.checkObject(imports)) {
+      const services = Object.keys(imports)
+        .map((name: string) => {
+          const service = this.registerService(provider, name, imports[name]);
+
+          return {
+            name,
+            service
+          };
+        })
+        .filter(inject => inject.service instanceof Inject);
+
+      this.injectService(provider, services);
+    } else {
+      assert(false, 'providers not object');
+    }
+  }
+
   set (Service: typeof Inject) {
     if (this.checkGetName(Service)) {
-      const provider = this.registerService(this.app, Service.getName(), Service);
-
-      if (provider && provider instanceof Inject) {
-        this.services.set(Service, provider);
-      }
+      this.registerService(this.app, Service.getName(), Service);
     }
   }
 
@@ -99,8 +106,8 @@ export class Provider {
     return this.services.get(Service);
   }
 
-  private injectService (target: InjectedObject, imports: Array<{ name: string, service?: Inject}>) {
-    imports.forEach((Inject: { name: string, service?: Inject}) => {
+  private injectService (target: InjectedObject, imports: Array<{ name: string, service?: Inject | Object}>) {
+    imports.forEach((Inject: { name: string, service?: Inject | Object}) => {
       const injectServiceName = Inject.name;
 
       if (!Object.hasOwnProperty.call(target, injectServiceName) && Inject.service) {

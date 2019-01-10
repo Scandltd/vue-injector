@@ -1,6 +1,6 @@
 # Service Registration
 
-## Default service construction
+## Default Service Construction
 
 For the construction of the service decorator `@Injectable` and basic class `Inject`
 
@@ -44,3 +44,35 @@ class UserService {
     }
 }
 ```
+
+## Factory Provider
+
+Sometimes you need to inject dependencies from a third-party library that is not designed to work with DI. In cases like this you can use a factory provider. This can be done by passing the factory into the `useFactory` property of the` @ Injectable` decorator.
+
+``` js
+class Logger { ... }
+
+@Injectable({
+    useFactory: () => new Logger()
+})
+class UserService extends Inject {}
+```
+The `useFactory` property must be a function with a return value. Also, an instance of the root application `Vue` and an object containing embedded dependencies are passed to this function.
+
+``` js
+
+useFactory: (vm: Vue, imports: { [string]: Inject }) => {
+    return new Logger(vm, imports)
+}
+```
+
+Also, factory can be used to deny access to the application from the service:
+
+``` js
+@Injectable({
+    useFactory: () => new UserService()
+})
+class UserService extends Inject {}
+```
+
+In this example, the `UserService` service instance does not have access to` Vue` and provided services.
