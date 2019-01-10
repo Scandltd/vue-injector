@@ -44,7 +44,7 @@
     "test:unit": "karma start test/unit/karma.conf.js",
     "test:cover": "karma start test/unit/karma.cover.conf.js",
     "test:e2e": "node test/e2e/runner.js",
-    "test:types": "tsc -p .",
+    "test:types": "tsc --noEmit -p .",
     "docs": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "release": "bash build/release.sh"
