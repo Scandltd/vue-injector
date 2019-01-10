@@ -47,6 +47,37 @@ sidebar: auto
         }
     }
     ```
+    
+### useFactory
+
+- тип: `function`
+- не обязательный
+  
+  Сигнатура:
+  
+  ``` js
+  useFactory(vm: vue, imports: { [string]: Inject })) => any
+  ```
+  
+  Использование фабрики для построения сервиса.
+
+  ``` js
+  class Logger { ... }
+  
+  @Injectable({
+      useFactory: (vm, imports) => new Logger()
+  })
+  class UserService extends Inject {}
+  ```
+  
+  Ограничение доступа к приложению из сервиса.
+  
+    ``` js
+    @Injectable({
+        useFactory: () => new UserService()
+    })
+    class UserService extends Inject {}
+    ```
 
 ## `Inject`
   При создании сервиса необходимо расширить класс `Inject`. Определяет общие свойства всех сервисов.
