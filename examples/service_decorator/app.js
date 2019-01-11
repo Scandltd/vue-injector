@@ -30,7 +30,7 @@ class AnyComponent extends Vue {
   }
 }
 
-Vue.component('anyComponent', AnyComponent)
+Vue.component('VueInjector', AnyComponent)
 
 // 4. Create the provider
 const injector = new VueInjector()
@@ -38,10 +38,6 @@ const injector = new VueInjector()
 // 5. Create and mount root instance.
 // Make sure to inject the services.
 new Vue({
-  injector,
-  template: `
-    <div id="app">
-      <any-component/>
-    </div>
-  `
-}).$mount('#app')
+  el: '#app',
+  injector
+})

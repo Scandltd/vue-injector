@@ -13,14 +13,10 @@ const injector = new VueInjector();
 
 // 3. Create and mount root instance.
 // Make sure to inject the services.
-new Vue({
+const app = new Vue({
+  el: '#app',
   injector,
   components: {
-    AnyComponent
-  },
-  template: `
-    <div id="app">
-      <any-component/>
-    </div>
-  `
-}).$mount('#app');
+    VueInjector: AnyComponent
+  }
+});
