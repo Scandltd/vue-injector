@@ -45,7 +45,7 @@ function genConfig (opts) {
         typescript(),
         babel({
           babelrc: false,
-          presets: [['env', { modules: false, exclude: ['transform-es2015-classes'] }]],
+          presets: [['env', { modules: false }]],
           exclude: 'node_modules/**',
           plugins: [
             'syntax-dynamic-import',
