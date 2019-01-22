@@ -26,7 +26,7 @@ Vue.component('VueInjector', {
 })
 
 // 4. Create the provider
-const injector = new VueInjector(AnyService)
+const injector = new VueInjector({ root: [AnyService] })
 
 // 5. Create and mount root instance.
 // Make sure to inject the services.
