@@ -15,6 +15,11 @@ export {
   Service
 };
 
+export type VueInjectorOptions = {
+  root?: Array<InjectConstructor>,
+  store?: any
+};
+
 export default class VueInjector implements PluginObject<null> {
   static install: PluginFunction<null>;
   static version: string;
@@ -25,12 +30,16 @@ export default class VueInjector implements PluginObject<null> {
 
   rootProviders: Array<InjectConstructor> = [];
 
-  constructor (...args) {
+  constructor (options: VueInjectorOptions = {}) {
     this.app = null;
     this.provider = null;
     this.apps = [];
 
-    this.rootProviders = args;
+    this.rootProviders = options.root || [];
+
+    if (options.store) {
+      options.store.$injector = this;
+    }
   }
 
   get install (): PluginFunction<null> {
