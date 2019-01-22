@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v1.2.2
+  * @scandltd/vue-injector v1.2.3
   * (c) 2019 Scandltd
   * @license GPL-2.0
   */
@@ -15,12 +15,6 @@ function install(Vue) {
     var isDef = function isDef(v) {
         return v !== undefined;
     };
-    var registerInstance = function registerInstance(vm, callVal) {
-        var i = vm.$options._parentVnode;
-        if (isDef(i) && isDef(i = i.data) && isDef(i = i.registerRouteInstance)) {
-            i(vm, callVal);
-        }
-    };
     Vue.mixin({
         beforeCreate: function beforeCreate() {
             if (isDef(this.$options.providers)) {
@@ -32,19 +26,20 @@ function install(Vue) {
                 this._injector.init(this);
             } else {
                 this._injectorRoot = this.$parent && this.$parent._injectorRoot || this;
-                this._injectorRoot._injector.initComponent(this);
+                this._injectorRoot._injector && this._injectorRoot._injector.initComponent(this);
             }
-            registerInstance(this, this);
-        },
-        destroyed: function destroyed() {
-            registerInstance(this);
         }
     });
     Object.defineProperty(Vue.prototype, '$injector', {
         get: function get() {
-            return this._injectorRoot._injector;
+            return this._injectorRoot && this._injectorRoot._injector;
         }
     });
+    // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
+    var strats = Vue.config.optionMergeStrategies;
+    strats._injectorRoot = function (parentVal, childVal) {
+        return childVal === undefined ? parentVal : childVal;
+    };
 }
 
 function assert(condition, message) {
@@ -135,7 +130,7 @@ var Provider = /** @class */function () {
     };
     Provider.prototype.registerService = function (target, name, Service$$1) {
         if (!this.services.has(Service$$1) && Service$$1.name === 'Injectable') {
-            Service$$1.prototype.vm = this.app;
+            Service$$1.prototype.vm = target.$root || target.vm;
             if (Service$$1.import) {
                 this.registerImport(Service$$1.prototype, Service$$1.import);
             }
@@ -294,18 +289,18 @@ function Service(service) {
 }
 
 var VueInjector = /** @class */function () {
-    function VueInjector() {
-        var arguments$1 = arguments;
-
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments$1[_i];
+    function VueInjector(options) {
+        if (options === void 0) {
+            options = {};
         }
         this.rootProviders = [];
         this.app = null;
         this.provider = null;
         this.apps = [];
-        this.rootProviders = args;
+        this.rootProviders = options.root || [];
+        if (options.store) {
+            options.store.$injector = this;
+        }
     }
     Object.defineProperty(VueInjector.prototype, "install", {
         get: function get() {
@@ -333,7 +328,7 @@ var VueInjector = /** @class */function () {
     return VueInjector;
 }();
 VueInjector.install = install;
-VueInjector.version = '1.2.2';
+VueInjector.version = '1.2.3';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
