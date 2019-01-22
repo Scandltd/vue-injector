@@ -1,5 +1,5 @@
 import { assert, warn } from '../util/warn';
-import Vue, { Component } from 'vue';
+import Vue from 'vue';
 import { InjectedObject } from '../../types';
 import { Inject } from '../index';
 import { InjectConstructor } from './inject';
@@ -46,7 +46,7 @@ export class Provider {
 
   registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject | Object {
     if (!this.services.has(Service) && Service.name === 'Injectable') {
-      Service.prototype.vm = this.app;
+      Service.prototype.vm = (target as any).$root || (target as any).vm;
 
       if (Service.import) {
         this.registerImport(Service.prototype, Service.import);

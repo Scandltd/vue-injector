@@ -1,7 +1,10 @@
 import Vue, { Component } from 'vue';
 
 export declare interface InjectConstructor {
-  new (root: Vue): InjectInterface;
+  useFactory?: Function;
+  import?: { [key: string]: any };
+
+  new (): InjectInterface;
 }
 
 export declare interface InjectInterface {
@@ -34,6 +37,11 @@ export declare class Provider {
   set (Service: typeof Inject);
   get (Service: typeof Inject): Inject | Object;
 }
+
+export declare type VueInjectorOptions = {
+  root?: Array<InjectConstructor>,
+  store?: any
+};
 
 export declare class VueInjector {
   static install: (app: Vue) => void;

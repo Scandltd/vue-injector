@@ -8,13 +8,6 @@ export function install (Vue) {
 
   const isDef = v => v !== undefined;
 
-  const registerInstance = (vm, callVal?) => {
-    let i = vm.$options._parentVnode;
-    if (isDef(i) && isDef(i = i.data) && isDef(i = i.registerRouteInstance)) {
-      i(vm, callVal);
-    }
-  };
-
   Vue.mixin({
     beforeCreate () {
       if (isDef(this.$options.providers)) {
@@ -27,19 +20,22 @@ export function install (Vue) {
         this._injector.init(this);
       } else {
         this._injectorRoot = (this.$parent && this.$parent._injectorRoot) || this;
-        this._injectorRoot._injector.initComponent(this);
+        this._injectorRoot._injector && this._injectorRoot._injector.initComponent(this);
       }
-
-      registerInstance(this, this);
-    },
-    destroyed () {
-      registerInstance(this);
     }
   });
 
   Object.defineProperty(Vue.prototype, '$injector', {
     get () {
-      return this._injectorRoot._injector;
+      return this._injectorRoot && this._injectorRoot._injector;
     }
   });
+
+  // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
+  const strats = Vue.config.optionMergeStrategies;
+  strats._injectorRoot = function (parentVal, childVal) {
+    return childVal === undefined
+      ? parentVal
+      : childVal;
+  };
 }
