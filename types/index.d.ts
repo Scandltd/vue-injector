@@ -8,8 +8,6 @@ export declare interface InjectableConstructor {
   __decorators__?: Array<Function>;
 
   new (): any;
-
-  getName (): string;
 }
 
 export declare interface InjectInterface {

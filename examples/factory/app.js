@@ -16,8 +16,8 @@ class A {}
 class Service {}
 
 @Injectable({
-  useFactory: function (vm, imports) {
-    return new A(vm, imports)
+  useFactory: function () {
+    return new A()
   }
 })
 class AnyService {

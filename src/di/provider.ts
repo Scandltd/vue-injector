@@ -1,10 +1,10 @@
-import { assert, warn } from '../util/warn';
+import { assert } from '../util/warn';
 import Vue from 'vue';
 import { InjectedObject } from '../../types';
 import { Inject } from '../index';
 import { ServiceFactory } from './factory';
 import { InjectableConstructor } from './decorators/injectable';
-import { checkGetName, checkObject } from '../util/object';
+import { checkObject } from '../util/object';
 
 export class Provider {
   app: Vue;
@@ -38,17 +38,19 @@ export class Provider {
 
     if (this.rootProviders.length) {
       this.rootProviders.forEach(provider => {
-        if (checkGetName(provider)) {
-          this.registerService(component, provider.getName(), provider);
+        if (provider.isVueService) {
+          this.registerService(component, provider.name, provider);
         }
       });
     }
   }
 
   registerService (target: InjectedObject, name: string, Service: InjectableConstructor): Object {
-    if (!this.services.has(Service) && (Service as any).isVueService) {
-      Service.prototype.vm = (target as any).$root || (target as any).vm;
+    if (Service as any === Vue) {
+      return target[name] = this.app;
+    }
 
+    if (!this.services.has(Service) && Service.isVueService) {
       if (Service.prototype.providers) {
         this.registerImport(Service.prototype, Service.prototype.providers);
       }
@@ -95,8 +97,8 @@ export class Provider {
   }
 
   set (Service) {
-    if (checkGetName(Service)) {
-      this.registerService(this.app, Service.getName(), Service);
+    if (Service.isVueService) {
+      this.registerService(this.app, Service.name, Service);
     }
   }
 
@@ -119,8 +121,7 @@ export class Provider {
       if (checkProperty && Inject.service) {
         Reflect.defineProperty(target, injectServiceName, {
           enumerable: true,
-          writable: false,
-          value: Inject.service
+          get: () => Inject.service
         });
       }
     });

@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueInjector, { Injectable, Inject } from '@scandltd/vue-injector'
 import Code from './../mixin'
-import Component from 'vue-class-component'
 
 Vue.mixin(Code)
 
@@ -12,25 +11,24 @@ Vue.use(VueInjector)
 // 2. Create services
 
 @Injectable
-class AnyService {}
-
-// 3. Define components
-
-@Component({
-  template:
-    `<div class="block">
-      <div class="service-name">{{ service.name }}</div>
-    </div>`
-})
-class AnyComponent extends Vue {
-  @Inject(AnyService) service;
-
-  mounted () {
-    this.code(this.service, this.$el)
-  }
+class AnyService {
+  @Inject(Vue) vm;
 }
 
-Vue.component('VueInjector', AnyComponent)
+// 3. Define components
+Vue.component('VueInjector', {
+  name: 'anyComponent',
+  providers: {
+    $AnyService: AnyService
+  },
+  template:
+    `<div class="block">
+      <div class="service-name">{{ $AnyService.name }}</div>
+    </div>`,
+  mounted () {
+    this.code(this.$AnyService, this.$el)
+  }
+})
 
 // 4. Create the provider
 const injector = new VueInjector()

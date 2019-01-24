@@ -6,8 +6,6 @@ export interface InjectableConstructor {
   __decorators__?: Array<Function>;
 
   new (): any;
-
-  getName (): string;
 }
 
 export interface InjectableOptions {
@@ -19,10 +17,6 @@ function injectableFactory (target: InjectableConstructor, options: InjectableOp
 
   target.isVueService = true;
   target.useFactory = options.useFactory;
-
-  target.getName = (): string => {
-    return target.name;
-  };
 
   if (decorators) {
     decorators.forEach(function (fn) { return fn(target.prototype); });

@@ -30,14 +30,7 @@ export class ServiceFactory implements Factory {
   }
 
   private custom (Service: InjectableConstructor): Object {
-    const vue = Service.prototype.vm;
-    const importNames = Service.providers ? Object.keys(Service.providers) : [];
-
-    const imports = {};
-
-    importNames.forEach(name => imports[name] = Service[name]);
-
-    const factory = Service.useFactory(vue, imports);
+    const factory = Service.useFactory();
 
     if (factory) {
       return factory;

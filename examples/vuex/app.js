@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VueInjector, { Injectable, Inject } from '@scandltd/vue-injector'
+import VueInjector, { Injectable } from '@scandltd/vue-injector'
 import Code from './../mixin'
 
 Vue.mixin(Code)

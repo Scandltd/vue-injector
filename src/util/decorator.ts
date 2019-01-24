@@ -7,6 +7,7 @@ export function createDecorator (
     if (descriptor) {
       delete descriptor.initializer;
       descriptor.writable = true;
+      descriptor.configurable = true;
     }
 
     const Ctor = typeof target === 'function'
