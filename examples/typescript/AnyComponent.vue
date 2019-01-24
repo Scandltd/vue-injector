@@ -8,16 +8,16 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import { Injectable, Inject, Service } from '@scandltd/vue-injector';
+import { Injectable, Inject } from '@scandltd/vue-injector';
 
 import JSONFormatter from 'json-formatter-js';
 
 @Injectable
-class AnyService extends Inject {}
+class AnyService {}
 
 @Component
 export default class AnyComponent extends Vue {
-  @Service(AnyService) service: AnyService;
+  @Inject(AnyService) service: AnyService;
 
   mounted () {
     const formatter = new JSONFormatter(this.service);

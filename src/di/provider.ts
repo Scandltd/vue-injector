@@ -2,14 +2,15 @@ import { assert, warn } from '../util/warn';
 import Vue from 'vue';
 import { InjectedObject } from '../../types';
 import { Inject } from '../index';
-import { InjectConstructor } from './inject';
 import { ServiceFactory } from './factory';
+import { InjectableConstructor } from './decorators/injectable';
+import { checkGetName, checkObject } from '../util/object';
 
 export class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject | Object>;
+  services: Map<InjectableConstructor, Object>;
 
-  rootProviders: Array<typeof Inject> = [];
+  rootProviders: Array<any> = [];
 
   private serviceFactory: ServiceFactory = new ServiceFactory();
 
@@ -24,7 +25,7 @@ export class Provider {
     if (component.hasOwnProperty('_providers')) {
       const providers = component._providers;
 
-      if (providers && this.checkObject(providers)) {
+      if (providers && checkObject(providers)) {
         Object.keys(providers).forEach(name => {
           if (providers && providers.hasOwnProperty(name)) {
             this.registerService(component, name, providers[name]);
@@ -37,19 +38,19 @@ export class Provider {
 
     if (this.rootProviders.length) {
       this.rootProviders.forEach(provider => {
-        if (this.checkGetName(provider)) {
+        if (checkGetName(provider)) {
           this.registerService(component, provider.getName(), provider);
         }
       });
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject | Object {
-    if (!this.services.has(Service) && Service.name === 'Injectable') {
+  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): Object {
+    if (!this.services.has(Service) && (Service as any).isVueService) {
       Service.prototype.vm = (target as any).$root || (target as any).vm;
 
-      if (Service.import) {
-        this.registerImport(Service.prototype, Service.import);
+      if (Service.prototype.providers) {
+        this.registerImport(Service.prototype, Service.prototype.providers);
       }
 
       this.services.set(Service, this.serviceFactory.getNewService(Service));
@@ -57,8 +58,9 @@ export class Provider {
 
     const provider = this.services.get(Service);
 
-    if (provider && Service.import) {
-      this.registerImport(provider, Service.import);
+    if (provider && Service.prototype.providers) {
+      this.registerImport(provider, Service.prototype.providers);
+      delete Service.prototype.providers;
     }
 
     if (provider) {
@@ -70,11 +72,11 @@ export class Provider {
       return provider;
     }
 
-    assert(false, 'no decorator Injectable or extends Inject');
+    assert(false, 'no decorator Injectable');
   }
 
   registerImport (provider, imports) {
-    if (this.checkObject(imports)) {
+    if (checkObject(imports)) {
       const services = Object.keys(imports)
         .map((name: string) => {
           const service = this.registerService(provider, name, imports[name]);
@@ -92,13 +94,13 @@ export class Provider {
     }
   }
 
-  set (Service: typeof Inject) {
-    if (this.checkGetName(Service)) {
+  set (Service) {
+    if (checkGetName(Service)) {
       this.registerService(this.app, Service.getName(), Service);
     }
   }
 
-  get (Service: typeof Inject) {
+  get (Service) {
     if (!this.services.has(Service)) {
       this.set(Service);
     }
@@ -106,31 +108,21 @@ export class Provider {
     return this.services.get(Service);
   }
 
-  private injectService (target: InjectedObject, imports: Array<{ name: string, service?: Inject | Object}>) {
-    imports.forEach((Inject: { name: string, service?: Inject | Object}) => {
+  private injectService (target: InjectedObject, imports: Array<{ name: string, service?: Object}>) {
+    imports.forEach((Inject: { name: string, service?: Object}) => {
       const injectServiceName = Inject.name;
 
-      if (!Object.hasOwnProperty.call(target, injectServiceName) && Inject.service) {
+      const checkProperty: boolean = Object.hasOwnProperty.call(target, injectServiceName)
+        ? !target[injectServiceName]
+        : true;
+
+      if (checkProperty && Inject.service) {
         Reflect.defineProperty(target, injectServiceName, {
           enumerable: true,
-          get () {
-            return Inject.service;
-          }
+          writable: false,
+          value: Inject.service
         });
       }
     });
-  }
-
-  private checkObject (obj: any): boolean {
-    return !Array.isArray(obj) && typeof obj === 'object' && obj !== null;
-  }
-
-  private checkGetName (provider: any): boolean {
-    if (Object.hasOwnProperty.call(provider, 'getName') && typeof provider.getName === 'function') {
-      return true;
-    } else {
-      warn(false, 'no decorator Injectable or extends Inject');
-      return false;
-    }
   }
 }

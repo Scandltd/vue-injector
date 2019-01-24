@@ -13,17 +13,16 @@ Vue.use(VueInjector)
 class A {}
 
 @Injectable
-class Service extends Inject {}
+class Service {}
 
 @Injectable({
-  import: {
-    Service
-  },
   useFactory: function (vm, imports) {
     return new A(vm, imports)
   }
 })
-class AnyService extends Inject {}
+class AnyService {
+  @Inject(Service) service;
+}
 
 // 3. Define components
 Vue.component('VueInjector', {

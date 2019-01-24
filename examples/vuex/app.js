@@ -31,7 +31,7 @@ Vue.use(VueInjector)
 
 // 3. Create services
 @Injectable
-class AnyService extends Inject {}
+class AnyService {}
 
 // 4. Define components
 Vue.component('VueInjector', {

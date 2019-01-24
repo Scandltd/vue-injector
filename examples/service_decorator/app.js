@@ -12,7 +12,7 @@ Vue.use(VueInjector)
 // 2. Create services
 
 @Injectable
-class AnyService extends Inject {}
+class AnyService {}
 
 // 3. Define components
 
@@ -23,7 +23,7 @@ class AnyService extends Inject {}
     </div>`
 })
 class AnyComponent extends Vue {
-  @Service(AnyService) service;
+  @Inject(AnyService) service;
 
   mounted () {
     this.code(this.service, this.$el)

@@ -10,14 +10,16 @@ Vue.use(VueInjector)
 
 // 2. Create services
 @Injectable
-class Service extends Inject {}
+class Service {}
 
-@Injectable({
-  import: {
-    Service
+@Injectable
+class AnyService {
+  @Inject(Service) service;
+
+  constructor () {
+    console.log('constructor', this.service)
   }
-})
-class AnyService extends Inject {}
+}
 
 // 3. Define components
 Vue.component('VueInjector', {
@@ -34,13 +36,13 @@ Vue.component('VueInjector', {
       </div>
       <div class="block">
         <div ref="import" class="service">
-            <span class="service-import">{{ $AnyService.Service.name }}</span>
+            <span class="service-import">{{ $AnyService.service && $AnyService.service.name }}</span>
         </div>
       </div>
     </div>`,
   mounted () {
     this.code(this.$AnyService, this.$refs.main)
-    this.code(this.$AnyService.Service, this.$refs.import)
+    this.code(this.$AnyService.service, this.$refs.import)
   }
 })
 

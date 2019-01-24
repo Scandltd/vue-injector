@@ -1,6 +1,5 @@
 import { assert } from '../util/warn';
-import { Inject } from '@scandltd/vue-injector';
-import { InjectConstructor } from './inject';
+import { InjectableConstructor } from './decorators/injectable';
 
 export enum FACTORY_TYPES {
   DEFAULT = 'NEW',
@@ -8,11 +7,11 @@ export enum FACTORY_TYPES {
 }
 
 interface Factory {
-  getNewService (Service: InjectConstructor): Inject | Object;
+  getNewService (Service: InjectableConstructor): Object;
 }
 
 export class ServiceFactory implements Factory {
-  getNewService (Service: InjectConstructor): Inject | Object {
+  getNewService (Service: InjectableConstructor): Object {
     const type = Service.useFactory && typeof Service.useFactory === 'function'
       ? FACTORY_TYPES.CUSTOM
       : FACTORY_TYPES.DEFAULT;
@@ -26,13 +25,13 @@ export class ServiceFactory implements Factory {
     }
   }
 
-  private default (Service: InjectConstructor): Inject {
+  private default (Service: InjectableConstructor): any {
     return new Service();
   }
 
-  private custom (Service: InjectConstructor): Object {
+  private custom (Service: InjectableConstructor): Object {
     const vue = Service.prototype.vm;
-    const importNames = Service.import ? Object.keys(Service.import) : [];
+    const importNames = Service.providers ? Object.keys(Service.providers) : [];
 
     const imports = {};
 

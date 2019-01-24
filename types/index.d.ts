@@ -1,10 +1,15 @@
 import Vue, { Component } from 'vue';
 
-export declare interface InjectConstructor {
-  useFactory?: Function;
-  import?: { [key: string]: any };
+export declare interface InjectableConstructor {
+  isVueService: boolean;
+  useFactory: Function;
+  providers: { [key: string]: any };
 
-  new (): InjectInterface;
+  __decorators__?: Array<Function>;
+
+  new (): any;
+
+  getName (): string;
 }
 
 export declare interface InjectInterface {
@@ -15,31 +20,26 @@ export declare interface InjectInterface {
   readonly vm: Vue;
 }
 
-export declare class Inject implements InjectInterface {
-  readonly isVueService: boolean;
-  readonly name: string;
-  readonly vm: Vue;
-  readonly context: Object;
-
-  static getName (): string;
-}
-
 export declare class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject | Object>;
-  rootProviders: Array<typeof Inject>;
+  services: Map<InjectableConstructor, Object>;
+  rootProviders: Array<any>;
 
-  constructor (app: Vue, rootProviders: Array<typeof Inject>);
+  constructor (app: Vue, rootProviders: Array<any>);
 
   registerComponent (component: Vue);
-  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject | Object;
+  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): Object;
 
-  set (Service: typeof Inject);
-  get (Service: typeof Inject): Inject | Object;
+  set (Service: any);
+  get (Service: any): Object;
+}
+
+export declare interface InjectableOptions {
+  useFactory?: () => any;
 }
 
 export declare type VueInjectorOptions = {
-  root?: Array<InjectConstructor>,
+  root?: Array<InjectableConstructor>,
   store?: any
 };
 
@@ -50,13 +50,16 @@ export declare class VueInjector {
   app: Vue | null;
   apps: Array<Vue>;
   provider: Provider | null;
-  rootProviders: Array<InjectConstructor>;
+  rootProviders: Array<InjectableConstructor>;
+
+  constructor (options?: VueInjectorOptions);
 
   init (app: Vue);
   initComponent (component: Vue);
-  get (provider: typeof Inject): Inject | Object;
+  get (provider: any): Object;
 }
 
-export declare function Service (options: typeof Inject): PropertyDecorator;
+export declare function Injectable (options: InjectableOptions): ClassDecorator;
+export declare function Inject (service: any): PropertyDecorator;
 
-export declare type InjectedObject = Vue | Component | Inject;
+export declare type InjectedObject = Vue | Component | Object;

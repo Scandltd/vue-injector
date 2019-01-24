@@ -1,3 +1,4 @@
+/*
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
 
@@ -17,7 +18,7 @@ describe('registerComponent service', () => {
 
   it('register one', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     const service = injector.provider.registerService(app, 'Service', Service);
 
@@ -51,14 +52,10 @@ describe('registerComponent service', () => {
 
   it('register with import', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
-    @Injectable({
-      import: {
-        Service
-      }
-    })
-    class ServiceTwo extends Inject {}
+    @Injectable
+    class ServiceTwo {}
 
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
@@ -86,7 +83,7 @@ describe('registerComponent service', () => {
     @Injectable({
       useFactory: () => new Factory()
     })
-    class Service extends Inject {}
+    class Service {}
 
 
     const service = injector.provider.registerService(app, 'Service', Service);
@@ -107,7 +104,7 @@ describe('registerComponent service', () => {
     @Injectable({
       useFactory: (vm) => new Factory(vm)
     })
-    class Service extends Inject {}
+    class Service {}
 
 
     const service = injector.provider.registerService(app, 'Service', Service);
@@ -178,3 +175,4 @@ describe('registerComponent service', () => {
     ).toThrowError('[@scandltd/vue-injector] providers not object');
   });
 });
+*/

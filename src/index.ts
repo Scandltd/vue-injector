@@ -4,19 +4,17 @@ import { inBrowser } from './util/dom';
 
 import { Provider } from './di/provider';
 
-import { Injectable } from './di/injectable';
-import { Inject, InjectConstructor } from './di/inject';
-import { Service } from './di/service';
+import { Injectable, InjectableConstructor } from './di/decorators/injectable';
+import { Inject } from './di/decorators/inject';
 import Vue, { PluginFunction, PluginObject } from 'vue';
 
 export {
   Injectable,
-  Inject,
-  Service
+  Inject
 };
 
 export type VueInjectorOptions = {
-  root?: Array<InjectConstructor>,
+  root?: Array<InjectableConstructor>,
   store?: any
 };
 
@@ -28,7 +26,7 @@ export default class VueInjector implements PluginObject<null> {
   apps: Array<Vue>;
   provider: Provider | null;
 
-  rootProviders: Array<InjectConstructor> = [];
+  rootProviders: Array<InjectableConstructor> = [];
 
   constructor (options: VueInjectorOptions = {}) {
     this.app = null;
