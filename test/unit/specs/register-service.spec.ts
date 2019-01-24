@@ -21,9 +21,9 @@ describe('registerComponent service', () => {
 
     const service = injector.provider.registerService(app, 'Service', Service);
 
-    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
+    expect(injector.provider.get(Service).name).toEqual('Service');
 
-    expect(service.constructor.name).toEqual('Service');
+    expect(service.name).toEqual('Service');
 
     expect(service).toEqual(injector.provider.get(Service));
   });
@@ -38,11 +38,11 @@ describe('registerComponent service', () => {
     const service = injector.provider.registerService(app, 'Service', Service);
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
-    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).constructor.name).toEqual('ServiceTwo');
+    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
 
-    expect(service.constructor.name).toEqual('Service');
-    expect(serviceTwo.constructor.name).toEqual('ServiceTwo');
+    expect(service.name).toEqual('Service');
+    expect(serviceTwo.name).toEqual('ServiceTwo');
 
     expect(service).toEqual(injector.provider.get(Service));
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -60,13 +60,13 @@ describe('registerComponent service', () => {
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
-    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).constructor.name).toEqual('ServiceTwo');
+    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
     expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service.constructor.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
 
-    expect(serviceTwo.constructor.name).toEqual('ServiceTwo');
-    expect(serviceTwo.Service.constructor.name).toEqual('Service');
+    expect(serviceTwo.name).toEqual('ServiceTwo');
+    expect(serviceTwo.Service.name).toEqual('Service');
 
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -142,7 +142,7 @@ describe('registerComponent service', () => {
     injector.get(Service);
 
     expect(injector.provider.services.size).toBe(1);
-    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
+    expect(injector.provider.get(Service).name).toEqual('Service');
     expect(app.Service).toEqual(injector.provider.get(Service));
   });
 
@@ -153,8 +153,8 @@ describe('registerComponent service', () => {
     const service = injector.provider.registerService(app, 'Service', Service);
     const injectorService = injector.get(Service);
 
-    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
-    expect(service.constructor.name).toEqual('Service');
+    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(service.name).toEqual('Service');
     expect(service).toEqual(injector.provider.get(Service));
 
     expect(injector.provider.services.size).toBe(1);

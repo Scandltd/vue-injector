@@ -15,6 +15,8 @@ export interface InjectableOptions {
 function injectableFactory (target: InjectableConstructor, options: InjectableOptions = {}) {
   const decorators = target.__decorators__;
 
+  target.prototype.name = target.name;
+
   target.isVueService = true;
   target.useFactory = options.useFactory;
 
