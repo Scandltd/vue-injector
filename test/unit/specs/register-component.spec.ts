@@ -1,4 +1,3 @@
-/*
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
 
@@ -20,7 +19,7 @@ describe('register component', () => {
 
   it('register one', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     const mockComponent: any = {
       _providers: {
@@ -30,19 +29,19 @@ describe('register component', () => {
 
     injector.provider.registerComponent(mockComponent);
 
-    expect(injector.provider.services.get(Service).name).toEqual('Service');
+    expect(injector.provider.services.get(Service).constructor.name).toEqual('Service');
 
-    expect(mockComponent.Service.name).toEqual('Service');
+    expect(mockComponent.Service.constructor.name).toEqual('Service');
 
     expect(mockComponent.Service).toEqual(injector.provider.services.get(Service));
   });
 
   it('register two', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     @Injectable
-    class ServiceTwo extends Inject {}
+    class ServiceTwo {}
 
     const mockComponent: any = {
       _providers: {
@@ -53,11 +52,11 @@ describe('register component', () => {
 
     injector.provider.registerComponent(mockComponent);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).constructor.name).toEqual('ServiceTwo');
 
-    expect(mockComponent.Service.name).toEqual('Service');
-    expect(mockComponent.ServiceTwo.name).toEqual('ServiceTwo');
+    expect(mockComponent.Service.constructor.name).toEqual('Service');
+    expect(mockComponent.ServiceTwo.constructor.name).toEqual('ServiceTwo');
 
     expect(mockComponent.Service).toEqual(injector.provider.get(Service));
     expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -65,14 +64,12 @@ describe('register component', () => {
 
   it('register with import', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
-    @Injectable({
-      import: {
-        Service
-      }
-    })
-    class ServiceTwo extends Inject {}
+    @Injectable
+    class ServiceTwo {
+      @Inject(Service) Service;
+    }
 
     const mockComponent: any = {
       _providers: {
@@ -86,20 +83,20 @@ describe('register component', () => {
     expect(injector.provider.services.size).toBe(2);
 
     expect(injector.provider.get(Service) instanceof Service).toBe(true);
-    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
     expect(injector.provider.get(ServiceTwo) instanceof ServiceTwo).toBe(true);
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(injector.provider.get(ServiceTwo).constructor.name).toEqual('ServiceTwo');
     expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).Service.constructor.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).Service.constructor.name).toEqual('Service');
 
     expect(mockComponent.Service instanceof Service).toBe(true);
-    expect(mockComponent.Service.name).toEqual('Service');
+    expect(mockComponent.Service.constructor.name).toEqual('Service');
     expect(mockComponent.ServiceTwo instanceof ServiceTwo).toBe(true);
-    expect(mockComponent.ServiceTwo.name).toEqual('ServiceTwo');
+    expect(mockComponent.ServiceTwo.constructor.name).toEqual('ServiceTwo');
     expect(mockComponent.ServiceTwo.Service).toEqual(jasmine.any(Object));
-    expect(mockComponent.ServiceTwo.Service.name).toEqual('Service');
-    expect(mockComponent.ServiceTwo.Service.name).toEqual('Service');
+    expect(mockComponent.ServiceTwo.Service.constructor.name).toEqual('Service');
+    expect(mockComponent.ServiceTwo.Service.constructor.name).toEqual('Service');
 
     expect(mockComponent.Service).toEqual(injector.provider.get(Service));
     expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -125,4 +122,3 @@ describe('register component', () => {
     expect(mockComponent.length).toBe(undefined);
   });
 });
-*/

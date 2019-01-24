@@ -1,4 +1,3 @@
-/*
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
 
@@ -22,29 +21,28 @@ describe('registerComponent service', () => {
 
     const service = injector.provider.registerService(app, 'Service', Service);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
 
-    expect(service.name).toEqual('Service');
-    expect(Service.getName()).toEqual('Service');
+    expect(service.constructor.name).toEqual('Service');
 
     expect(service).toEqual(injector.provider.get(Service));
   });
 
   it('register two', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     @Injectable
-    class ServiceTwo extends Inject {}
+    class ServiceTwo {}
 
     const service = injector.provider.registerService(app, 'Service', Service);
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).constructor.name).toEqual('ServiceTwo');
 
-    expect(service.name).toEqual('Service');
-    expect(serviceTwo.name).toEqual('ServiceTwo');
+    expect(service.constructor.name).toEqual('Service');
+    expect(serviceTwo.constructor.name).toEqual('ServiceTwo');
 
     expect(service).toEqual(injector.provider.get(Service));
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -55,18 +53,20 @@ describe('registerComponent service', () => {
     class Service {}
 
     @Injectable
-    class ServiceTwo {}
+    class ServiceTwo {
+      @Inject(Service) Service;
+    }
 
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).constructor.name).toEqual('ServiceTwo');
     expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).Service.constructor.name).toEqual('Service');
 
-    expect(serviceTwo.name).toEqual('ServiceTwo');
-    expect(serviceTwo.Service.name).toEqual('Service');
+    expect(serviceTwo.constructor.name).toEqual('ServiceTwo');
+    expect(serviceTwo.Service.constructor.name).toEqual('Service');
 
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -98,13 +98,15 @@ describe('registerComponent service', () => {
 
   it('useFactory get vue', () => {
     class Factory {
-      constructor (public vm) {}
+      constructor () {}
     }
 
     @Injectable({
-      useFactory: (vm) => new Factory(vm)
+      useFactory: () => new Factory()
     })
-    class Service {}
+    class Service {
+      @Inject(Vue) vm;
+    }
 
 
     const service = injector.provider.registerService(app, 'Service', Service);
@@ -125,7 +127,7 @@ describe('registerComponent service', () => {
         const f = new Factory(vm);
       }
     })
-    class Service extends Inject {}
+    class Service {}
 
     expect(
       () => injector.provider.registerService(app, 'Service', Service)
@@ -135,24 +137,24 @@ describe('registerComponent service', () => {
 
   it('get service before register', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     injector.get(Service);
 
     expect(injector.provider.services.size).toBe(1);
-    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
     expect(app.Service).toEqual(injector.provider.get(Service));
   });
 
   it('get service after register', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     const service = injector.provider.registerService(app, 'Service', Service);
     const injectorService = injector.get(Service);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(service.name).toEqual('Service');
+    expect(injector.provider.get(Service).constructor.name).toEqual('Service');
+    expect(service.constructor.name).toEqual('Service');
     expect(service).toEqual(injector.provider.get(Service));
 
     expect(injector.provider.services.size).toBe(1);
@@ -162,17 +164,16 @@ describe('registerComponent service', () => {
   it('register not Injectable', () => {
     class Service {}
 
-    @Injectable({
-      import: [Service]
-    })
-    class ServiceTwo extends Inject {}
+    @Injectable
+    class ServiceTwo {
+      @Inject(Service) Service;
+    }
 
     expect(
         () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable or extends Inject');
+    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
     expect(
         () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
-    ).toThrowError('[@scandltd/vue-injector] providers not object');
+    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
   });
 });
-*/
