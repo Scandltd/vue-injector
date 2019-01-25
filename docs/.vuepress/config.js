@@ -55,6 +55,7 @@ module.exports = {
               '/guide/',
               '/guide/essentials/reg-service.md',
               '/guide/essentials/get-service.md',
+              '/guide/essentials/vux.md',
               '/guide/essentials/vuex.md',
               '/guide/essentials/nuxt.md'
             ]
@@ -89,6 +90,7 @@ module.exports = {
               '/ru/guide/',
               '/ru/guide/essentials/reg-service.md',
               '/ru/guide/essentials/get-service.md',
+              '/ru/guide/essentials/vux.md',
               '/ru/guide/essentials/vuex.md',
               '/ru/guide/essentials/nuxt.md'
             ]
