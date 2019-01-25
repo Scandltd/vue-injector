@@ -36,5 +36,3 @@ export function Injectable (options): any {
     return injectableFactory(target, options);
   };
 }
-
-

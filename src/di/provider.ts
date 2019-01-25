@@ -1,17 +1,18 @@
 import { assert } from '../util/warn';
 import Vue from 'vue';
 import { InjectedObject } from '../../types';
-import { Inject } from '../index';
-import { ServiceFactory } from './factory';
 import { InjectableConstructor } from './decorators/injectable';
 import { checkObject } from '../util/object';
+import { ServiceBinding } from './bindings/binding';
+import { ServiceFactory } from './factory';
 
 export class Provider {
   app: Vue;
-  services: Map<InjectableConstructor, Object>;
+  services: Map<InjectableConstructor, any>;
 
   rootProviders: Array<any> = [];
 
+  private serviceBinding: ServiceBinding = new ServiceBinding();
   private serviceFactory: ServiceFactory = new ServiceFactory();
 
   constructor (app: Vue, rootProviders) {
@@ -45,39 +46,34 @@ export class Provider {
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): Object {
+  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): any {
     if (Service as any === Vue) {
       return target[name] = this.app;
     }
 
     if (!this.services.has(Service) && Service.isVueService) {
       if (Service.prototype.providers) {
-        this.registerImport(Service.prototype, Service.prototype.providers);
+        this.registerProviders(Service.prototype, Service.prototype.providers);
       }
 
-      this.services.set(Service, this.serviceFactory.getNewService(Service));
+      this.services.set(Service, this.serviceFactory.make(Service));
     }
 
-    const provider = this.services.get(Service);
+    const service = this.services.get(Service);
 
-    if (provider && Service.prototype.providers) {
-      this.registerImport(provider, Service.prototype.providers);
+    if (service && Service.prototype.providers) {
+      this.registerProviders(service, Service.prototype.providers);
       delete Service.prototype.providers;
     }
 
-    if (provider) {
-      this.injectService(target, [{
-        name,
-        service: provider
-      }]);
-
-      return provider;
+    if (service) {
+      return this.serviceBinding.bind(service, name).to(target) && service;
     }
 
     assert(false, 'no decorator Injectable');
   }
 
-  registerImport (provider, imports) {
+  registerProviders (provider, imports) {
     if (checkObject(imports)) {
       const services = Object.keys(imports)
         .map((name: string) => {
@@ -87,10 +83,9 @@ export class Provider {
             name,
             service
           };
-        })
-        .filter(inject => inject.service instanceof Inject);
+        });
 
-      this.injectService(provider, services);
+      this.serviceBinding.bind(services).to(provider);
     } else {
       assert(false, 'providers not object');
     }
@@ -108,22 +103,5 @@ export class Provider {
     }
 
     return this.services.get(Service);
-  }
-
-  private injectService (target: InjectedObject, imports: Array<{ name: string, service?: Object}>) {
-    imports.forEach((Inject: { name: string, service?: Object}) => {
-      const injectServiceName = Inject.name;
-
-      const checkProperty: boolean = Object.hasOwnProperty.call(target, injectServiceName)
-        ? !target[injectServiceName]
-        : true;
-
-      if (checkProperty && Inject.service) {
-        Reflect.defineProperty(target, injectServiceName, {
-          enumerable: true,
-          get: () => Inject.service
-        });
-      }
-    });
   }
 }
