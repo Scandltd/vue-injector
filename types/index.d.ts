@@ -3,8 +3,8 @@ import Vue, { Component } from 'vue';
 export declare interface InjectableConstructor {
   isVueService: boolean;
   useFactory: Function;
-  providers: { [key: string]: any };
 
+  providers?: { [key: string]: any };
   __decorators__?: Array<Function>;
 
   new (): any;
@@ -16,6 +16,13 @@ export declare interface InjectInterface {
 
   readonly context: Object;
   readonly vm: Vue;
+}
+
+export declare interface Binding {
+  binging: Array<Object>;
+
+  bind (binging: Array<Object> | Object): this;
+  to (target: InjectedObject): boolean;
 }
 
 export declare class Provider {

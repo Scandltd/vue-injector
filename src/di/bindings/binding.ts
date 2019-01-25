@@ -7,7 +7,7 @@ interface Binding {
   binging: Array<Object>;
 
   bind (binging: Array<Object> | Object): this;
-  to (target: InjectedObject);
+  to (target: InjectedObject): boolean;
 }
 
 export class ServiceBinding implements Binding {
