@@ -36,6 +36,7 @@
 // импортируем Vue и VueInjector и затем вызываем `Vue.use(VueInjector)`.
 
 // 1. Создаём экземпляр инжектора
+// new VueInjector({ store, root: [Service] })
 const injector = new VueInjector()
 
 // 2. Создаём и монтируем корневой экземпляр приложения.

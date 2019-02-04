@@ -4,10 +4,10 @@
 В примерах ниже будем использовать сервис для логирования:
 
 ``` js
-import { Injectable, Inject } from '@scandltd/vue-injector'
+import { Injectable } from '@scandltd/vue-injector'
 
 @Injectable
-class LogService extends Inject {}
+class LogService {}
 ```
 :::
 
@@ -16,7 +16,7 @@ class LogService extends Inject {}
 Для внедрения зависимости в компонент можно использовать два метода:
 
 - Указать необходимые сервисы в свойстве компонента `providers`.
-- Использовать декоратор `@Service`.
+- Использовать декоратор `@Inject`.
 
 ### `Providers`
 
@@ -28,13 +28,13 @@ export default {
 })
 ```
 
-### `@Service`
+### `@Inject`
 
 ``` js
-import { Service } from '@scandltd/vue-injector'
+import { Inject } from '@scandltd/vue-injector'
 
 export default {
-  @Service(LogService) logger
+  @Inject(LogService) logger
 })
 ```
 

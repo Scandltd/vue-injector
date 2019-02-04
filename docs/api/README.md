@@ -10,43 +10,6 @@ sidebar: auto
 
 `@Injectable` must be specified for a service you create.
 
-### import
-
-- type: `Array<Service>`
-- unnecessary
-
-  Sometimes you need to include injected dependencies into a service you create. In such case, you can specify dependencies with the help of properties of the `import` decorator.
-
-  ``` js
-  @Injectable({
-      import: [LogService]
-  })
-  class UserService {
-    constructor () {
-        this.LogService.log('Create User service');
-    }
-  }
-  ```
-
-### context
-
-- type: `any`
-- unnecessary
-
-  Installation of additional context for a service is available through `context` property.
-
-  ``` js
-    @Injectable({
-        context: {
-            hash: '7431dec680c23598e151a36266e9ad5a'
-        }
-    })
-    class UserService extends Inject {
-        constructor () {
-            console.log(this.context.hash);
-        }
-    }
-    ```
 ### useFactory
 
 - type: `function`
@@ -55,7 +18,7 @@ sidebar: auto
   Signature:
   
   ``` js
-  useFactory(vm: vue, imports: { [string]: Inject })) => any
+  useFactory(() => any)
   ```
   
   Using a factory to build a service.
@@ -64,9 +27,9 @@ sidebar: auto
   class Logger { ... }
   
   @Injectable({
-      useFactory: (vm, imports) => new Logger()
+      useFactory: () => new Logger()
   })
-  class UserService extends Inject {}
+  class UserService {}
   ```
   
   Restricting access to the application from the service.
@@ -75,16 +38,11 @@ sidebar: auto
     @Injectable({
         useFactory: () => new UserService()
     })
-    class UserService extends Inject {}
+    class UserService {}
     ```
 
-## `Inject`
-  When creating a service you must expand the `Inject` class that defines general properties of all services.
-
-  ``` js
-    @Injectable
-    class UserService extends Inject {}
-  ```
+## `InjectableConstructor`
+ 
 ### name
 
 - type: `string`
@@ -98,13 +56,6 @@ sidebar: auto
 - by default: `true`
 
   Shows if an object is a service.
-
-### vm
-
-- type: `Vue instance`
-
-  Root instance of Vue, in which `injector` is incorporated.
-
 
 ## `VueInjector`
 
@@ -135,7 +86,7 @@ Injection of services specified in the `providers` properties into components.
 Signature:
 
 ``` js
-get(service: Inject)
+get(service: InjectableConstructor)
 ```
 
 Rolls back an instance of the requested service. If there is no instance yet, creates it and injects into the root instance of Vue.
@@ -154,7 +105,7 @@ Object `Provider` is immutable. Each registration of a component will include th
 
 ### services
 
-  - type: `Map<typeof Inject, Inject>`
+  - type: `Map<typeof InjectableConstructor, any>`
 
     Object that includes key/value pairs of the connected services. If there are no specifications, an empty object will be a value.
 
@@ -174,7 +125,7 @@ Injection of the specified in the `providers` properties services into the compo
 Signature:
 
 ``` js
-registerService(target: InjectedObject, name: string, Service: typeof InjectableClass)
+registerService(target: InjectedObject, name: string, Service: InjectableConstructor)
 ```
 
 Injection of the service into the specified object. Returns an instance of the service.
@@ -193,13 +144,13 @@ Rolls back an instance of the requested service. If there is no instance yet, cr
 
 There are two methods you can use to inject dependencies:
  - using `providers` component properties
- - using decorator `@Service`
+ - using decorator `@Inject`
 
  ``` js
-    import { Injectable, Inject, Service } from 'vue-injector'
+    import { Injectable, Service } from 'vue-injector'
 
     @Injectable
-    class LogService extends Inject {}
+    class LogService {}
 
     // Using property `providers`
     default {
@@ -211,7 +162,7 @@ There are two methods you can use to inject dependencies:
     // Using decorator
     @Component
     class Component extends Vue {
-        @Service(LogService) service;
+        @Inject(LogService) service;
     }
  ```
 

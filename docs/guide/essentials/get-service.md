@@ -4,10 +4,10 @@
 Examples below are based on using a logging service:
 
 ``` js
-import { Injectable, Inject } from '@scandltd/vue-injector'
+import { Injectable } from '@scandltd/vue-injector'
 
 @Injectable
-class LogService extends Inject {}
+class LogService {}
 ```
 :::
 
@@ -16,7 +16,7 @@ class LogService extends Inject {}
 There are two methods you can use to inject dependency into a component:
 
 - By specifying required services in the `providers` component property.
-- By using decorator `@Service`.
+- By using decorator `@Inject`.
 
 ### `Providers`
 
@@ -28,13 +28,13 @@ export default {
 })
 ```
 
-### `@Service`
+### `@Inject`
 
 ``` js
 import { Service } from '@scandltd/vue-injector'
 
-export default {
-  @Service(LogService) logger
+export default class {
+  @Inject(LogService) logger
 })
 ```
 
