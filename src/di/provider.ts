@@ -47,7 +47,7 @@ export class Provider {
   }
 
   registerService (target: InjectedObject, name: string, Service: InjectableConstructor): any {
-    if (Service as any === Vue) {
+    if (Service.name === 'Vue') {
       return target[name] = this.app;
     }
 
