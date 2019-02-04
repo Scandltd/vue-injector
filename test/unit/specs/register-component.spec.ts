@@ -19,7 +19,7 @@ describe('register component', () => {
 
   it('register one', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     const mockComponent: any = {
       _providers: {
@@ -38,10 +38,10 @@ describe('register component', () => {
 
   it('register two', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     @Injectable
-    class ServiceTwo extends Inject {}
+    class ServiceTwo {}
 
     const mockComponent: any = {
       _providers: {
@@ -64,14 +64,12 @@ describe('register component', () => {
 
   it('register with import', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
-    @Injectable({
-      import: {
-        Service
-      }
-    })
-    class ServiceTwo extends Inject {}
+    @Injectable
+    class ServiceTwo {
+      @Inject(Service) Service;
+    }
 
     const mockComponent: any = {
       _providers: {

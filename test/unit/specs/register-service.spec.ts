@@ -17,24 +17,23 @@ describe('registerComponent service', () => {
 
   it('register one', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     const service = injector.provider.registerService(app, 'Service', Service);
 
     expect(injector.provider.get(Service).name).toEqual('Service');
 
     expect(service.name).toEqual('Service');
-    expect(Service.getName()).toEqual('Service');
 
     expect(service).toEqual(injector.provider.get(Service));
   });
 
   it('register two', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     @Injectable
-    class ServiceTwo extends Inject {}
+    class ServiceTwo {}
 
     const service = injector.provider.registerService(app, 'Service', Service);
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
@@ -51,14 +50,12 @@ describe('registerComponent service', () => {
 
   it('register with import', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
-    @Injectable({
-      import: {
-        Service
-      }
-    })
-    class ServiceTwo extends Inject {}
+    @Injectable
+    class ServiceTwo {
+      @Inject(Service) Service;
+    }
 
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
@@ -86,7 +83,7 @@ describe('registerComponent service', () => {
     @Injectable({
       useFactory: () => new Factory()
     })
-    class Service extends Inject {}
+    class Service {}
 
 
     const service = injector.provider.registerService(app, 'Service', Service);
@@ -101,13 +98,15 @@ describe('registerComponent service', () => {
 
   it('useFactory get vue', () => {
     class Factory {
-      constructor (public vm) {}
+      constructor () {}
     }
 
     @Injectable({
-      useFactory: (vm) => new Factory(vm)
+      useFactory: () => new Factory()
     })
-    class Service extends Inject {}
+    class Service {
+      @Inject(Vue) vm;
+    }
 
 
     const service = injector.provider.registerService(app, 'Service', Service);
@@ -128,7 +127,7 @@ describe('registerComponent service', () => {
         const f = new Factory(vm);
       }
     })
-    class Service extends Inject {}
+    class Service {}
 
     expect(
       () => injector.provider.registerService(app, 'Service', Service)
@@ -138,7 +137,7 @@ describe('registerComponent service', () => {
 
   it('get service before register', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     injector.get(Service);
 
@@ -149,7 +148,7 @@ describe('registerComponent service', () => {
 
   it('get service after register', () => {
     @Injectable
-    class Service extends Inject {}
+    class Service {}
 
     const service = injector.provider.registerService(app, 'Service', Service);
     const injectorService = injector.get(Service);
@@ -165,16 +164,16 @@ describe('registerComponent service', () => {
   it('register not Injectable', () => {
     class Service {}
 
-    @Injectable({
-      import: [Service]
-    })
-    class ServiceTwo extends Inject {}
+    @Injectable
+    class ServiceTwo {
+      @Inject(Service) Service;
+    }
 
     expect(
         () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable or extends Inject');
+    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
     expect(
         () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
-    ).toThrowError('[@scandltd/vue-injector] providers not object');
+    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
   });
 });

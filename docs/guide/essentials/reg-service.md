@@ -2,43 +2,24 @@
 
 ## Default Service Construction
 
-For the construction of the service decorator `@Injectable` and basic class `Inject`
+For the construction of the service decorator `@Injectable` 
 
 ``` js
-import { Injectable, Inject } from '@scandltd/vue-injector'
+import { Injectable } from '@scandltd/vue-injector'
 
 @Injectable
-class LogService extends Inject {}
-```
-
-## Context Injection
-
-Context that will be available in the `context` properties can be imported to the decorator `@Injectable`.
-
-``` js
-import { Injectable, Inject } from '@scandltd/vue-injector'
-
-@Injectable({
-    context: {
-        hash: '7431dec680c23598e151a36266e9ad5a'
-    }
-})
-class UserService extends Inject {
-    constructor () {
-        console.log(this.context.hash);
-    }
-}
+class LogService {}
 ```
 
 ## Dependency Injection
 
-Dependencies could be injected not only into components, but into a service as well. To do so, you have to import dependencies by choosing `import` in the properties of the decorator `@Injectable`.
+Dependencies could be injected not only into components, but into a service as well. To do so, you have to import dependencies by decorator `Inject`.
 
 ``` js
-@Injectable({
-    import: [LogService]
-})
+@Injectable
 class UserService {
+    @Inject(LogService) LogService;
+    
     constructor () {
         this.LogService.log('Create User service');
     }
@@ -55,24 +36,13 @@ class Logger { ... }
 @Injectable({
     useFactory: () => new Logger()
 })
-class UserService extends Inject {}
+class UserService {}
 ```
-The `useFactory` property must be a function with a return value. Also, an instance of the root application `Vue` and an object containing embedded dependencies are passed to this function.
+The `useFactory` property must be a function with a return value.
 
 ``` js
 
-useFactory: (vm: Vue, imports: { [string]: Inject }) => {
-    return new Logger(vm, imports)
+useFactory: () => {
+    return new Logger()
 }
 ```
-
-Also, factory can be used to deny access to the application from the service:
-
-``` js
-@Injectable({
-    useFactory: () => new UserService()
-})
-class UserService extends Inject {}
-```
-
-In this example, the `UserService` service instance does not have access to` Vue` and provided services.

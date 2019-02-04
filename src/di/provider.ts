@@ -1,16 +1,18 @@
-import { assert, warn } from '../util/warn';
+import { assert } from '../util/warn';
 import Vue from 'vue';
 import { InjectedObject } from '../../types';
-import { Inject } from '../index';
-import { InjectConstructor } from './inject';
+import { InjectableConstructor } from './decorators/injectable';
+import { checkObject } from '../util/object';
+import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
 
 export class Provider {
   app: Vue;
-  services: Map<InjectConstructor, Inject | Object>;
+  services: Map<InjectableConstructor, any>;
 
-  rootProviders: Array<typeof Inject> = [];
+  rootProviders: Array<any> = [];
 
+  private serviceBinding: ServiceBinding = new ServiceBinding();
   private serviceFactory: ServiceFactory = new ServiceFactory();
 
   constructor (app: Vue, rootProviders) {
@@ -24,7 +26,7 @@ export class Provider {
     if (component.hasOwnProperty('_providers')) {
       const providers = component._providers;
 
-      if (providers && this.checkObject(providers)) {
+      if (providers && checkObject(providers)) {
         Object.keys(providers).forEach(name => {
           if (providers && providers.hasOwnProperty(name)) {
             this.registerService(component, name, providers[name]);
@@ -37,44 +39,42 @@ export class Provider {
 
     if (this.rootProviders.length) {
       this.rootProviders.forEach(provider => {
-        if (this.checkGetName(provider)) {
-          this.registerService(component, provider.getName(), provider);
+        if (provider.isVueService) {
+          this.registerService(component, provider.name, provider);
         }
       });
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: InjectConstructor): Inject | Object {
-    if (!this.services.has(Service) && Service.name === 'Injectable') {
-      Service.prototype.vm = (target as any).$root || (target as any).vm;
+  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): any {
+    if (Service.name === 'Vue') {
+      return target[name] = this.app;
+    }
 
-      if (Service.import) {
-        this.registerImport(Service.prototype, Service.import);
+    if (!this.services.has(Service) && Service.isVueService) {
+      if (Service.prototype.providers) {
+        this.registerProviders(Service.prototype, Service.prototype.providers);
       }
 
-      this.services.set(Service, this.serviceFactory.getNewService(Service));
+      this.services.set(Service, this.serviceFactory.make(Service));
     }
 
-    const provider = this.services.get(Service);
+    const service = this.services.get(Service);
 
-    if (provider && Service.import) {
-      this.registerImport(provider, Service.import);
+    if (service && Service.prototype.providers) {
+      this.registerProviders(service, Service.prototype.providers);
+      delete Service.prototype.providers;
     }
 
-    if (provider) {
-      this.injectService(target, [{
-        name,
-        service: provider
-      }]);
-
-      return provider;
+    if (service) {
+      return this.serviceBinding.bind(service, name).to(target) && service;
     }
 
-    assert(false, 'no decorator Injectable or extends Inject');
+    assert(false, 'no decorator Injectable');
   }
 
-  registerImport (provider, imports) {
-    if (this.checkObject(imports)) {
+  registerProviders (provider, imports) {
+    if (checkObject(imports)) {
       const services = Object.keys(imports)
         .map((name: string) => {
           const service = this.registerService(provider, name, imports[name]);
@@ -83,54 +83,25 @@ export class Provider {
             name,
             service
           };
-        })
-        .filter(inject => inject.service instanceof Inject);
+        });
 
-      this.injectService(provider, services);
+      this.serviceBinding.bind(services).to(provider);
     } else {
       assert(false, 'providers not object');
     }
   }
 
-  set (Service: typeof Inject) {
-    if (this.checkGetName(Service)) {
-      this.registerService(this.app, Service.getName(), Service);
+  set (Service) {
+    if (Service.isVueService) {
+      this.registerService(this.app, Service.name, Service);
     }
   }
 
-  get (Service: typeof Inject) {
+  get (Service) {
     if (!this.services.has(Service)) {
       this.set(Service);
     }
 
     return this.services.get(Service);
-  }
-
-  private injectService (target: InjectedObject, imports: Array<{ name: string, service?: Inject | Object}>) {
-    imports.forEach((Inject: { name: string, service?: Inject | Object}) => {
-      const injectServiceName = Inject.name;
-
-      if (!Object.hasOwnProperty.call(target, injectServiceName) && Inject.service) {
-        Reflect.defineProperty(target, injectServiceName, {
-          enumerable: true,
-          get () {
-            return Inject.service;
-          }
-        });
-      }
-    });
-  }
-
-  private checkObject (obj: any): boolean {
-    return !Array.isArray(obj) && typeof obj === 'object' && obj !== null;
-  }
-
-  private checkGetName (provider: any): boolean {
-    if (Object.hasOwnProperty.call(provider, 'getName') && typeof provider.getName === 'function') {
-      return true;
-    } else {
-      warn(false, 'no decorator Injectable or extends Inject');
-      return false;
-    }
   }
 }

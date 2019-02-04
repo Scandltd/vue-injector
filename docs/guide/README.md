@@ -36,6 +36,7 @@ Using DI with Vue Injector is dead simple. Here’s a basic example:
 //  import Vue and VueInjector and then call `Vue.use(VueInjector)`.
 
 // 1. Construct injector instance
+// new VueInjector({ store, root: [Service] })
 const injector = new VueInjector()
 
 // 2. Construct and mount an application’s root instance.

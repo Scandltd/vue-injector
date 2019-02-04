@@ -1,9 +1,15 @@
-import { Inject } from './inject';
-
-function createDecorator (
+export function createDecorator (
   factory: (target: any, key: string) => void
 ): PropertyDecorator {
   return function (target: any, key: string) {
+    const descriptor = arguments[2];
+
+    if (descriptor) {
+      delete descriptor.initializer;
+      descriptor.writable = true;
+      descriptor.configurable = true;
+    }
+
     const Ctor = typeof target === 'function'
       ? target
       : target.constructor;
@@ -15,10 +21,4 @@ function createDecorator (
       return factory(options, key);
     });
   };
-}
-
-export function Service (service: typeof Inject): PropertyDecorator {
-  return createDecorator(function (componentOptions, k) {
-    (componentOptions.providers || (componentOptions.providers = {}))[k] = service;
-  });
 }

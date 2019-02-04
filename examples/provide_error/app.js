@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueInjector, { Inject } from '@scandltd/vue-injector'
+import VueInjector from '@scandltd/vue-injector'
 import Code from './../mixin'
 
 Vue.mixin(Code)
@@ -10,7 +10,7 @@ Vue.use(VueInjector)
 
 // 2. Create services
 
-class AnyService extends Inject {}
+class AnyService {}
 
 // 3. Define components
 Vue.component('VueInjector', {
