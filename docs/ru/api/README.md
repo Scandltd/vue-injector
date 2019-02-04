@@ -9,44 +9,6 @@ sidebar: auto
 `@Injectable` — это декоратор, предназначенный для объявления сервиса. По умолчанию в созданном сервисе в свойстве `vm` доступно приложение `Vue`. Кроме того, существует возможность внедрить дополненные сервисы в текущий и добавить собственный контекст.
 
 `@Injectable` должен быть обязательно указан для создаваемого сервиса.
-
-### import
-
-- тип: `Array<Service>`
-- не обязательный
-
-  Иногда может потребоваться, чтобы создаваемый сервис также имел встраиваемые зависимости внутри себя, в этом случае вы можете указать зависимости с помощью свойства декоратора `import`.
-
-  ``` js
-  @Injectable({
-      import: [LogService]
-  })
-  class UserService {
-    constructor () {
-        this.LogService.log('Create User service');
-    }
-  }
-  ```
-
-### context
-
-- тип: `any`
-- не обязательный
-
-  Установка дополнительного контекста для сервиса. Доступен через свойство `context`.
-
-  ``` js
-    @Injectable({
-        context: {
-            hash: '7431dec680c23598e151a36266e9ad5a'
-        }
-    })
-    class UserService extends Inject {
-        constructor () {
-            console.log(this.context.hash);
-        }
-    }
-    ```
     
 ### useFactory
 
@@ -56,7 +18,7 @@ sidebar: auto
   Сигнатура:
   
   ``` js
-  useFactory(vm: vue, imports: { [string]: Inject })) => any
+  useFactory() => any
   ```
   
   Использование фабрики для построения сервиса.
@@ -65,27 +27,13 @@ sidebar: auto
   class Logger { ... }
   
   @Injectable({
-      useFactory: (vm, imports) => new Logger()
+      useFactory: () => new Logger()
   })
   class UserService extends Inject {}
   ```
-  
-  Ограничение доступа к приложению из сервиса.
-  
-    ``` js
-    @Injectable({
-        useFactory: () => new UserService()
-    })
-    class UserService extends Inject {}
-    ```
 
-## `Inject`
-  При создании сервиса необходимо расширить класс `Inject`. Определяет общие свойства всех сервисов.
+## `InjectableConstructor`
 
-  ``` js
-    @Injectable
-    class UserService extends Inject {}
-  ```
 ### name
 
 - тип: `string`
@@ -99,13 +47,6 @@ sidebar: auto
 - по умолчанию: `true`
 
   Показывает, является ли объект сервисом.
-
-### vm
-
-- тип: `Vue instance`
-
-  Корневой экземпляр Vue, в который внедряется `injector`.
-
 
 ## `VueInjector`
 
@@ -136,7 +77,7 @@ initComponent(component: Component)
 Сигнатура:
 
 ``` js
-get(service: Inject)
+get(service: InjectableConstructor)
 ```
 
 Возвращает экземпляр запрашиваемого сервиса. Создает экземпляр, если его еще не существует, и внедряет его в корневой экземпляр Vue.
@@ -155,7 +96,7 @@ get(service: Inject)
 
 ### services
 
-  - тип: `Map<typeof Inject, Inject>`
+  - тип: `Map<typeof InjectableConstructor, any>`
 
     Объект, который содержит пары ключ/значение подключенных сервисов. Если параметров нет, то значением будет пустой объект.
 
@@ -175,7 +116,7 @@ initComponent(component: Component)
 Сигнатура:
 
 ``` js
-registerService(target: InjectedObject, name: string, Service: typeof InjectableClass)
+registerService(target: InjectedObject, name: string, Service: InjectableConstructor)
 ```
 
 Внедрение сервиса в указаный объект. Возвращает экземпляр сервиса.
@@ -185,7 +126,7 @@ registerService(target: InjectedObject, name: string, Service: typeof Injectable
 Сигнатура:
 
 ``` js
-get(service: Inject)
+get(service: InjectableConstructor)
 ```
 
 Возвращает экземпляр запрашиваемого сервиса. Создает экземпляр, если его еще не существует, и внедряет его в корневой экземпляр Vue.
@@ -197,10 +138,10 @@ get(service: Inject)
  - используя декоратор `@Service`
 
  ``` js
-    import { Injectable, Inject, Service } from '@scandltd/vue-injector'
+    import { Injectable, Inject } from '@scandltd/vue-injector'
 
     @Injectable
-    class LogService extends Inject {}
+    class LogService {}
 
     // Используя свойство `providers`
     default {
@@ -212,7 +153,7 @@ get(service: Inject)
     // Используя декоратор
     @Component
     class Component extends Vue {
-        @Service(LogService) service;
+        @Inject(LogService) service;
     }
  ```
 

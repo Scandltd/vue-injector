@@ -2,43 +2,25 @@
 
 ## Создание сервиса по умолчанию
 
-Для создания сервиса используется декоратор `@Injectable` и базовый класс `Inject`
+Для создания сервиса используется декоратор `@Injectable`
 
 ``` js
-import { Injectable, Inject } from '@scandltd/vue-injector'
+import { Injectable } from '@scandltd/vue-injector'
 
 @Injectable
-class LogService extends Inject {}
+class LogService {}
 ```
 
-## Внедрение контекста
-
-В декоратор `@Injectable` можно передать контекст, который будет доступен в свойстве `context`.
-
-``` js
-import { Injectable, Inject } from '@scandltd/vue-injector'
-
-@Injectable({
-    context: {
-        hash: '7431dec680c23598e151a36266e9ad5a'
-    }
-})
-class UserService extends Inject {
-    constructor () {
-        console.log(this.context.hash);
-    }
-}
-```
 
 ## Внедрение зависимостей
 
-В сервис, так же как и в компонент, возможно внедрить зависимости. Сделать это можно, передав зависимости в свойстве `import` декоратора `@Injectable`.
+В сервис, так же как и в компонент, возможно внедрить зависимости. Сделать это можно, передав зависимости в декоратор `Inject`.
 
 ``` js
-@Injectable({
-    import: [LogService]
-})
+@Injectable
 class UserService extends Inject {
+    @Inject(LogService) LogService;
+
     constructor () {
         this.LogService.log('Create User service');
     }
@@ -62,18 +44,7 @@ class UserService extends Inject {}
 
 ``` js
 
-useFactory: (vm: Vue, imports: { [string]: Inject }) => {
+useFactory: () => {
     return new Logger(vm, imports)
 }
 ```
-
-Также использование фабрики может быть полезно для запрета доступа к приложению из сервиса:
-
-``` js
-@Injectable({
-    useFactory: () => new UserService()
-})
-class UserService extends Inject {}
-```
-
-В этом примере экземпляр сервиса `UserService` не имеет доступа к `Vue` и внедренным сервисам.
