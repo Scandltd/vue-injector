@@ -5,7 +5,6 @@ export declare interface InjectableConstructor {
   useFactory: Function;
 
   providers?: { [key: string]: any };
-  __decorators__?: Array<Function>;
 
   new (): any;
 }
