@@ -39,8 +39,8 @@ export class Provider {
 
     if (this.rootProviders.length) {
       this.rootProviders.forEach(provider => {
-        if (provider.isVueService) {
-          this.registerService(component, provider.name, provider);
+        if (Reflect.getMetadata('inject:service', provider)) {
+          this.registerService(component, Reflect.getMetadata('inject:name', provider), provider);
         }
       });
     }
@@ -51,11 +51,12 @@ export class Provider {
       return target[name] = this.app;
     }
 
-    if (!this.services.has(Service) && Service.isVueService) {
+    if (!this.services.has(Service) && Reflect.getMetadata('inject:service', Service)) {
       if (Service.prototype.providers) {
         this.registerProviders(Service.prototype, Service.prototype.providers);
       }
 
+      console.log('make');
       this.services.set(Service, this.serviceFactory.make(Service));
     }
 
@@ -93,7 +94,7 @@ export class Provider {
 
   set (Service) {
     if (Service.isVueService) {
-      this.registerService(this.app, Service.name, Service);
+      this.registerService(this.app, Reflect.getMetadata('inject:name', Service), Service);
     }
   }
 

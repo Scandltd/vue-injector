@@ -1,6 +1,6 @@
+import 'reflect-metadata';
+
 export interface InjectableConstructor {
-  isVueService: boolean;
-  useFactory: Function;
   providers: { [key: string]: any };
 
   __decorators__?: Array<Function>;
@@ -15,10 +15,10 @@ export interface InjectableOptions {
 function injectableFactory (target: InjectableConstructor, options: InjectableOptions = {}) {
   const decorators = target.__decorators__;
 
-  target.prototype.name = target.name;
+  Reflect.defineMetadata('inject:name', target.name, target);
+  Reflect.defineMetadata('inject:service', true, target);
 
-  target.isVueService = true;
-  target.useFactory = options.useFactory;
+  Reflect.defineMetadata('inject:factory', options.useFactory, target);
 
   if (decorators) {
     decorators.forEach(function (fn) { return fn(target.prototype); });
