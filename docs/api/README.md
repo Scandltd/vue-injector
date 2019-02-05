@@ -40,6 +40,22 @@ sidebar: auto
     })
     class UserService {}
     ```
+### useValue
+
+- type: `any`
+- unnecessary
+  
+  Signature:
+
+  
+  Using a value to build a service.
+
+  ``` js
+  @Injectable({
+      useValue: 'someValue'
+  })
+  class UserService {}
+  ```
 
 ## `InjectableConstructor`
  

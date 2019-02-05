@@ -96,6 +96,18 @@ describe('registerComponent service', () => {
     expect(service).toEqual(injector.provider.get(Service));
   });
 
+  it('register with useValue', () => {
+    @Injectable({
+      useValue: 'anyValue'
+    })
+    class Service {}
+
+    const service = injector.provider.registerService(app, 'Service', Service);
+
+    expect(injector.provider.services.size).toBe(1);
+    expect(injector.provider.get(Service)).toEqual('anyValue');
+  });
+
   it('useFactory get vue', () => {
     class Factory {
       constructor () {}

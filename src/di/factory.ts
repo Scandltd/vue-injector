@@ -30,6 +30,8 @@ export class ServiceFactory implements Factory {
     switch (type) {
     case FACTORY_TYPES.FACTORY:
       return this.custom(Service);
+    case FACTORY_TYPES.VALUE:
+      return this.value(Service);
     case FACTORY_TYPES.NEW:
     default:
       return this.default(Service);
@@ -61,6 +63,17 @@ export class ServiceFactory implements Factory {
       return factory;
     } else {
       assert(false, 'useFactory invalid return');
+    }
+  }
+
+  private value (Service: InjectableConstructor): Object {
+    // create instance
+    const value = Service.useValue;
+
+    if (value) {
+      return value;
+    } else {
+      assert(false, 'invalid useValue');
     }
   }
 }

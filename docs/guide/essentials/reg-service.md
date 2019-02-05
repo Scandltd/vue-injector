@@ -46,3 +46,17 @@ useFactory: () => {
     return new Logger()
 }
 ```
+
+## Value Provider
+
+Sometimes it's easier to provide a ready-made object rather than ask the injector to create it from a class. To inject an object you have already created, configure the injector with the useValue option
+
+``` js
+const Logger = { ... }
+
+@Injectable({
+    useValue: Logger
+})
+class LoggerService {}
+```
+The `useValue` property can be of any type.

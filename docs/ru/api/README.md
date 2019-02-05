@@ -31,6 +31,22 @@ sidebar: auto
   })
   class UserService extends Inject {}
   ```
+  
+### useValue
+
+- type: `любой`
+- не обязательный
+  
+  Сигнатура:
+  
+  Использование значения для построения сервиса.
+
+  ``` js
+  @Injectable({
+      useValue: 'someValue'
+  })
+  class UserService {}
+  ```  
 
 ## `InjectableConstructor`
 
