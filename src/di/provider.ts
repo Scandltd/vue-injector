@@ -55,8 +55,7 @@ export class Provider {
       if (Service.prototype.providers) {
         this.registerProviders(Service.prototype, Service.prototype.providers);
       }
-
-      console.log('make');
+      
       this.services.set(Service, this.serviceFactory.make(Service));
     }
 
@@ -93,7 +92,7 @@ export class Provider {
   }
 
   set (Service) {
-    if (Service.isVueService) {
+    if (Reflect.getMetadata('inject:service', Service)) {
       this.registerService(this.app, Reflect.getMetadata('inject:name', Service), Service);
     }
   }
