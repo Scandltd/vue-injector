@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v1.2.3
+  * @scandltd/vue-injector v2.0.2
   * (c) 2019 Scandltd
   * @license GPL-2.0
   */
@@ -47,42 +47,98 @@ function assert(condition, message) {
         throw new Error("[@scandltd/vue-injector] " + message);
     }
 }
-function warn(condition, message) {
-    if (process.env.NODE_ENV !== 'production' && !condition) {
-        typeof console !== 'undefined' && console.warn("[@scandltd/vue-injector] " + message);
-    }
-}
 
 var inBrowser = typeof window !== 'undefined';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+function checkObject(obj) {
+    return !Array.isArray(obj) && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj !== null;
+}
+
+var ServiceBinding = /** @class */function () {
+    function ServiceBinding() {
+        this.binging = null;
+    }
+    ServiceBinding.prototype.bind = function (binging, name) {
+        if (!Array.isArray(binging)) {
+            binging = [{
+                name: name || binging.name,
+                service: binging
+            }];
+        }
+        this.binging = binging;
+        return this;
+    };
+    ServiceBinding.prototype.to = function (target) {
+        this.binging.forEach(function (Inject) {
+            var injectServiceName = Inject.name;
+            var checkProperty = Object.hasOwnProperty.call(target, injectServiceName) ? !target[injectServiceName] : true;
+            if (checkProperty && Inject.service) {
+                Reflect.defineProperty(target, injectServiceName, {
+                    enumerable: true,
+                    get: function get() {
+                        return Inject.service;
+                    }
+                });
+            }
+        });
+        this.binging = [];
+        return true;
+    };
+    return ServiceBinding;
+}();
+
 var FACTORY_TYPES;
 (function (FACTORY_TYPES) {
-    FACTORY_TYPES["DEFAULT"] = "NEW";
-    FACTORY_TYPES["CUSTOM"] = "FACTORY";
+    FACTORY_TYPES["NEW"] = "NEW";
+    FACTORY_TYPES["FACTORY"] = "FACTORY";
+    FACTORY_TYPES["VALUE"] = "VALUE";
 })(FACTORY_TYPES || (FACTORY_TYPES = {}));
+var FACTORY_MAP = {
+    useFactory: {
+        type: FACTORY_TYPES.FACTORY,
+        check: 'function'
+    },
+    useValue: {
+        type: FACTORY_TYPES.VALUE
+    }
+};
 var ServiceFactory = /** @class */function () {
-    function ServiceFactory() {}
-    ServiceFactory.prototype.getNewService = function (Service) {
-        var type = Service.useFactory && typeof Service.useFactory === 'function' ? FACTORY_TYPES.CUSTOM : FACTORY_TYPES.DEFAULT;
+    function ServiceFactory() {
+        this.type = FACTORY_TYPES.NEW;
+    }
+    ServiceFactory.prototype.make = function (Service) {
+        var type = this.getType(Service);
         switch (type) {
-            case FACTORY_TYPES.CUSTOM:
+            case FACTORY_TYPES.FACTORY:
                 return this.custom(Service);
-            case FACTORY_TYPES.DEFAULT:
+            case FACTORY_TYPES.NEW:
             default:
                 return this.default(Service);
         }
+    };
+    ServiceFactory.prototype.getType = function (Service) {
+        var _this = this;
+        Object.keys(FACTORY_MAP).forEach(function (name) {
+            if (Object.hasOwnProperty.call(Service, name) && Service[name]) {
+                _this.type = FACTORY_MAP[name].type;
+                if (FACTORY_MAP[name].check && _typeof(Service[name]) !== FACTORY_MAP[name].check) {
+                    return assert(false, name + " invalid type: should be " + FACTORY_MAP[name].check);
+                }
+            }
+        });
+        return this.type;
     };
     ServiceFactory.prototype.default = function (Service) {
         return new Service();
     };
     ServiceFactory.prototype.custom = function (Service) {
-        var vue = Service.prototype.vm;
-        var importNames = Service.import ? Object.keys(Service.import) : [];
-        var imports = {};
-        importNames.forEach(function (name) {
-            return imports[name] = Service[name];
-        });
-        var factory = Service.useFactory(vue, imports);
+        var factory = Service.useFactory();
         if (factory) {
             return factory;
         } else {
@@ -92,15 +148,10 @@ var ServiceFactory = /** @class */function () {
     return ServiceFactory;
 }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
 var Provider = /** @class */function () {
     function Provider(app, rootProviders) {
         this.rootProviders = [];
+        this.serviceBinding = new ServiceBinding();
         this.serviceFactory = new ServiceFactory();
         this.app = app;
         this.rootProviders = rootProviders;
@@ -110,7 +161,7 @@ var Provider = /** @class */function () {
         var _this = this;
         if (component.hasOwnProperty('_providers')) {
             var providers_1 = component._providers;
-            if (providers_1 && this.checkObject(providers_1)) {
+            if (providers_1 && checkObject(providers_1)) {
                 Object.keys(providers_1).forEach(function (name) {
                     if (providers_1 && providers_1.hasOwnProperty(name)) {
                         _this.registerService(component, name, providers_1[name]);
@@ -122,137 +173,76 @@ var Provider = /** @class */function () {
         }
         if (this.rootProviders.length) {
             this.rootProviders.forEach(function (provider) {
-                if (_this.checkGetName(provider)) {
-                    _this.registerService(component, provider.getName(), provider);
+                if (provider.isVueService) {
+                    _this.registerService(component, provider.name, provider);
                 }
             });
         }
     };
-    Provider.prototype.registerService = function (target, name, Service$$1) {
-        if (!this.services.has(Service$$1) && Service$$1.name === 'Injectable') {
-            Service$$1.prototype.vm = target.$root || target.vm;
-            if (Service$$1.import) {
-                this.registerImport(Service$$1.prototype, Service$$1.import);
+    Provider.prototype.registerService = function (target, name, Service) {
+        if (Service.name === 'Vue') {
+            return target[name] = this.app;
+        }
+        if (!this.services.has(Service) && Service.isVueService) {
+            if (Service.prototype.providers) {
+                this.registerProviders(Service.prototype, Service.prototype.providers);
             }
-            this.services.set(Service$$1, this.serviceFactory.getNewService(Service$$1));
+            this.services.set(Service, this.serviceFactory.make(Service));
         }
-        var provider = this.services.get(Service$$1);
-        if (provider && Service$$1.import) {
-            this.registerImport(provider, Service$$1.import);
+        var service = this.services.get(Service);
+        if (service && Service.prototype.providers) {
+            this.registerProviders(service, Service.prototype.providers);
+            delete Service.prototype.providers;
         }
-        if (provider) {
-            this.injectService(target, [{
-                name: name,
-                service: provider
-            }]);
-            return provider;
+        if (service) {
+            return this.serviceBinding.bind(service, name).to(target) && service;
         }
-        assert(false, 'no decorator Injectable or extends Inject');
+        assert(false, 'no decorator Injectable');
     };
-    Provider.prototype.registerImport = function (provider, imports) {
+    Provider.prototype.registerProviders = function (provider, imports) {
         var _this = this;
-        if (this.checkObject(imports)) {
+        if (checkObject(imports)) {
             var services = Object.keys(imports).map(function (name) {
                 var service = _this.registerService(provider, name, imports[name]);
                 return {
                     name: name,
                     service: service
                 };
-            }).filter(function (inject) {
-                return inject.service instanceof Inject;
             });
-            this.injectService(provider, services);
+            this.serviceBinding.bind(services).to(provider);
         } else {
             assert(false, 'providers not object');
         }
     };
-    Provider.prototype.set = function (Service$$1) {
-        if (this.checkGetName(Service$$1)) {
-            this.registerService(this.app, Service$$1.getName(), Service$$1);
+    Provider.prototype.set = function (Service) {
+        if (Service.isVueService) {
+            this.registerService(this.app, Service.name, Service);
         }
     };
-    Provider.prototype.get = function (Service$$1) {
-        if (!this.services.has(Service$$1)) {
-            this.set(Service$$1);
+    Provider.prototype.get = function (Service) {
+        if (!this.services.has(Service)) {
+            this.set(Service);
         }
-        return this.services.get(Service$$1);
-    };
-    Provider.prototype.injectService = function (target, imports) {
-        imports.forEach(function (Inject$$1) {
-            var injectServiceName = Inject$$1.name;
-            if (!Object.hasOwnProperty.call(target, injectServiceName) && Inject$$1.service) {
-                Reflect.defineProperty(target, injectServiceName, {
-                    enumerable: true,
-                    get: function get$$1() {
-                        return Inject$$1.service;
-                    }
-                });
-            }
-        });
-    };
-    Provider.prototype.checkObject = function (obj) {
-        return !Array.isArray(obj) && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj !== null;
-    };
-    Provider.prototype.checkGetName = function (provider) {
-        if (Object.hasOwnProperty.call(provider, 'getName') && typeof provider.getName === 'function') {
-            return true;
-        } else {
-            warn(false, 'no decorator Injectable or extends Inject');
-            return false;
-        }
+        return this.services.get(Service);
     };
     return Provider;
 }();
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-var extendStatics = function(d, b) {
-    extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return extendStatics(d, b);
-};
-
-function __extends(d, b) {
-    extendStatics(d, b);
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-}
 
 function injectableFactory(target, options) {
     if (options === void 0) {
         options = {};
     }
-    var _a;
-    return _a = /** @class */function (_super) {
-        __extends(Injectable, _super);
-        function Injectable() {
-            var _this = _super !== null && _super.apply(this, arguments) || this;
-            _this.isVueService = true;
-            _this.name = target.name;
-            _this.context = options.context || null;
-            _this.vm = _this.vm;
-            return _this;
-        }
-        Injectable.getName = function () {
-            return target.name;
-        };
-        return Injectable;
-    }(target), _a.useFactory = options.useFactory, _a.import = options.import || null, _a;
+    var decorators = target.__decorators__;
+    target.prototype.name = target.name;
+    target.isVueService = true;
+    target.useFactory = options.useFactory;
+    if (decorators) {
+        decorators.forEach(function (fn) {
+            return fn(target.prototype);
+        });
+        delete target.__decorators__;
+    }
+    return target;
 }
 function Injectable(options) {
     if (typeof options === 'function') {
@@ -263,16 +253,14 @@ function Injectable(options) {
     };
 }
 
-var Inject = /** @class */function () {
-    function Inject() {}
-    Inject.getName = function () {
-        return this.name;
-    };
-    return Inject;
-}();
-
 function createDecorator(factory) {
     return function (target, key) {
+        var descriptor = arguments[2];
+        if (descriptor) {
+            delete descriptor.initializer;
+            descriptor.writable = true;
+            descriptor.configurable = true;
+        }
         var Ctor = typeof target === 'function' ? target : target.constructor;
         if (!Ctor.__decorators__) {
             Ctor.__decorators__ = [];
@@ -282,7 +270,8 @@ function createDecorator(factory) {
         });
     };
 }
-function Service(service) {
+
+function Inject(service) {
     return createDecorator(function (componentOptions, k) {
         (componentOptions.providers || (componentOptions.providers = {}))[k] = service;
     });
@@ -328,12 +317,11 @@ var VueInjector = /** @class */function () {
     return VueInjector;
 }();
 VueInjector.install = install;
-VueInjector.version = '1.2.3';
+VueInjector.version = '2.0.2';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
 
 exports.Injectable = Injectable;
 exports.Inject = Inject;
-exports.Service = Service;
 exports.default = VueInjector;

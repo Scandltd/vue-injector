@@ -16,7 +16,7 @@ class LogService {}
 There are two methods you can use to inject dependency into a component:
 
 - By specifying required services in the `providers` component property.
-- By using decorator `@Injec`.
+- By using decorator `@Inject`.
 
 ### `Providers`
 
@@ -28,13 +28,13 @@ export default {
 })
 ```
 
-### `@Injec`
+### `@Inject`
 
 ``` js
 import { Service } from '@scandltd/vue-injector'
 
 export default class {
-  @Injec(LogService) logger
+  @Inject(LogService) logger
 })
 ```
 
