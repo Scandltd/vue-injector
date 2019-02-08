@@ -1,19 +1,6 @@
-import { warn } from '../../util/warn';
+import { assert, warn } from '../../util/warn';
 import 'reflect-metadata';
-
-enum TYPES {
-  useFactory,
-  useValue
-}
-
-const factoryMap = new Map([
-  ['useFactory', {
-    metaName: 'inject:factory'
-  }],
-  ['useValue', {
-    metaName: 'inject:value'
-  }]
-]);
+import { FACTORY_TYPES } from '../factory';
 
 export interface InjectableConstructor {
 
@@ -30,19 +17,24 @@ export interface InjectableOptions {
 }
 
 function injectableFactory (target: InjectableConstructor, options: InjectableOptions = {}) {
+  const optionKeys = Reflect.ownKeys(options);
+  const whitelist = Reflect.ownKeys(FACTORY_TYPES);
 
-  if (Object.keys(options).length) {
-    warn(Object.keys(options).length === 1, `Wrong service registration. Service name: ${target.name}. @injectable can take only one parameter eather useFactory or useValue`);
-    let diff = Object.keys(options).filter(function (i) {
-      return Object.keys(TYPES).indexOf(i) < 0;
-    });
-    warn(!diff.length, `Wrong service registration. ${diff} - such parameters can't be used Service name: ${target.name}. @injectable can take only one parameter eather useFactory or useValue`);
+  const checkOtherProperty = !optionKeys.every((prop: PropertyKey) => {
+    return !!~whitelist.indexOf(prop);
+  });
 
-    let type = Object.keys(options)[0];
-
-    factoryMap.get(type) !== undefined && Reflect.defineMetadata(factoryMap.get(type).metaName, options[type], target);
+  if (checkOtherProperty) {
+    warn(false, `Wrong service registration. Service name: ${target.name}.
+@injectable can take only one parameter eather useFactory or useValue, but got ${JSON.stringify(options)}`);
   }
 
+  if (Reflect.has(options, 'useFactory') && Reflect.has(options, 'useValue')) {
+    return assert(false, `@injectable can take only one parameter eather useFactory or useValue`);
+  }
+
+  Reflect.defineMetadata('inject:factory', options.useFactory, target);
+  Reflect.defineMetadata('inject:value', options.useValue, target);
   Reflect.defineMetadata('inject:name', target.name, target);
   Reflect.defineMetadata('inject:service', true, target);
 
@@ -64,7 +56,4 @@ export function Injectable (options): any {
   return function (target) {
     return injectableFactory(target, options);
   };
-}
-
-export function InjectableMy (options): any {
 }

@@ -106,26 +106,32 @@ describe('registerComponent service', () => {
   });
 
   it('register with useValue and useFactory', () => {
-    spyOn(console, 'warn');
-
-    @Injectable({
+    const options = {
       useValue: 'anyValue',
-      useFactory: function () {
-      }
-    })
-    class Service {}
+      useFactory: function () {}
+    };
 
-    expect(console.warn).toHaveBeenCalledWith(`[@scandltd/vue-injector] Wrong service registration. Service name: ${Service.name}. @injectable can take only one parameter eather useFactory or useValue`);
+    expect(
+      () => {
+        @Injectable(options)
+        class Service {}
+      }
+    ).toThrowError(`[@scandltd/vue-injector] @injectable can take only one parameter eather useFactory or useValue`);
   });
 
   it('register with random keys', () => {
     spyOn(console, 'warn');
-    @Injectable({
+
+    const options = {
       anyKey: 'anyValue'
-    })
+    };
+
+    @Injectable(options)
     class Service {}
 
-    expect(console.warn).toHaveBeenCalledWith(`[@scandltd/vue-injector] Wrong service registration. anyKey - such parameters can\'t be used Service name: Service. @injectable can take only one parameter eather useFactory or useValue`);
+    expect(console.warn)
+      .toHaveBeenCalledWith(`[@scandltd/vue-injector] Wrong service registration. Service name: Service.
+@injectable can take only one parameter eather useFactory or useValue, but got ${JSON.stringify(options)}`);
   });
 
   it('useFactory get vue', () => {

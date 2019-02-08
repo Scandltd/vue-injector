@@ -2,54 +2,41 @@ import { assert } from '../util/warn';
 import { InjectableConstructor } from './decorators/injectable';
 
 export enum FACTORY_TYPES {
-  NEW = 'NEW',
-  FACTORY = 'FACTORY',
-  VALUE = 'VALUE'
+  useFactory = 'inject:factory',
+  useValue = 'inject:value'
 }
-
-const factoryMap = new Map([
-  ['inject:factory', {
-    type: FACTORY_TYPES.FACTORY,
-    check: 'function'
-  }],
-  ['inject:value', {
-    type: FACTORY_TYPES.VALUE
-  }]
-]);
 
 interface Factory {
   make (Service: InjectableConstructor): Object;
 }
 
 export class ServiceFactory implements Factory {
-  type: keyof typeof FACTORY_TYPES = FACTORY_TYPES.NEW;
+  type: FACTORY_TYPES = null;
 
   make (Service: InjectableConstructor): Object {
     const type = this.getType(Service);
 
     switch (type) {
-    case FACTORY_TYPES.FACTORY:
+    case FACTORY_TYPES.useFactory:
       return this.factory(Service);
-    case FACTORY_TYPES.VALUE:
+    case FACTORY_TYPES.useValue:
       return this.value(Service);
-    case FACTORY_TYPES.NEW:
     default:
       return this.instance(Service);
     }
   }
 
-  private getType (Service) {
-    factoryMap.forEach((factory, name) => {
+  private getType (Service): FACTORY_TYPES {
+    Reflect.ownKeys(FACTORY_TYPES).forEach((property) => {
 
-      const metaData = Reflect.getMetadata(name, Service);
+      const metadataName = FACTORY_TYPES[property];
+      const metaData = Reflect.getMetadata(metadataName, Service);
 
       if (metaData) {
-        const { type, check } = factory;
-
-        if (check && typeof metaData !== check) {
+        /*if (check && typeof metaData !== check) {
           return assert(false, `${String(name)} invalid type: should be ${check}`);
-        }
-        this.type = type;
+        }*/
+        this.type = metadataName;
       }
 
     });
