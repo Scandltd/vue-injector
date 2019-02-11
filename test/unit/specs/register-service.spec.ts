@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
+import {message, ERROR_MESSAGE, WARNING_MESSAGE} from '../../../src/Enums';
 
 Vue.use(VueInjector);
 
@@ -116,7 +117,7 @@ describe('registerComponent service', () => {
         @Injectable(options)
         class Service {}
       }
-    ).toThrowError(`[@scandltd/vue-injector] @injectable can take only one parameter eather useFactory or useValue`);
+    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_001);
   });
 
   it('register with random keys', () => {
@@ -129,9 +130,10 @@ describe('registerComponent service', () => {
     @Injectable(options)
     class Service {}
 
+    let msg = message(WARNING_MESSAGE.WARNING_000, { name: 'Service', options: JSON.stringify(options) });
+
     expect(console.warn)
-      .toHaveBeenCalledWith(`[@scandltd/vue-injector] Wrong service registration. Service name: Service.
-@injectable can take only one parameter eather useFactory or useValue, but got ${JSON.stringify(options)}`);
+      .toHaveBeenCalledWith('[@scandltd/vue-injector] ' + msg);
   });
 
   it('useFactory get vue', () => {
@@ -169,7 +171,7 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] useFactory invalid return');
+    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_007);
   });
 
 
@@ -208,9 +210,9 @@ describe('registerComponent service', () => {
 
     expect(
         () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
+    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_005);
     expect(
         () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
-    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
+    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_005);
   });
 });

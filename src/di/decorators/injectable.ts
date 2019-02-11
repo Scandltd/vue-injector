@@ -1,6 +1,7 @@
 import { assert, warn } from '../../util/warn';
 import 'reflect-metadata';
 import { FACTORY_TYPES } from '../factory';
+import {ERROR_MESSAGE, message, WARNING_MESSAGE} from '../../Enums';
 
 export interface InjectableConstructor {
 
@@ -25,12 +26,12 @@ function injectableFactory (target: InjectableConstructor, options: InjectableOp
   });
 
   if (checkOtherProperty) {
-    warn(false, `Wrong service registration. Service name: ${target.name}.
-@injectable can take only one parameter eather useFactory or useValue, but got ${JSON.stringify(options)}`);
+    let msg = message(WARNING_MESSAGE.WARNING_000, { name: target.name, options: JSON.stringify(options) })
+    warn(false, msg);
   }
 
   if (Reflect.has(options, 'useFactory') && Reflect.has(options, 'useValue')) {
-    return assert(false, `@injectable can take only one parameter eather useFactory or useValue`);
+    return assert(false, ERROR_MESSAGE.ERROR_001);
   }
 
   Reflect.defineMetadata('inject:factory', options.useFactory, target);

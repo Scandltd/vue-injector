@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
+import {ERROR_MESSAGE} from '../../../src/Enums';
 
 Vue.use(VueInjector);
 
@@ -121,7 +122,7 @@ describe('register component', () => {
 
     expect(
         () => injector.provider.registerComponent(mockComponent)
-    ).toThrowError('[@scandltd/vue-injector] providers not object');
+    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_004);
   });
 
   it('empty register', () => {

@@ -5,6 +5,7 @@ import { InjectableConstructor } from './decorators/injectable';
 import { checkObject } from '../util/object';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
+import { ERROR_MESSAGE } from '../Enums';
 
 export class Provider {
   app: Vue;
@@ -33,7 +34,7 @@ export class Provider {
           }
         });
       } else {
-        assert(false, 'providers not object');
+        assert(false, ERROR_MESSAGE.ERROR_004);
       }
     }
 
@@ -70,7 +71,7 @@ export class Provider {
       return this.serviceBinding.bind(service, name).to(target) && service;
     }
 
-    assert(false, 'no decorator Injectable');
+    assert(false, ERROR_MESSAGE.ERROR_005);
   }
 
   registerProviders (provider, imports) {
@@ -87,7 +88,7 @@ export class Provider {
 
       this.serviceBinding.bind(services).to(provider);
     } else {
-      assert(false, 'providers not object');
+      assert(false, ERROR_MESSAGE.ERROR_004);
     }
   }
 

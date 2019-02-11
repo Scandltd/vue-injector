@@ -7,6 +7,7 @@ import { Provider } from './di/provider';
 import { Injectable, InjectableConstructor } from './di/decorators/injectable';
 import { Inject } from './di/decorators/inject';
 import Vue, { PluginFunction, PluginObject } from 'vue';
+import { ERROR_MESSAGE } from './Enums';
 
 export {
   Injectable,
@@ -47,8 +48,7 @@ export default class VueInjector implements PluginObject<null> {
   init (app: Vue) {
     process.env.NODE_ENV !== 'production' && assert(
         (install as any).installed,
-      `not installed. Make sure to call \`Vue.use(VueInjector)\` ` +
-      `before creating root instance.`
+      ERROR_MESSAGE.ERROR_003
     );
 
     this.apps.push(app);
