@@ -30,14 +30,10 @@ Vue.component('VueInjector', {
   template:
     `<div>
       <div class="block">
-        <div ref="main" class="service">
-            <span class="service-name">{{ $AnyService.name }}</span>
-        </div>
+        <div ref="main" class="service root-service"></div>
       </div>
       <div class="block">
-        <div ref="import" class="service">
-            <span class="service-import">{{ $AnyService.service && $AnyService.service.name }}</span>
-        </div>
+        <div ref="import" class="service inject-service"></div>
       </div>
     </div>`,
   mounted () {

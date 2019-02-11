@@ -18,9 +18,7 @@ class AnyService {}
 
 @Component({
   template:
-    `<div class="block">
-      <div class="service-name">{{ service.name }}</div>
-    </div>`
+    `<div class="block"></div>`
 })
 class AnyComponent extends Vue {
   @Inject(AnyService) service;
