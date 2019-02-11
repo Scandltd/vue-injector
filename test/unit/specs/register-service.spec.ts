@@ -136,7 +136,7 @@ describe('registerComponent service', () => {
       .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
   });
 
-  it('useFactory get vue', () => {
+  /*it('useFactory get vue', () => {
     class Factory {
       constructor () {}
     }
@@ -155,7 +155,7 @@ describe('registerComponent service', () => {
     expect(service).toEqual(injector.provider.get(Service));
 
     expect(app).toEqual(injector.provider.get(Service).vm);
-  });
+  });*/
 
   it('useFactory invalid return', () => {
     class Factory {

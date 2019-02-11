@@ -55,17 +55,13 @@ export class Provider {
     if (!this.services.has(Service) && Reflect.getMetadata('inject:service', Service)) {
       if (Service.prototype.providers) {
         this.registerProviders(Service.prototype, Service.prototype.providers);
+        delete Service.prototype.providers;
       }
       
       this.services.set(Service, this.serviceFactory.make(Service));
     }
 
     const service = this.services.get(Service);
-
-    if (service && Service.prototype.providers) {
-      this.registerProviders(service, Service.prototype.providers);
-      delete Service.prototype.providers;
-    }
 
     if (service) {
       return this.serviceBinding.bind(service, name).to(target) && service;
@@ -76,17 +72,10 @@ export class Provider {
 
   registerProviders (provider, imports) {
     if (checkObject(imports)) {
-      const services = Object.keys(imports)
-        .map((name: string) => {
-          const service = this.registerService(provider, name, imports[name]);
-
-          return {
-            name,
-            service
-          };
+      Object.keys(imports)
+        .forEach((name: string) => {
+          this.registerService(provider, name, imports[name]);
         });
-
-      this.serviceBinding.bind(services).to(provider);
     } else {
       assert(false, ERROR_MESSAGE.ERROR_004);
     }

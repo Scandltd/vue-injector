@@ -1,15 +1,7 @@
 export function createDecorator (
-  factory: (target: any, key: string) => void
+  factory: (target: any, key: string, descriptor?: PropertyDescriptor) => void
 ): PropertyDecorator {
-  return function (target: any, key: string) {
-    const descriptor = arguments[2];
-
-    if (descriptor) {
-      delete descriptor.initializer;
-      descriptor.writable = true;
-      descriptor.configurable = true;
-    }
-
+  return function (target: any, key: string, descriptor?: PropertyDescriptor) {
     const Ctor = typeof target === 'function'
       ? target
       : target.constructor;
@@ -19,7 +11,7 @@ export function createDecorator (
     }
 
     Ctor.__decorators__.push(function (options) {
-      return factory(options, key);
+      return factory(options, key, descriptor);
     });
   };
 }
