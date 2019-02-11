@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
-import {message, ERROR_MESSAGE, WARNING_MESSAGE} from '../../../src/Enums';
+import { message, ERROR_MESSAGE, WARNING_MESSAGE } from '../../../src/enums/messages';
 
 Vue.use(VueInjector);
 
@@ -117,7 +117,7 @@ describe('registerComponent service', () => {
         @Injectable(options)
         class Service {}
       }
-    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_001);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_001}`);
   });
 
   it('register with random keys', () => {
@@ -133,7 +133,7 @@ describe('registerComponent service', () => {
     let msg = message(WARNING_MESSAGE.WARNING_000, { name: 'Service', options: JSON.stringify(options) });
 
     expect(console.warn)
-      .toHaveBeenCalledWith('[@scandltd/vue-injector] ' + msg);
+      .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
   });
 
   it('useFactory get vue', () => {
@@ -171,7 +171,7 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_007);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
   });
 
 
@@ -210,9 +210,9 @@ describe('registerComponent service', () => {
 
     expect(
         () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_005);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
     expect(
         () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
-    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_005);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
   });
 });

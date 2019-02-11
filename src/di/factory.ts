@@ -1,6 +1,6 @@
 import { assert } from '../util/warn';
 import { InjectableConstructor } from './decorators/injectable';
-import {ERROR_MESSAGE} from '../Enums';
+import { ERROR_MESSAGE } from '../enums/messages';
 
 export enum FACTORY_TYPES {
   useFactory = 'inject:factory',
@@ -55,7 +55,7 @@ export class ServiceFactory implements Factory {
     if (factory) {
       return factory;
     } else {
-      assert(false, ERROR_MESSAGE.ERROR_007);
+      assert(false, ERROR_MESSAGE.ERROR_006);
     }
   }
 
@@ -65,7 +65,7 @@ export class ServiceFactory implements Factory {
     if (value) {
       return value;
     } else {
-      assert(false, ERROR_MESSAGE.ERROR_008);
+      assert(false, ERROR_MESSAGE.ERROR_007);
     }
   }
 }

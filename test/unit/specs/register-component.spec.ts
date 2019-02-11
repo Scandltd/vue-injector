@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
-import {ERROR_MESSAGE} from '../../../src/Enums';
+import { ERROR_MESSAGE } from '../../../src/enums/messages';
 
 Vue.use(VueInjector);
 
@@ -122,7 +122,7 @@ describe('register component', () => {
 
     expect(
         () => injector.provider.registerComponent(mockComponent)
-    ).toThrowError('[@scandltd/vue-injector] ' + ERROR_MESSAGE.ERROR_004);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_004}`);
   });
 
   it('empty register', () => {

@@ -1,3 +1,5 @@
+import Vue, { PluginFunction, PluginObject } from 'vue';
+
 import { install } from './install';
 import { assert } from './util/warn';
 import { inBrowser } from './util/dom';
@@ -6,8 +8,8 @@ import { Provider } from './di/provider';
 
 import { Injectable, InjectableConstructor } from './di/decorators/injectable';
 import { Inject } from './di/decorators/inject';
-import Vue, { PluginFunction, PluginObject } from 'vue';
-import { ERROR_MESSAGE } from './Enums';
+
+import { ERROR_MESSAGE } from './enums/messages';
 
 export {
   Injectable,

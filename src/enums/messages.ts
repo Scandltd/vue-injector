@@ -1,13 +1,12 @@
 export enum ERROR_MESSAGE {
-  ERROR_000 = '',
+  ERROR_000 = '[@scandltd/vue-injector]:',
   ERROR_001 = '@injectable can take only one parameter either useFactory or useValue',
   ERROR_002 = 'function "message". Parameters in a string do not match those in array: ',
   ERROR_003 = 'not installed. Make sure to call `Vue.use(VueInjector)` before creating root instance.',
   ERROR_004 = 'providers are not objects',
   ERROR_005 = 'no decorator Injectable',
-  ERROR_006 = '',
-  ERROR_007 = 'useFactory invalid return',
-  ERROR_008 = 'invalid useValue'
+  ERROR_006 = 'useFactory invalid return',
+  ERROR_007 = 'invalid useValue'
 }
 
 export enum WARNING_MESSAGE {
@@ -16,12 +15,8 @@ export enum WARNING_MESSAGE {
 }
 
 export function message (str: string, arg: Object = {}): string {
-  // todo redundant parameters in a string
-  // console.log(str.match(new RegExp(`\\{(.*?)\\}`, 'gi')));
-
-  // redundant parameters in args
-  let spareParameters = Object.keys(arg).filter((val) => {
-    return null === str.match(new RegExp(`{${val}}`));
+  let spareParameters = Reflect.ownKeys(arg).filter((val) => {
+    return null === str.match(new RegExp(`{${String(val)}}`));
   });
 
   if (spareParameters.length) {

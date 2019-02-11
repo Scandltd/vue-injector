@@ -1,8 +1,9 @@
 import { assert, isError, warn } from '../../../src/util/warn';
+import { ERROR_MESSAGE } from '../../../src/enums/messages';
 
 describe('warn', () => {
   it('assert false', () => {
-    expect(() => assert(false, 'error text')).toThrowError('[@scandltd/vue-injector] error text');
+    expect(() => assert(false, 'error text')).toThrowError(`${ERROR_MESSAGE.ERROR_000} error text`);
   });
 
   it('assert true', () => {
@@ -33,7 +34,7 @@ describe('warn', () => {
 
     it('warn false', () => {
       warn(false, 'error text');
-      expect(console.warn).toHaveBeenCalledWith('[@scandltd/vue-injector] error text');
+      expect(console.warn).toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} error text`);
     });
   });
 });

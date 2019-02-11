@@ -5,7 +5,7 @@ import { InjectableConstructor } from './decorators/injectable';
 import { checkObject } from '../util/object';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
-import { ERROR_MESSAGE } from '../Enums';
+import { ERROR_MESSAGE } from '../enums/messages';
 
 export class Provider {
   app: Vue;
