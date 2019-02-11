@@ -40,22 +40,22 @@ sidebar: auto
     })
     class UserService {}
     ```
+### useValue
 
-## `InjectableConstructor`
- 
-### name
+- type: `any`
+- unnecessary
+  
+  Signature:
 
-- type: `string`
+  
+  Using a value to build a service.
 
-  Name of an on-going service.
-
-### isVueService
-
-- type: `boolean`
-
-- by default: `true`
-
-  Shows if an object is a service.
+  ``` js
+  @Injectable({
+      useValue: 'someValue'
+  })
+  class UserService {}
+  ```
 
 ## `VueInjector`
 

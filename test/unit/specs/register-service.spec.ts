@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
+import { message, ERROR_MESSAGE, WARNING_MESSAGE } from '../../../src/enums/messages';
 
 Vue.use(VueInjector);
 
@@ -21,11 +22,10 @@ describe('registerComponent service', () => {
 
     const service = injector.provider.registerService(app, 'Service', Service);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-
-    expect(service.name).toEqual('Service');
+    expect(injector.provider.services.size).toBe(1);
 
     expect(service).toEqual(injector.provider.get(Service));
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
   });
 
   it('register two', () => {
@@ -38,11 +38,10 @@ describe('registerComponent service', () => {
     const service = injector.provider.registerService(app, 'Service', Service);
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(injector.provider.services.size).toBe(2);
 
-    expect(service.name).toEqual('Service');
-    expect(serviceTwo.name).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
 
     expect(service).toEqual(injector.provider.get(Service));
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -60,13 +59,11 @@ describe('registerComponent service', () => {
     const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
     expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).Service).toEqual(injector.provider.get(Service));
 
-    expect(serviceTwo.name).toEqual('ServiceTwo');
-    expect(serviceTwo.Service.name).toEqual('Service');
 
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
     expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -94,6 +91,49 @@ describe('registerComponent service', () => {
     expect(service.type).toEqual('useFactory');
 
     expect(service).toEqual(injector.provider.get(Service));
+  });
+
+  it('register with useValue', () => {
+    @Injectable({
+      useValue: 'anyValue'
+    })
+    class Service {}
+
+    const service = injector.provider.registerService(app, 'Service', Service);
+
+    expect(injector.provider.services.size).toBe(1);
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(injector.provider.get(Service)).toEqual('anyValue');
+  });
+
+  it('register with useValue and useFactory', () => {
+    const options = {
+      useValue: 'anyValue',
+      useFactory: function () {}
+    };
+
+    expect(
+      () => {
+        @Injectable(options)
+        class Service {}
+      }
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_001}`);
+  });
+
+  it('register with random keys', () => {
+    spyOn(console, 'warn');
+
+    const options = {
+      anyKey: 'anyValue'
+    };
+
+    @Injectable(options)
+    class Service {}
+
+    let msg = message(WARNING_MESSAGE.WARNING_000, { name: 'Service', options: JSON.stringify(options) });
+
+    expect(console.warn)
+      .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
   });
 
   it('useFactory get vue', () => {
@@ -131,7 +171,7 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] useFactory invalid return');
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
   });
 
 
@@ -142,7 +182,7 @@ describe('registerComponent service', () => {
     injector.get(Service);
 
     expect(injector.provider.services.size).toBe(1);
-    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(app.Service).toEqual(injector.provider.get(Service));
   });
 
@@ -153,8 +193,7 @@ describe('registerComponent service', () => {
     const service = injector.provider.registerService(app, 'Service', Service);
     const injectorService = injector.get(Service);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(service.name).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(service).toEqual(injector.provider.get(Service));
 
     expect(injector.provider.services.size).toBe(1);
@@ -171,9 +210,9 @@ describe('registerComponent service', () => {
 
     expect(
         () => injector.provider.registerService(app, 'Service', Service)
-    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
     expect(
         () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
-    ).toThrowError('[@scandltd/vue-injector] no decorator Injectable');
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
   });
 });

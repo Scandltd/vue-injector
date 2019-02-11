@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
+import { ERROR_MESSAGE } from '../../../src/enums/messages';
 
 Vue.use(VueInjector);
 
@@ -29,10 +30,6 @@ describe('register component', () => {
 
     injector.provider.registerComponent(mockComponent);
 
-    expect(injector.provider.services.get(Service).name).toEqual('Service');
-
-    expect(mockComponent.Service.name).toEqual('Service');
-
     expect(mockComponent.Service).toEqual(injector.provider.services.get(Service));
   });
 
@@ -52,14 +49,33 @@ describe('register component', () => {
 
     injector.provider.registerComponent(mockComponent);
 
-    expect(injector.provider.get(Service).name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
 
-    expect(mockComponent.Service.name).toEqual('Service');
-    expect(mockComponent.ServiceTwo.name).toEqual('ServiceTwo');
+    expect(injector.provider.services.size).toBe(2);
 
     expect(mockComponent.Service).toEqual(injector.provider.get(Service));
     expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
+  });
+
+  it('register with useValue', () => {
+    @Injectable({
+      useValue: 'anyValue'
+    })
+    class Service {}
+
+    const mockComponent: any = {
+      _providers: {
+        Service
+      }
+    };
+
+    injector.provider.registerComponent(mockComponent);
+
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+
+    expect(injector.provider.services.size).toBe(1);
+    expect(mockComponent.Service).toEqual(injector.provider.get(Service));
   });
 
   it('register with import', () => {
@@ -83,20 +99,16 @@ describe('register component', () => {
     expect(injector.provider.services.size).toBe(2);
 
     expect(injector.provider.get(Service) instanceof Service).toBe(true);
-    expect(injector.provider.get(Service).name).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(injector.provider.get(ServiceTwo) instanceof ServiceTwo).toBe(true);
-    expect(injector.provider.get(ServiceTwo).name).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
     expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo).Service.name).toEqual('Service');
+    expect(injector.provider.get(ServiceTwo).Service).toEqual(injector.provider.get(Service));
 
     expect(mockComponent.Service instanceof Service).toBe(true);
-    expect(mockComponent.Service.name).toEqual('Service');
+    expect(mockComponent.Service).toEqual(injector.provider.get(Service));
     expect(mockComponent.ServiceTwo instanceof ServiceTwo).toBe(true);
-    expect(mockComponent.ServiceTwo.name).toEqual('ServiceTwo');
     expect(mockComponent.ServiceTwo.Service).toEqual(jasmine.any(Object));
-    expect(mockComponent.ServiceTwo.Service.name).toEqual('Service');
-    expect(mockComponent.ServiceTwo.Service.name).toEqual('Service');
 
     expect(mockComponent.Service).toEqual(injector.provider.get(Service));
     expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
@@ -110,7 +122,7 @@ describe('register component', () => {
 
     expect(
         () => injector.provider.registerComponent(mockComponent)
-    ).toThrowError('[@scandltd/vue-injector] providers not object');
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_004}`);
   });
 
   it('empty register', () => {

@@ -1,11 +1,7 @@
 import Vue, { Component } from 'vue';
 
 export declare interface InjectableConstructor {
-  isVueService: boolean;
-  useFactory: Function;
-
   providers?: { [key: string]: any };
-  __decorators__?: Array<Function>;
 
   new (): any;
 }
