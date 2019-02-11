@@ -20,9 +20,7 @@ Vue.component('VueInjector', {
     $AnyService: AnyService
   },
   template:
-    `<div class="block">
-      <div class="service-name">{{ $AnyService.name }}</div>
-    </div>`,
+      `<div class="block"></div>`,
   mounted () {
     this.code(this.$AnyService, this.$el)
   }

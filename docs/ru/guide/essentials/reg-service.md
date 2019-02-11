@@ -48,3 +48,16 @@ useFactory: () => {
     return new Logger(vm, imports)
 }
 ```
+
+## Использование значения
+
+Иногда легче использовать готовый объект. Для того чтобы использовать уже созданный объект, необходимо сконфигурировать декоратор используя свойство "useValue".
+``` js
+const Logger = { ... }
+
+@Injectable({
+    useValue: Logger
+})
+class LoggerService {}
+```
+`useValue` может быть любого типа

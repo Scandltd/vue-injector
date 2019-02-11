@@ -26,7 +26,8 @@
     ],
     "types": [
       "node",
-      "jasmine"
+      "jasmine",
+      "reflect-metadata"
     ]
   },
   "include": [

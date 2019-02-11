@@ -1,7 +1,5 @@
 <template>
-  <div class="block">
-    <div class="service-name">{{ service.name }}</div>
-  </div>
+  <div class="block"></div>
 </template>
 
 <script lang="ts">

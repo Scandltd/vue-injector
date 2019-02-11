@@ -1,6 +1,6 @@
 {
   "name": "@scandltd/vue-injector",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "Dependency Injection for Vue.js 2",
   "type": "library",
   "license": "GPL-2.0",
@@ -51,8 +51,10 @@
   },
   "devDependencies": {
     "@babel/polyfill": "^7.0.0-beta.51",
+    "@babel/preset-typescript": "^7.1.0",
     "@types/jasmine": "^3.3.5",
     "@types/node": "^10.12.18",
+    "@types/reflect-metadata": "^0.1.0",
     "@vue/test-utils": "^1.0.0-beta.20",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.2",
@@ -92,6 +94,7 @@
     "nightwatch-helpers": "^1.0.0",
     "path-to-regexp": "^1.7.0",
     "phantomjs-prebuilt": "^2.1.16",
+    "reflect-metadata": "^0.1.13",
     "rollup": "^0.56.4",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-buble": "^0.19.2",

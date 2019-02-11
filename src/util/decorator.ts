@@ -13,6 +13,7 @@ export function createDecorator (
     const Ctor = typeof target === 'function'
       ? target
       : target.constructor;
+
     if (!Ctor.__decorators__) {
       Ctor.__decorators__ = [];
     }

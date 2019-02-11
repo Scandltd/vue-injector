@@ -31,22 +31,22 @@ sidebar: auto
   })
   class UserService extends Inject {}
   ```
+  
+### useValue
 
-## `InjectableConstructor`
+- type: `любой`
+- не обязательный
+  
+  Сигнатура:
+  
+  Использование значения для построения сервиса.
 
-### name
-
-- тип: `string`
-
-  Имя текущего сервиса.
-
-### isVueService
-
-- тип: `boolean`
-
-- по умолчанию: `true`
-
-  Показывает, является ли объект сервисом.
+  ``` js
+  @Injectable({
+      useValue: 'someValue'
+  })
+  class UserService {}
+  ```  
 
 ## `VueInjector`
 

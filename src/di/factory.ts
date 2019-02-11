@@ -1,66 +1,71 @@
 import { assert } from '../util/warn';
 import { InjectableConstructor } from './decorators/injectable';
+import { ERROR_MESSAGE } from '../enums/messages';
 
 export enum FACTORY_TYPES {
-  NEW = 'NEW',
-  FACTORY = 'FACTORY',
-  VALUE = 'VALUE'
+  useFactory = 'inject:factory',
+  useValue = 'inject:value'
 }
-
-export const FACTORY_MAP = {
-  useFactory: {
-    type: FACTORY_TYPES.FACTORY,
-    check: 'function'
-  },
-  useValue: {
-    type: FACTORY_TYPES.VALUE
-  }
-};
 
 interface Factory {
   make (Service: InjectableConstructor): Object;
 }
 
 export class ServiceFactory implements Factory {
-  type: keyof typeof FACTORY_TYPES = FACTORY_TYPES.NEW;
+  type: FACTORY_TYPES = null;
 
   make (Service: InjectableConstructor): Object {
     const type = this.getType(Service);
 
     switch (type) {
-    case FACTORY_TYPES.FACTORY:
-      return this.custom(Service);
-    case FACTORY_TYPES.NEW:
+    case FACTORY_TYPES.useFactory:
+      return this.factory(Service);
+    case FACTORY_TYPES.useValue:
+      return this.value(Service);
     default:
-      return this.default(Service);
+      return this.instance(Service);
     }
   }
 
-  private getType (Service) {
-    Object.keys(FACTORY_MAP).forEach(name => {
-      if (Object.hasOwnProperty.call(Service, name) && Service[name]) {
-        this.type = FACTORY_MAP[name].type;
+  private getType (Service): FACTORY_TYPES {
+    Reflect.ownKeys(FACTORY_TYPES).forEach((property) => {
 
-        if (FACTORY_MAP[name].check && typeof Service[name] !== FACTORY_MAP[name].check) {
-          return assert(false, `${name} invalid type: should be ${FACTORY_MAP[name].check}`);
-        }
+      const metadataName = FACTORY_TYPES[property];
+      const metaData = Reflect.getMetadata(metadataName, Service);
+
+      if (metaData) {
+        /*if (check && typeof metaData !== check) {
+          return assert(false, `${String(name)} invalid type: should be ${check}`);
+        }*/
+        this.type = metadataName;
       }
+
     });
 
     return this.type;
   }
 
-  private default (Service: InjectableConstructor): any {
+  private instance (Service: InjectableConstructor): any {
     return new Service();
   }
 
-  private custom (Service: InjectableConstructor): Object {
-    const factory = Service.useFactory();
+  private factory (Service: InjectableConstructor): Object {
+    const factory = (Reflect.getMetadata('inject:factory', Service))();
 
     if (factory) {
       return factory;
     } else {
-      assert(false, 'useFactory invalid return');
+      assert(false, ERROR_MESSAGE.ERROR_006);
+    }
+  }
+
+  private value (Service: InjectableConstructor): Object {
+    const value = Reflect.getMetadata('inject:value', Service);
+
+    if (value) {
+      return value;
+    } else {
+      assert(false, ERROR_MESSAGE.ERROR_007);
     }
   }
 }
