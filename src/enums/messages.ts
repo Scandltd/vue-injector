@@ -6,7 +6,8 @@ export enum ERROR_MESSAGE {
   ERROR_004 = 'providers are not objects',
   ERROR_005 = 'no decorator Injectable',
   ERROR_006 = 'useFactory invalid return',
-  ERROR_007 = 'invalid useValue'
+  ERROR_007 = 'invalid useValue',
+  ERROR_008 = '{name} invalid type: must be \'function\''
 }
 
 export enum WARNING_MESSAGE {
