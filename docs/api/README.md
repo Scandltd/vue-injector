@@ -57,22 +57,6 @@ sidebar: auto
   class UserService {}
   ```
 
-## `InjectableConstructor`
- 
-### name
-
-- type: `string`
-
-  Name of an on-going service.
-
-### isVueService
-
-- type: `boolean`
-
-- by default: `true`
-
-  Shows if an object is a service.
-
 ## `VueInjector`
 
 ### app

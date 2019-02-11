@@ -48,22 +48,6 @@ sidebar: auto
   class UserService {}
   ```  
 
-## `InjectableConstructor`
-
-### name
-
-- тип: `string`
-
-  Имя текущего сервиса.
-
-### isVueService
-
-- тип: `boolean`
-
-- по умолчанию: `true`
-
-  Показывает, является ли объект сервисом.
-
 ## `VueInjector`
 
 ### app
