@@ -4,8 +4,8 @@ import { ERROR_MESSAGE, message } from '../enums/messages';
 import { METADATA } from '../enums/metadata';
 
 export enum FACTORY_TYPES {
-  useFactory = 'inject:factory',
-  useValue = 'inject:value'
+  useFactory = 'useFactory',
+  useValue = 'useFactory'
 }
 
 interface Factory {
@@ -13,25 +13,23 @@ interface Factory {
 }
 
 export class ServiceFactory implements Factory {
-  type: FACTORY_TYPES = null;
-
+  type;
   make (Service: InjectableConstructor): Object {
     const type = this.getType(Service);
 
     switch (type) {
-    case FACTORY_TYPES.useFactory:
+    case METADATA.FACTORY:
       return this.factory(Service);
-    case FACTORY_TYPES.useValue:
+    case METADATA.VALUE:
       return this.value(Service);
     default:
       return this.instance(Service);
     }
   }
 
-  private getType (Service): FACTORY_TYPES {
-    Reflect.ownKeys(FACTORY_TYPES).forEach((property) => {
+  private getType (Service) {
+    [METADATA.VALUE, METADATA.FACTORY].forEach((metadataName) => {
 
-      const metadataName = FACTORY_TYPES[property];
       const metaData = Reflect.getMetadata(metadataName, Service);
 
       if (metaData) {
