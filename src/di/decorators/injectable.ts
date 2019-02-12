@@ -23,7 +23,6 @@ function injectableFactory (target: InjectableConstructor, options: InjectableOp
 
     const optionKeys = Reflect.ownKeys(options);
     const whitelist = Reflect.ownKeys(FACTORY_TYPES);
-    const { useFactory, useValue } = options;
 
     // checks whether all options given are allowed. Allowed options (useValue, useFactory)
     const checkOtherProperty = !optionKeys.every((prop: PropertyKey) => {
@@ -35,24 +34,32 @@ function injectableFactory (target: InjectableConstructor, options: InjectableOp
       warn(false, msg);
     }
 
-    if (useFactory && useValue) {
-      throw assert(false, ERROR_MESSAGE.ERROR_001);
+    const findProps = whitelist.filter(props => Reflect.has(options, props));
+
+    if (findProps.length > 1) {
+      throw assert(false, message(
+        ERROR_MESSAGE.ERROR_001,
+        { names: JSON.stringify(whitelist) }
+        )
+      );
     }
 
-    if (useFactory) {
-      return FACTORY_TYPES['useFactory'];
+    const type = whitelist.find(props => Reflect.has(options, props));
+
+    if (type) {
+      return FACTORY_TYPES[type];
     }
 
-    if (useValue) {
-      return FACTORY_TYPES['useValue'];
-    }
-    return FACTORY_TYPES.default;
+    return null;
   }
 
   let serviceType = getServiceType(options);
 
-  Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
-  Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
+  if (serviceType) {
+    Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
+    Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
+  }
+
   Reflect.defineMetadata(METADATA.NAME, target.name, target);
   Reflect.defineMetadata(METADATA.SERVICE, true, target);
 

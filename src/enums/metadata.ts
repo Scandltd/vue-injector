@@ -7,6 +7,5 @@ export enum METADATA {
 
 export enum FACTORY_TYPES {
     useFactory = 'useFactory',
-    useValue = 'useValue',
-    default = 'default'
+    useValue = 'useValue'
 }

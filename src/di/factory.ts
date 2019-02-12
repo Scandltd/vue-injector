@@ -11,14 +11,15 @@ interface Factory {
 export class ServiceFactory implements Factory {
   type;
   make (Service: InjectableConstructor): Object {
-    const type = Reflect.getMetadata(METADATA.TYPE, Service);
+    const method = Reflect.getMetadata(METADATA.TYPE, Service);
 
-    switch (type) {
-    case FACTORY_TYPES.useFactory:
-      return this.factory(Service);
-    case FACTORY_TYPES.useValue:
-      return this.value(Service);
-    default:
+    if (method) {
+      if (typeof this[method] !== 'function') {
+        throw assert(false, message(ERROR_MESSAGE.ERROR_009, { method }));
+      }
+
+      return this[method](Service);
+    } else {
       return this.instance(Service);
     }
   }
@@ -27,7 +28,7 @@ export class ServiceFactory implements Factory {
     return new Service();
   }
 
-  private factory (Service: InjectableConstructor): Object {
+  private useFactory (Service: InjectableConstructor): Object {
     const name = Reflect.getMetadata(METADATA.NAME, Service);
     const factory = Reflect.getMetadata(METADATA.VALUE, Service);
 
@@ -44,7 +45,7 @@ export class ServiceFactory implements Factory {
     }
   }
 
-  private value (Service: InjectableConstructor): Object {
+  private useValue (Service: InjectableConstructor): Object {
     const value = Reflect.getMetadata(METADATA.VALUE, Service);
 
     if (value) {

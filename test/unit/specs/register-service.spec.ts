@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
 import { message, ERROR_MESSAGE, WARNING_MESSAGE } from '../../../src/enums/messages';
+import { FACTORY_TYPES } from '../../../src/enums/metadata';
 
 Vue.use(VueInjector);
 
@@ -112,12 +113,19 @@ describe('registerComponent service', () => {
       useFactory: function () {}
     };
 
+    const whitelist = Reflect.ownKeys(FACTORY_TYPES);
+
+    const error = message(
+      ERROR_MESSAGE.ERROR_001,
+      { names: JSON.stringify(whitelist) }
+    );
+
     expect(
       () => {
         @Injectable(options)
         class Service {}
       }
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_001}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${error}`);
   });
 
   it('register with random keys', () => {
