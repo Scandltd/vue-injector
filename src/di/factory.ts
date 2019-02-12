@@ -1,6 +1,7 @@
 import { assert } from '../util/warn';
 import { InjectableConstructor } from './decorators/injectable';
 import { ERROR_MESSAGE, message } from '../enums/messages';
+import { METADATA } from '../enums/metadata';
 
 export enum FACTORY_TYPES {
   useFactory = 'inject:factory',
@@ -47,8 +48,8 @@ export class ServiceFactory implements Factory {
   }
 
   private factory (Service: InjectableConstructor): Object {
-    const name = Reflect.getMetadata('inject:name', Service);
-    const factory = Reflect.getMetadata('inject:factory', Service);
+    const name = Reflect.getMetadata(METADATA.NAME, Service);
+    const factory = Reflect.getMetadata(METADATA.FACTORY, Service);
 
     if (factory && typeof factory === 'function') {
       throw assert(false, message(ERROR_MESSAGE.ERROR_008, { name }));
@@ -64,7 +65,7 @@ export class ServiceFactory implements Factory {
   }
 
   private value (Service: InjectableConstructor): Object {
-    const value = Reflect.getMetadata('inject:value', Service);
+    const value = Reflect.getMetadata(METADATA.VALUE, Service);
 
     if (value) {
       return value;

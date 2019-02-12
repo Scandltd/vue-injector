@@ -1,7 +1,8 @@
 import { assert, warn } from '../../util/warn';
 import 'reflect-metadata';
-import { FACTORY_TYPES } from '../factory';
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
+import { FACTORY_TYPES } from '../factory';
+import { METADATA } from '../../enums/metadata';
 
 export interface InjectableConstructor {
 
@@ -34,10 +35,10 @@ function injectableFactory (target: InjectableConstructor, options: InjectableOp
     return assert(false, ERROR_MESSAGE.ERROR_001);
   }
 
-  Reflect.defineMetadata('inject:factory', options.useFactory, target);
-  Reflect.defineMetadata('inject:value', options.useValue, target);
-  Reflect.defineMetadata('inject:name', target.name, target);
-  Reflect.defineMetadata('inject:service', true, target);
+  Reflect.defineMetadata(METADATA.FACTORY, options.useFactory, target);
+  Reflect.defineMetadata(METADATA.VALUE, options.useValue, target);
+  Reflect.defineMetadata(METADATA.NAME, target.name, target);
+  Reflect.defineMetadata(METADATA.SERVICE, true, target);
 
   const decorators = target.__decorators__;
 

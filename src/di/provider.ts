@@ -6,6 +6,7 @@ import { checkObject } from '../util/object';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
 import { ERROR_MESSAGE } from '../enums/messages';
+import { METADATA } from '../enums/metadata';
 
 export class Provider {
   app: Vue;
@@ -40,8 +41,8 @@ export class Provider {
 
     if (this.rootProviders.length) {
       this.rootProviders.forEach(provider => {
-        if (Reflect.getMetadata('inject:service', provider)) {
-          this.registerService(component, Reflect.getMetadata('inject:name', provider), provider);
+        if (Reflect.getMetadata(METADATA.SERVICE, provider)) {
+          this.registerService(component, Reflect.getMetadata(METADATA.NAME, provider), provider);
         }
       });
     }
@@ -52,7 +53,7 @@ export class Provider {
       return target[name] = this.app;
     }
 
-    if (!this.services.has(Service) && Reflect.getMetadata('inject:service', Service)) {
+    if (!this.services.has(Service) && Reflect.getMetadata(METADATA.SERVICE, Service)) {
       if (Service.prototype.providers) {
         this.registerProviders(Service.prototype, Service.prototype.providers);
         delete Service.prototype.providers;

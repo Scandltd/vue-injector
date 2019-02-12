@@ -70,10 +70,10 @@ describe('registerComponent service', () => {
     expect(serviceTwo.Service).toEqual(injector.provider.get(Service));
   });
 
-  it('register with useFactory', () => {
+  it('register with FACTORY', () => {
     class Factory {
       get type () {
-        return 'useFactory';
+        return 'FACTORY';
       }
     }
 
@@ -87,13 +87,13 @@ describe('registerComponent service', () => {
 
     expect(injector.provider.services.size).toBe(1);
 
-    expect(injector.provider.get(Service).type).toEqual('useFactory');
-    expect(service.type).toEqual('useFactory');
+    expect(injector.provider.get(Service).type).toEqual('FACTORY');
+    expect(service.type).toEqual('FACTORY');
 
     expect(service).toEqual(injector.provider.get(Service));
   });
 
-  it('register with useValue', () => {
+  it('register with VALUE', () => {
     @Injectable({
       useValue: 'anyValue'
     })
@@ -106,7 +106,7 @@ describe('registerComponent service', () => {
     expect(injector.provider.get(Service)).toEqual('anyValue');
   });
 
-  it('register with useValue and useFactory', () => {
+  it('register with VALUE and FACTORY', () => {
     const options = {
       useValue: 'anyValue',
       useFactory: function () {}
@@ -136,13 +136,13 @@ describe('registerComponent service', () => {
       .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
   });
 
-  /*it('useFactory get vue', () => {
+  /*it('FACTORY get vue', () => {
     class Factory {
       constructor () {}
     }
 
     @Injectable({
-      useFactory: () => new Factory()
+      FACTORY: () => new Factory()
     })
     class Service {
       @Inject(Vue) vm;
@@ -157,7 +157,7 @@ describe('registerComponent service', () => {
     expect(app).toEqual(injector.provider.get(Service).vm);
   });*/
 
-  it('useFactory invalid return', () => {
+  it('FACTORY invalid return', () => {
     class Factory {
       constructor (public vm) {}
     }
