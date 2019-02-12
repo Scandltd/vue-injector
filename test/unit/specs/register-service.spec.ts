@@ -20,7 +20,7 @@ describe('registerComponent service', () => {
     @Injectable
     class Service {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
 
@@ -35,8 +35,8 @@ describe('registerComponent service', () => {
     @Injectable
     class ServiceTwo {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
-    const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
+    const service = injector.provider.registerService('Service', Service);
+    const serviceTwo = injector.provider.registerService('ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
 
@@ -56,7 +56,7 @@ describe('registerComponent service', () => {
       @Inject(Service) Service;
     }
 
-    const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
+    const serviceTwo = injector.provider.registerService('ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
@@ -83,7 +83,7 @@ describe('registerComponent service', () => {
     class Service {}
 
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
 
@@ -99,7 +99,7 @@ describe('registerComponent service', () => {
     })
     class Service {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
@@ -170,7 +170,7 @@ describe('registerComponent service', () => {
     class Service {}
 
     expect(
-      () => injector.provider.registerService(app, 'Service', Service)
+      () => injector.provider.registerService('Service', Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
   });
 
@@ -179,18 +179,18 @@ describe('registerComponent service', () => {
     @Injectable
     class Service {}
 
-    injector.get(Service);
+    const service = injector.get(Service);
 
     expect(injector.provider.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(app.Service).toEqual(injector.provider.get(Service));
+    expect(service).toEqual(injector.provider.get(Service));
   });
 
   it('get service after register', () => {
     @Injectable
     class Service {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
     const injectorService = injector.get(Service);
 
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
@@ -209,10 +209,10 @@ describe('registerComponent service', () => {
     }
 
     expect(
-        () => injector.provider.registerService(app, 'Service', Service)
+        () => injector.provider.registerService('Service', Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
     expect(
-        () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
+        () => injector.provider.registerService('ServiceTwo', ServiceTwo)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
   });
 });

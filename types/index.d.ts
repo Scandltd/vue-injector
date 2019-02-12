@@ -29,7 +29,8 @@ export declare class Provider {
   constructor (app: Vue, rootProviders: Array<any>);
 
   registerComponent (component: Vue);
-  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): Object;
+  registerService (name: string, Service: InjectableConstructor): InjectableConstructor;
+  bindService (target: InjectedObject, name: string, Service: InjectableConstructor);
 
   set (Service: any);
   get (Service: any): Object;

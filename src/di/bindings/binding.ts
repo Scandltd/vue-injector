@@ -30,13 +30,10 @@ export class ServiceBinding implements Binding {
     this.binging.forEach((Inject: service) => {
       const injectServiceName = Inject.name;
 
-      const checkProperty: boolean = Object.hasOwnProperty.call(target, injectServiceName)
-        ? !target[injectServiceName]
-        : true;
-
-      if (checkProperty && Inject.service) {
+      if (Inject.service) {
         Reflect.defineProperty(target, injectServiceName, {
           enumerable: true,
+          configurable: false,
           get: () => Inject.service
         });
       }

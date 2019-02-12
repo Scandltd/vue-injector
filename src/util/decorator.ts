@@ -1,17 +1,25 @@
 export function createDecorator (
-  factory: (target: any, key: string, descriptor?: PropertyDescriptor) => void
+  factory: (target: any, key: string) => void
 ): PropertyDecorator {
-  return function (target: any, key: string, descriptor?: PropertyDescriptor) {
+  return function (target: any, key: string) {
     const Ctor = typeof target === 'function'
       ? target
       : target.constructor;
 
-    if (!Ctor.__decorators__) {
-      Ctor.__decorators__ = [];
-    }
+    const descriptor = {
+      enumerable: true,
+      configurable: true,
+      initializer: function () {
+        return this.__proto__[key];
+      }
+    };
 
-    Ctor.__decorators__.push(function (options) {
-      return factory(options, key, descriptor);
+    Reflect.defineProperty(target, key, descriptor);
+
+    (Ctor.__decorators__ || (Ctor.__decorators__ = [])).push(function (options) {
+      return factory(options, key);
     });
+
+    return descriptor;
   };
 }

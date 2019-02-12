@@ -50,7 +50,7 @@ export class ServiceFactory implements Factory {
     const name = Reflect.getMetadata('inject:name', Service);
     const factory = Reflect.getMetadata('inject:factory', Service);
 
-    if (factory && typeof factory === 'function') {
+    if (factory && typeof factory !== 'function') {
       throw assert(false, message(ERROR_MESSAGE.ERROR_008, { name }));
     }
 
