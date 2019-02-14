@@ -1,7 +1,7 @@
 import { assert } from '../util/warn';
 import { InjectableConstructor } from './decorators/injectable';
 import { ERROR_MESSAGE, message } from '../enums/messages';
-import { FACTORY_TYPES, METADATA } from '../enums/metadata';
+import { METADATA } from '../enums/metadata';
 
 
 interface Factory {
@@ -9,7 +9,6 @@ interface Factory {
 }
 
 export class ServiceFactory implements Factory {
-  type;
   make (Service: InjectableConstructor): Object {
     const method = Reflect.getMetadata(METADATA.TYPE, Service);
 

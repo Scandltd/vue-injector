@@ -9,9 +9,6 @@ Vue.mixin(Code)
 Vue.use(VueInjector)
 
 // 2. Create services
-
-class A {}
-
 @Injectable
 class Service {}
 
