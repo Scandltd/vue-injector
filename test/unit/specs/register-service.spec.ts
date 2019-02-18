@@ -73,6 +73,12 @@ describe('registerComponent service', () => {
 
   it('register with FACTORY', () => {
     class Factory {
+      static a = 1;
+
+      constructor () {
+        Factory.a += 1;
+      }
+
       get type () {
         return 'FACTORY';
       }
@@ -86,14 +92,17 @@ describe('registerComponent service', () => {
     class Service {}
 
 
-    const service = injector.provider.registerService('Service', Service);
+    const factoryService = injector.provider.registerService('Service', Service);
+    const service = factoryService();
 
     expect(injector.provider.services.size).toBe(1);
 
-    expect(injector.provider.get(Service)().type).toEqual('FACTORY');
+    expect(injector.provider.get(Service).type).toEqual('FACTORY');
     expect(service.type).toEqual('FACTORY');
 
-    expect(factory).toEqual(injector.provider.get(Service));
+    expect(factory()).toEqual(injector.provider.get(Service));
+
+    expect(Factory.a).toEqual(5);
   });
 
   it('register with VALUE', () => {
@@ -146,27 +155,6 @@ describe('registerComponent service', () => {
       .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
   });
 
-  /*it('FACTORY get vue', () => {
-    class Factory {
-      constructor () {}
-    }
-
-    @Injectable({
-      FACTORY: () => new Factory()
-    })
-    class Service {
-      @Inject(Vue) vm;
-    }
-
-
-    const service = injector.provider.registerService(app, 'Service', Service);
-
-    expect(injector.provider.services.size).toBe(1);
-    expect(service).toEqual(injector.provider.get(Service));
-
-    expect(app).toEqual(injector.provider.get(Service).vm);
-  });*/
-
   it('FACTORY invalid return', () => {
     class Factory {
       constructor (public vm) {}
@@ -179,8 +167,10 @@ describe('registerComponent service', () => {
     })
     class Service {}
 
+    injector.provider.registerService('Service', Service);
+
     expect(
-      () => injector.provider.registerService('Service', Service)
+      () => injector.provider.get(Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
   });
 

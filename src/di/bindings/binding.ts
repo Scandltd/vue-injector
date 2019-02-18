@@ -1,46 +1,43 @@
 import { InjectableConstructor } from '../decorators/injectable';
 import { InjectedObject } from '../../../types';
-
-type service = { name: string, service?: Object | Function};
+import { Provider } from './provider';
 
 interface Binding {
-  binging: Array<Object>;
-
-  bind (binging: Array<Object> | Object): this;
+  bind (strategy: Provider, binging: InjectableConstructor, name: string): this;
   to (target: InjectedObject): boolean;
 }
 
 export class ServiceBinding implements Binding {
-  binging: Array<service> = null;
+  private binging: InjectableConstructor = null;
+  private name: string = null;
+  private strategy: Provider = null;
 
-  bind (binging: Array<service> | InjectableConstructor, name?: string): this {
-    if (!Array.isArray(binging)) {
-      binging = [{
-        name: name || binging.name,
-        service: binging
-      }];
-    }
-
+  bind (strategy: Provider, binging: InjectableConstructor, name: string): this {
+    this.strategy = strategy;
     this.binging = binging;
+    this.name = name;
 
     return this;
   }
 
   to (target: InjectedObject): boolean {
-    this.binging.forEach((Inject: service) => {
-      const injectServiceName = Inject.name;
+    if (this.binging) {
 
-      if (Inject.service) {
-        Reflect.defineProperty(target, injectServiceName, {
-          enumerable: true,
-          configurable: false,
-          get: () => Inject.service
-        });
-      }
-    });
+      const injectService = this.strategy.getService(this.binging);
 
-    this.binging = [];
+      Reflect.defineProperty(target, this.name, {
+        enumerable: true,
+        configurable: false,
+        get: () => injectService
+      });
+    }
+
+    this.binging = null;
 
     return true;
+  }
+
+  get (): any {
+    return this.strategy.getService(this.binging);
   }
 }
