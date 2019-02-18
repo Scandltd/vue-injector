@@ -30,7 +30,6 @@ export declare class Provider {
 
   registerComponent (component: Vue);
   registerService (name: string, Service: InjectableConstructor): InjectableConstructor;
-  bindService (target: InjectedObject, name: string, Service: InjectableConstructor);
 
   set (Service: any);
   get (Service: any): Object;

@@ -84,14 +84,15 @@ describe('registerComponent service', () => {
     class Service {}
 
 
-    const service = injector.provider.registerService('Service', Service);
+    const factory = injector.provider.registerService('Service', Service);
+    const service = factory();
 
     expect(injector.provider.services.size).toBe(1);
 
-    expect(injector.provider.get(Service).type).toEqual('FACTORY');
+    expect(injector.provider.get(Service)().type).toEqual('FACTORY');
     expect(service.type).toEqual('FACTORY');
 
-    expect(service).toEqual(injector.provider.get(Service));
+    expect(factory).toEqual(injector.provider.get(Service));
   });
 
   it('register with VALUE', () => {

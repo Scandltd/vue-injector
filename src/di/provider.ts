@@ -6,7 +6,7 @@ import { checkObject } from '../util/object';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
 import { ERROR_MESSAGE } from '../enums/messages';
-import { METADATA } from '../enums/metadata';
+import { FACTORY_TYPES, METADATA } from '../enums/metadata';
 
 export class Provider {
   app: Vue;
@@ -31,8 +31,7 @@ export class Provider {
       if (providers && checkObject(providers)) {
         Object.keys(providers).forEach(name => {
           if (providers && providers.hasOwnProperty(name)) {
-            const service = this.registerService(name, providers[name]);
-            this.bindService(component, name, service);
+            this.binding(component, name, providers[name]);
           }
         });
       } else {
@@ -44,8 +43,8 @@ export class Provider {
       this.rootProviders.forEach(provider => {
         if (Reflect.getMetadata(METADATA.SERVICE, provider)) {
           const name = Reflect.getMetadata(METADATA.NAME, provider);
-          const service = this.registerService(name, provider);
-          this.bindService(component, name, service);
+
+          this.binding(component, name, provider);
         }
       });
     }
@@ -68,14 +67,10 @@ export class Provider {
     const service = this.services.get(Service);
 
     if (service) {
-      return service;
+      return this.getService(Service, service);
     }
 
     assert(false, ERROR_MESSAGE.ERROR_005);
-  }
-
-  bindService (target: InjectedObject, name: string, service: InjectableConstructor) {
-    this.serviceBinding.bind(service, name).to(target);
   }
 
   registerProviders (provider, imports) {
@@ -91,8 +86,8 @@ export class Provider {
   }
 
   set (Service) {
-    if (Reflect.getMetadata('inject:service', Service)) {
-      this.registerService(Reflect.getMetadata('inject:name', Service), Service);
+    if (Reflect.getMetadata(METADATA.SERVICE, Service)) {
+      this.registerService(Reflect.getMetadata(METADATA.NAME, Service), Service);
     }
   }
 
@@ -106,5 +101,28 @@ export class Provider {
     }
 
     return this.services.get(Service);
+  }
+
+  private getService (Service: InjectableConstructor, service) {
+    /* TODO: remove this code */
+    const type = Reflect.getMetadata(METADATA.TYPE, Service);
+
+    switch (type) {
+    case FACTORY_TYPES.useFactory:
+      const result = service();
+
+      if (result) {
+        return result;
+      } else {
+        throw assert(false, ERROR_MESSAGE.ERROR_006);
+      }
+    default:
+      return service;
+    }
+  }
+
+  private binding (target: InjectedObject, name: string, Service: InjectableConstructor) {
+    const service = this.registerService(name, Service);
+    this.serviceBinding.bind(service, name).to(target);
   }
 }
