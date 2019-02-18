@@ -78,14 +78,15 @@ describe('registerComponent service', () => {
       }
     }
 
+    const factory = () => new Factory();
+
     @Injectable({
-      useFactory: () => new Factory()
+      useFactory: factory
     })
     class Service {}
 
 
-    const factory = injector.provider.registerService('Service', Service);
-    const service = factory();
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
 
