@@ -58,7 +58,7 @@ describe('register component', () => {
     expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
   });
 
-  it('register with useValue', () => {
+  it('register with VALUE', () => {
     @Injectable({
       useValue: 'anyValue'
     })

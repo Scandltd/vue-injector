@@ -43,6 +43,10 @@ export default class VueInjector implements PluginObject<null> {
     }
   }
 
+  static get app () {
+    return this;
+  }
+
   get install (): PluginFunction<null> {
     return VueInjector.install;
   }

@@ -10,17 +10,13 @@ Vue.use(VueInjector)
 
 // 2. Create services
 @Injectable
-class Service {
-  @Inject(Vue) vm;
-}
+class Service {}
 
-@Injectable
+@Injectable({
+  useValue: 'anyValue'
+})
 class AnyService {
   @Inject(Service) service;
-
-  constructor () {
-    console.log('constructor', this.service)
-  }
 }
 
 // 3. Define components
@@ -30,17 +26,9 @@ Vue.component('VueInjector', {
     $AnyService: AnyService
   },
   template:
-    `<div>
-      <div class="block">
-        <div ref="main" class="service root-service"></div>
-      </div>
-      <div class="block">
-        <div ref="import" class="service inject-service"></div>
-      </div>
-    </div>`,
+    `<div class="block"></div>`,
   mounted () {
-    this.code(this.$AnyService, this.$refs.main)
-    this.code(this.$AnyService.service, this.$refs.import)
+    this.code(this.$AnyService, this.$el)
   }
 })
 
