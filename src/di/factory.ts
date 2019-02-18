@@ -1,66 +1,45 @@
 import { assert } from '../util/warn';
 import { InjectableConstructor } from './decorators/injectable';
-import { ERROR_MESSAGE } from '../enums/messages';
+import { ERROR_MESSAGE, message } from '../enums/messages';
+import { METADATA } from '../enums/metadata';
 
-export enum FACTORY_TYPES {
-  useFactory = 'inject:factory',
-  useValue = 'inject:value'
-}
 
 interface Factory {
   make (Service: InjectableConstructor): Object;
 }
 
 export class ServiceFactory implements Factory {
-  type: FACTORY_TYPES = null;
-
   make (Service: InjectableConstructor): Object {
-    const type = this.getType(Service);
+    const method = Reflect.getMetadata(METADATA.TYPE, Service);
 
-    switch (type) {
-    case FACTORY_TYPES.useFactory:
-      return this.factory(Service);
-    case FACTORY_TYPES.useValue:
-      return this.value(Service);
-    default:
-      return this.instance(Service);
-    }
-  }
-
-  private getType (Service): FACTORY_TYPES {
-    Reflect.ownKeys(FACTORY_TYPES).forEach((property) => {
-
-      const metadataName = FACTORY_TYPES[property];
-      const metaData = Reflect.getMetadata(metadataName, Service);
-
-      if (metaData) {
-        /*if (check && typeof metaData !== check) {
-          return assert(false, `${String(name)} invalid type: should be ${check}`);
-        }*/
-        this.type = metadataName;
+    if (method) {
+      if (typeof this[method] !== 'function') {
+        throw assert(false, message(ERROR_MESSAGE.ERROR_009, { method }));
       }
 
-    });
-
-    return this.type;
+      return this[method](Service);
+    } else {
+      return this.instance(Service);
+    }
   }
 
   private instance (Service: InjectableConstructor): any {
     return new Service();
   }
 
-  private factory (Service: InjectableConstructor): Object {
-    const factory = (Reflect.getMetadata('inject:factory', Service))();
+  private useFactory (Service: InjectableConstructor): Object {
+    const name = Reflect.getMetadata(METADATA.NAME, Service);
+    const factory = Reflect.getMetadata(METADATA.VALUE, Service);
 
-    if (factory) {
-      return factory;
-    } else {
-      assert(false, ERROR_MESSAGE.ERROR_006);
+    if (factory && typeof factory !== 'function') {
+      throw assert(false, message(ERROR_MESSAGE.ERROR_008, { name }));
     }
+
+    return factory;
   }
 
-  private value (Service: InjectableConstructor): Object {
-    const value = Reflect.getMetadata('inject:value', Service);
+  private useValue (Service: InjectableConstructor): Object {
+    const value = Reflect.getMetadata(METADATA.VALUE, Service);
 
     if (value) {
       return value;

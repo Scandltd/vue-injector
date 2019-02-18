@@ -1,7 +1,7 @@
 import { assert, warn } from '../../util/warn';
 import 'reflect-metadata';
-import { FACTORY_TYPES } from '../factory';
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
+import { FACTORY_TYPES, METADATA } from '../../enums/metadata';
 
 export interface InjectableConstructor {
 
@@ -18,29 +18,52 @@ export interface InjectableOptions {
 }
 
 function injectableFactory (target: InjectableConstructor, options: InjectableOptions = {}) {
-  const optionKeys = Reflect.ownKeys(options);
-  const whitelist = Reflect.ownKeys(FACTORY_TYPES);
 
-  const checkOtherProperty = !optionKeys.every((prop: PropertyKey) => {
-    return !!~whitelist.indexOf(prop);
-  });
+  function getServiceType (options) {
 
-  if (checkOtherProperty) {
-    let msg = message(WARNING_MESSAGE.WARNING_000, { name: target.name, options: JSON.stringify(options) });
-    warn(false, msg);
+    const optionKeys = Reflect.ownKeys(options);
+    const whitelist = Reflect.ownKeys(FACTORY_TYPES);
+
+    // checks whether all options given are allowed. Allowed options (useValue, useFactory)
+    const checkOtherProperty = !optionKeys.every((prop: PropertyKey) => {
+      return !!~whitelist.indexOf(prop);
+    });
+
+    if (checkOtherProperty) {
+      let msg = message(WARNING_MESSAGE.WARNING_000, { name: target.name, options: JSON.stringify(options) });
+      warn(false, msg);
+    }
+
+    const findProps = whitelist.filter(props => Reflect.has(options, props));
+
+    if (findProps.length > 1) {
+      throw assert(false, message(
+        ERROR_MESSAGE.ERROR_001,
+        { names: JSON.stringify(whitelist) }
+        )
+      );
+    }
+
+    const type = whitelist.find(props => Reflect.has(options, props));
+
+    if (type) {
+      return FACTORY_TYPES[type];
+    }
+
+    return null;
   }
 
-  if (Reflect.has(options, 'useFactory') && Reflect.has(options, 'useValue')) {
-    return assert(false, ERROR_MESSAGE.ERROR_001);
+  let serviceType = getServiceType(options);
+
+  if (serviceType) {
+    Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
+    Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
   }
 
-  Reflect.defineMetadata('inject:factory', options.useFactory, target);
-  Reflect.defineMetadata('inject:value', options.useValue, target);
-  Reflect.defineMetadata('inject:name', target.name, target);
-  Reflect.defineMetadata('inject:service', true, target);
+  Reflect.defineMetadata(METADATA.NAME, target.name, target);
+  Reflect.defineMetadata(METADATA.SERVICE, true, target);
 
   const decorators = target.__decorators__;
-
 
   if (decorators) {
     decorators.forEach(function (fn) { return fn(target.prototype); });

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueInjector, { Injectable, Inject } from '../../../src/index';
 import { message, ERROR_MESSAGE, WARNING_MESSAGE } from '../../../src/enums/messages';
+import { FACTORY_TYPES } from '../../../src/enums/metadata';
 
 Vue.use(VueInjector);
 
@@ -20,7 +21,7 @@ describe('registerComponent service', () => {
     @Injectable
     class Service {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
 
@@ -35,8 +36,8 @@ describe('registerComponent service', () => {
     @Injectable
     class ServiceTwo {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
-    const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
+    const service = injector.provider.registerService('Service', Service);
+    const serviceTwo = injector.provider.registerService('ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
 
@@ -56,7 +57,7 @@ describe('registerComponent service', () => {
       @Inject(Service) Service;
     }
 
-    const serviceTwo = injector.provider.registerService(app, 'ServiceTwo', ServiceTwo);
+    const serviceTwo = injector.provider.registerService('ServiceTwo', ServiceTwo);
 
     expect(injector.provider.services.size).toBe(2);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
@@ -70,54 +71,63 @@ describe('registerComponent service', () => {
     expect(serviceTwo.Service).toEqual(injector.provider.get(Service));
   });
 
-  it('register with useFactory', () => {
+  it('register with FACTORY', () => {
     class Factory {
       get type () {
-        return 'useFactory';
+        return 'FACTORY';
       }
     }
 
+    const factory = () => new Factory();
+
     @Injectable({
-      useFactory: () => new Factory()
+      useFactory: factory
     })
     class Service {}
 
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
 
-    expect(injector.provider.get(Service).type).toEqual('useFactory');
-    expect(service.type).toEqual('useFactory');
+    expect(injector.provider.get(Service)().type).toEqual('FACTORY');
+    expect(service.type).toEqual('FACTORY');
 
-    expect(service).toEqual(injector.provider.get(Service));
+    expect(factory).toEqual(injector.provider.get(Service));
   });
 
-  it('register with useValue', () => {
+  it('register with VALUE', () => {
     @Injectable({
       useValue: 'anyValue'
     })
     class Service {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
 
     expect(injector.provider.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(injector.provider.get(Service)).toEqual('anyValue');
   });
 
-  it('register with useValue and useFactory', () => {
+  it('register with VALUE and FACTORY', () => {
     const options = {
       useValue: 'anyValue',
       useFactory: function () {}
     };
+
+    const whitelist = Reflect.ownKeys(FACTORY_TYPES);
+
+    const error = message(
+      ERROR_MESSAGE.ERROR_001,
+      { names: JSON.stringify(whitelist) }
+    );
 
     expect(
       () => {
         @Injectable(options)
         class Service {}
       }
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_001}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${error}`);
   });
 
   it('register with random keys', () => {
@@ -136,13 +146,13 @@ describe('registerComponent service', () => {
       .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
   });
 
-  it('useFactory get vue', () => {
+  /*it('FACTORY get vue', () => {
     class Factory {
       constructor () {}
     }
 
     @Injectable({
-      useFactory: () => new Factory()
+      FACTORY: () => new Factory()
     })
     class Service {
       @Inject(Vue) vm;
@@ -155,9 +165,9 @@ describe('registerComponent service', () => {
     expect(service).toEqual(injector.provider.get(Service));
 
     expect(app).toEqual(injector.provider.get(Service).vm);
-  });
+  });*/
 
-  it('useFactory invalid return', () => {
+  it('FACTORY invalid return', () => {
     class Factory {
       constructor (public vm) {}
     }
@@ -170,7 +180,7 @@ describe('registerComponent service', () => {
     class Service {}
 
     expect(
-      () => injector.provider.registerService(app, 'Service', Service)
+      () => injector.provider.registerService('Service', Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
   });
 
@@ -179,18 +189,18 @@ describe('registerComponent service', () => {
     @Injectable
     class Service {}
 
-    injector.get(Service);
+    const service = injector.get(Service);
 
     expect(injector.provider.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(app.Service).toEqual(injector.provider.get(Service));
+    expect(service).toEqual(injector.provider.get(Service));
   });
 
   it('get service after register', () => {
     @Injectable
     class Service {}
 
-    const service = injector.provider.registerService(app, 'Service', Service);
+    const service = injector.provider.registerService('Service', Service);
     const injectorService = injector.get(Service);
 
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
@@ -209,10 +219,10 @@ describe('registerComponent service', () => {
     }
 
     expect(
-        () => injector.provider.registerService(app, 'Service', Service)
+        () => injector.provider.registerService('Service', Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
     expect(
-        () => injector.provider.registerService(app, 'ServiceTwo', ServiceTwo)
+        () => injector.provider.registerService('ServiceTwo', ServiceTwo)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
   });
 });

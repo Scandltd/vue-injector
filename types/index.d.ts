@@ -29,7 +29,7 @@ export declare class Provider {
   constructor (app: Vue, rootProviders: Array<any>);
 
   registerComponent (component: Vue);
-  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): Object;
+  registerService (name: string, Service: InjectableConstructor): InjectableConstructor;
 
   set (Service: any);
   get (Service: any): Object;
@@ -37,6 +37,7 @@ export declare class Provider {
 
 export declare interface InjectableOptions {
   useFactory?: () => any;
+  useValue?: any;
 }
 
 export declare type VueInjectorOptions = {

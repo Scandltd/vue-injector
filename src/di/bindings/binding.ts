@@ -1,7 +1,7 @@
 import { InjectableConstructor } from '../decorators/injectable';
 import { InjectedObject } from '../../../types';
 
-type service = { name: string, service?: Object};
+type service = { name: string, service?: Object | Function};
 
 interface Binding {
   binging: Array<Object>;
@@ -30,13 +30,10 @@ export class ServiceBinding implements Binding {
     this.binging.forEach((Inject: service) => {
       const injectServiceName = Inject.name;
 
-      const checkProperty: boolean = Object.hasOwnProperty.call(target, injectServiceName)
-        ? !target[injectServiceName]
-        : true;
-
-      if (checkProperty && Inject.service) {
+      if (Inject.service) {
         Reflect.defineProperty(target, injectServiceName, {
           enumerable: true,
+          configurable: false,
           get: () => Inject.service
         });
       }

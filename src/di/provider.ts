@@ -6,6 +6,7 @@ import { checkObject } from '../util/object';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
 import { ERROR_MESSAGE } from '../enums/messages';
+import { FACTORY_TYPES, METADATA } from '../enums/metadata';
 
 export class Provider {
   app: Vue;
@@ -30,7 +31,7 @@ export class Provider {
       if (providers && checkObject(providers)) {
         Object.keys(providers).forEach(name => {
           if (providers && providers.hasOwnProperty(name)) {
-            this.registerService(component, name, providers[name]);
+            this.binding(component, name, providers[name]);
           }
         });
       } else {
@@ -40,35 +41,33 @@ export class Provider {
 
     if (this.rootProviders.length) {
       this.rootProviders.forEach(provider => {
-        if (Reflect.getMetadata('inject:service', provider)) {
-          this.registerService(component, Reflect.getMetadata('inject:name', provider), provider);
+        if (Reflect.getMetadata(METADATA.SERVICE, provider)) {
+          const name = Reflect.getMetadata(METADATA.NAME, provider);
+
+          this.binding(component, name, provider);
         }
       });
     }
   }
 
-  registerService (target: InjectedObject, name: string, Service: InjectableConstructor): any {
+  registerService (name: string, Service: InjectableConstructor): any {
     if (Service.name === 'Vue') {
-      return target[name] = this.app;
+      return this.app;
     }
 
-    if (!this.services.has(Service) && Reflect.getMetadata('inject:service', Service)) {
+    if (!this.services.has(Service) && Reflect.getMetadata(METADATA.SERVICE, Service)) {
       if (Service.prototype.providers) {
         this.registerProviders(Service.prototype, Service.prototype.providers);
+        delete Service.prototype.providers;
       }
-      
+
       this.services.set(Service, this.serviceFactory.make(Service));
     }
 
     const service = this.services.get(Service);
 
-    if (service && Service.prototype.providers) {
-      this.registerProviders(service, Service.prototype.providers);
-      delete Service.prototype.providers;
-    }
-
     if (service) {
-      return this.serviceBinding.bind(service, name).to(target) && service;
+      return this.getService(Service, service);
     }
 
     assert(false, ERROR_MESSAGE.ERROR_005);
@@ -76,33 +75,54 @@ export class Provider {
 
   registerProviders (provider, imports) {
     if (checkObject(imports)) {
-      const services = Object.keys(imports)
-        .map((name: string) => {
-          const service = this.registerService(provider, name, imports[name]);
-
-          return {
-            name,
-            service
-          };
+      Object.keys(imports)
+        .forEach((name: string) => {
+          const service = this.registerService(name, imports[name]);
+          this.serviceBinding.bind(service, name).to(provider);
         });
-
-      this.serviceBinding.bind(services).to(provider);
     } else {
       assert(false, ERROR_MESSAGE.ERROR_004);
     }
   }
 
   set (Service) {
-    if (Reflect.getMetadata('inject:service', Service)) {
-      this.registerService(this.app, Reflect.getMetadata('inject:name', Service), Service);
+    if (Reflect.getMetadata(METADATA.SERVICE, Service)) {
+      this.registerService(Reflect.getMetadata(METADATA.NAME, Service), Service);
     }
   }
 
   get (Service) {
+    if (Service.name === 'Vue') {
+      return this.app;
+    }
+
     if (!this.services.has(Service)) {
       this.set(Service);
     }
 
     return this.services.get(Service);
+  }
+
+  private getService (Service: InjectableConstructor, service) {
+    /* TODO: remove this code */
+    const type = Reflect.getMetadata(METADATA.TYPE, Service);
+
+    switch (type) {
+    case FACTORY_TYPES.useFactory:
+      const result = service();
+
+      if (result) {
+        return result;
+      } else {
+        throw assert(false, ERROR_MESSAGE.ERROR_006);
+      }
+    default:
+      return service;
+    }
+  }
+
+  private binding (target: InjectedObject, name: string, Service: InjectableConstructor) {
+    const service = this.registerService(name, Service);
+    this.serviceBinding.bind(service, name).to(target);
   }
 }
