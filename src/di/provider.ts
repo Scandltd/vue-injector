@@ -7,6 +7,8 @@ import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory';
 import { ERROR_MESSAGE } from '../enums/messages';
 import { FACTORY_TYPES, METADATA } from '../enums/metadata';
+import { Instance } from './bindings/instance';
+import { Factory } from './bindings/factory';
 
 export class Provider {
   app: Vue;
@@ -67,18 +69,17 @@ export class Provider {
     const service = this.services.get(Service);
 
     if (service) {
-      return this.getService(Service, service);
+      return service;
     }
 
-    assert(false, ERROR_MESSAGE.ERROR_005);
+    throw assert(false, ERROR_MESSAGE.ERROR_005);
   }
 
   registerProviders (provider, imports) {
     if (checkObject(imports)) {
       Object.keys(imports)
         .forEach((name: string) => {
-          const service = this.registerService(name, imports[name]);
-          this.serviceBinding.bind(service, name).to(provider);
+          this.binding(provider, name, imports[name]);
         });
     } else {
       assert(false, ERROR_MESSAGE.ERROR_004);
@@ -100,29 +101,32 @@ export class Provider {
       this.set(Service);
     }
 
-    return this.services.get(Service);
+    return this.getting(Service);
   }
 
-  private getService (Service: InjectableConstructor, service) {
-    /* TODO: remove this code */
-    const type = Reflect.getMetadata(METADATA.TYPE, Service);
+  private getting (Service: InjectableConstructor): any {
+    const name = Reflect.getMetadata(METADATA.NAME, Service);
+    const service = this.services.get(Service);
+    const strategy = this.getStrategy(Service);
 
-    switch (type) {
-    case FACTORY_TYPES.useFactory:
-      const result = service();
-
-      if (result) {
-        return result;
-      } else {
-        throw assert(false, ERROR_MESSAGE.ERROR_006);
-      }
-    default:
-      return service;
-    }
+    return this.serviceBinding.bind(strategy, service, name).get();
   }
 
   private binding (target: InjectedObject, name: string, Service: InjectableConstructor) {
     const service = this.registerService(name, Service);
-    this.serviceBinding.bind(service, name).to(target);
+    const strategy = this.getStrategy(Service);
+
+    this.serviceBinding.bind(strategy, service, name).to(target);
+  }
+
+  private getStrategy (Service: InjectableConstructor) {
+    const type = Reflect.getMetadata(METADATA.TYPE, Service);
+
+    switch (type) {
+    case FACTORY_TYPES.useFactory:
+      return new Factory();
+    default:
+      return new Instance();
+    }
   }
 }

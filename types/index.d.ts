@@ -14,10 +14,8 @@ export declare interface InjectInterface {
   readonly vm: Vue;
 }
 
-export declare interface Binding {
-  binging: Array<Object>;
-
-  bind (binging: Array<Object> | Object): this;
+interface Binding {
+  bind (strategy: Provider, binging: InjectableConstructor, name: string): this;
   to (target: InjectedObject): boolean;
 }
 

@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v2.1.1
+  * @scandltd/vue-injector v2.1.2
   * (c) 2019 Scandltd
   * @license GPL-2.0
   */
@@ -104,32 +104,31 @@ function checkObject(obj) {
 var ServiceBinding = /** @class */function () {
     function ServiceBinding() {
         this.binging = null;
+        this.name = null;
+        this.strategy = null;
     }
-    ServiceBinding.prototype.bind = function (binging, name) {
-        if (!Array.isArray(binging)) {
-            binging = [{
-                name: name || binging.name,
-                service: binging
-            }];
-        }
+    ServiceBinding.prototype.bind = function (strategy, binging, name) {
+        this.strategy = strategy;
         this.binging = binging;
+        this.name = name;
         return this;
     };
     ServiceBinding.prototype.to = function (target) {
-        this.binging.forEach(function (Inject) {
-            var injectServiceName = Inject.name;
-            if (Inject.service) {
-                Reflect.defineProperty(target, injectServiceName, {
-                    enumerable: true,
-                    configurable: false,
-                    get: function get() {
-                        return Inject.service;
-                    }
-                });
-            }
-        });
-        this.binging = [];
+        if (this.binging) {
+            var injectService_1 = this.strategy.getService(this.binging);
+            Reflect.defineProperty(target, this.name, {
+                enumerable: true,
+                configurable: false,
+                get: function get() {
+                    return injectService_1;
+                }
+            });
+        }
+        this.binging = null;
         return true;
+    };
+    ServiceBinding.prototype.get = function () {
+        return this.strategy.getService(this.binging);
     };
     return ServiceBinding;
 }();
@@ -182,6 +181,27 @@ var ServiceFactory = /** @class */function () {
     return ServiceFactory;
 }();
 
+var Instance = /** @class */function () {
+    function Instance() {}
+    Instance.prototype.getService = function (service) {
+        return service;
+    };
+    return Instance;
+}();
+
+var Factory = /** @class */function () {
+    function Factory() {}
+    Factory.prototype.getService = function (service) {
+        var result = service();
+        if (result) {
+            return result;
+        } else {
+            throw assert(false, ERROR_MESSAGE.ERROR_006);
+        }
+    };
+    return Factory;
+}();
+
 var Provider = /** @class */function () {
     function Provider(app, rootProviders) {
         this.rootProviders = [];
@@ -227,16 +247,15 @@ var Provider = /** @class */function () {
         }
         var service = this.services.get(Service);
         if (service) {
-            return this.getService(Service, service);
+            return service;
         }
-        assert(false, ERROR_MESSAGE.ERROR_005);
+        throw assert(false, ERROR_MESSAGE.ERROR_005);
     };
     Provider.prototype.registerProviders = function (provider, imports) {
         var _this = this;
         if (checkObject(imports)) {
             Object.keys(imports).forEach(function (name) {
-                var service = _this.registerService(name, imports[name]);
-                _this.serviceBinding.bind(service, name).to(provider);
+                _this.binding(provider, name, imports[name]);
             });
         } else {
             assert(false, ERROR_MESSAGE.ERROR_004);
@@ -254,26 +273,27 @@ var Provider = /** @class */function () {
         if (!this.services.has(Service)) {
             this.set(Service);
         }
-        return this.services.get(Service);
+        return this.getting(Service);
     };
-    Provider.prototype.getService = function (Service, service) {
-        /* TODO: remove this code */
-        var type = Reflect.getMetadata(METADATA.TYPE, Service);
-        switch (type) {
-            case FACTORY_TYPES.useFactory:
-                var result = service();
-                if (result) {
-                    return result;
-                } else {
-                    throw assert(false, ERROR_MESSAGE.ERROR_006);
-                }
-            default:
-                return service;
-        }
+    Provider.prototype.getting = function (Service) {
+        var name = Reflect.getMetadata(METADATA.NAME, Service);
+        var service = this.services.get(Service);
+        var strategy = this.getStrategy(Service);
+        return this.serviceBinding.bind(strategy, service, name).get();
     };
     Provider.prototype.binding = function (target, name, Service) {
         var service = this.registerService(name, Service);
-        this.serviceBinding.bind(service, name).to(target);
+        var strategy = this.getStrategy(Service);
+        this.serviceBinding.bind(strategy, service, name).to(target);
+    };
+    Provider.prototype.getStrategy = function (Service) {
+        var type = Reflect.getMetadata(METADATA.TYPE, Service);
+        switch (type) {
+            case FACTORY_TYPES.useFactory:
+                return new Factory();
+            default:
+                return new Instance();
+        }
     };
     return Provider;
 }();
@@ -1539,7 +1559,7 @@ var VueInjector = /** @class */function () {
     return VueInjector;
 }();
 VueInjector.install = install;
-VueInjector.version = '2.1.1';
+VueInjector.version = '2.1.2';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
