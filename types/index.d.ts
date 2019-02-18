@@ -38,6 +38,7 @@ export declare class Provider {
 
 export declare interface InjectableOptions {
   useFactory?: () => any;
+  useValue?: any;
 }
 
 export declare type VueInjectorOptions = {
