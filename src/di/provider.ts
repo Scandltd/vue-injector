@@ -30,7 +30,7 @@ export class Provider {
 
   get instance () {
     if (this.factory) {
-      return this.strategy.getService(this.factory);
+      return this.factory;
     }
 
     return null;
@@ -40,8 +40,8 @@ export class Provider {
     return this.services.get(this.service);
   }
 
-  private set factory (instance: any) {
-    this.services.set(this.service, instance);
+  private set factory (factory: any) {
+    this.services.set(this.service, factory());
   }
 
   private get strategy () {
@@ -71,7 +71,7 @@ export class Provider {
 
   private register (): any {
     if (this.service.name === $VUE) {
-      this.factory = this.app;
+      this.factory = () => this.app;
     }
 
     if (!this.factory && this.isService) {
@@ -86,8 +86,12 @@ export class Provider {
   }
 
   private binding (): any {
-    const bind = this.register() && this.serviceBinding.bind(this.strategy, this.factory, this.name);
+    this.register();
 
-    return this.target ? bind.to(this.target) : bind.get();
+    if (!this.target) {
+      return this.factory;
+    }
+
+    return this.serviceBinding.bind(this.strategy, this.factory, this.name).to(this.target);
   }
 }

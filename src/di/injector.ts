@@ -27,7 +27,7 @@ export class Injector {
         Object.keys(providers).forEach(name => {
           if (providers && providers.hasOwnProperty(name)) {
             this.provide(
-              providers[name],
+              component._providers[name],
               component,
               name
             );

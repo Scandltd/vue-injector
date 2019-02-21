@@ -23,21 +23,16 @@ export class ServiceBinding implements Binding {
   to (target: InjectedObject): boolean {
     if (this.binging) {
 
-      const injectService = this.strategy.getService(this.binging);
-
       Reflect.defineProperty(target, this.name, {
         enumerable: true,
         configurable: false,
-        get: () => injectService
+        writable: false,
+        value: this.binging
       });
     }
 
     this.binging = null;
 
     return true;
-  }
-
-  get (): any {
-    return this.strategy.getService(this.binging);
   }
 }

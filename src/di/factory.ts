@@ -9,7 +9,7 @@ interface Factory {
 }
 
 export class ServiceFactory implements Factory {
-  make (Service: InjectableConstructor): Object {
+  make (Service: InjectableConstructor): () => any {
     const method = Reflect.getMetadata(METADATA.TYPE, Service);
 
     if (method) {
@@ -23,11 +23,11 @@ export class ServiceFactory implements Factory {
     }
   }
 
-  private instance (Service: InjectableConstructor): any {
-    return new Service();
+  private instance (Service: InjectableConstructor): () => any {
+    return () => new Service();
   }
 
-  private useFactory (Service: InjectableConstructor): Object {
+  private useFactory (Service: InjectableConstructor): () => any {
     const name = Reflect.getMetadata(METADATA.NAME, Service);
     const factory = Reflect.getMetadata(METADATA.VALUE, Service);
 
@@ -35,14 +35,20 @@ export class ServiceFactory implements Factory {
       throw assert(false, message(ERROR_MESSAGE.ERROR_008, { name }));
     }
 
-    return factory;
+    const result = factory();
+
+    if (!result) {
+      throw assert(false, ERROR_MESSAGE.ERROR_006);
+    }
+
+    return () => result;
   }
 
-  private useValue (Service: InjectableConstructor): Object {
+  private useValue (Service: InjectableConstructor): () => any {
     const value = Reflect.getMetadata(METADATA.VALUE, Service);
 
     if (value) {
-      return value;
+      return () => value;
     } else {
       assert(false, ERROR_MESSAGE.ERROR_007);
     }
