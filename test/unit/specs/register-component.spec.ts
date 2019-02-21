@@ -28,9 +28,9 @@ describe('register component', () => {
       }
     };
 
-    injector.provider.registerComponent(mockComponent);
+    injector.injector.registerComponent(mockComponent);
 
-    expect(mockComponent.Service).toEqual(injector.provider.services.get(Service));
+    expect(mockComponent.Service).toEqual(injector.injector.services.get(Service));
   });
 
   it('register two', () => {
@@ -47,15 +47,15 @@ describe('register component', () => {
       }
     };
 
-    injector.provider.registerComponent(mockComponent);
+    injector.injector.registerComponent(mockComponent);
 
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
 
-    expect(injector.provider.services.size).toBe(2);
+    expect(injector.injector.services.size).toBe(2);
 
-    expect(mockComponent.Service).toEqual(injector.provider.get(Service));
-    expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
+    expect(mockComponent.Service).toEqual(injector.injector.get(Service));
+    expect(mockComponent.ServiceTwo).toEqual(injector.injector.get(ServiceTwo));
   });
 
   it('register with VALUE', () => {
@@ -70,12 +70,12 @@ describe('register component', () => {
       }
     };
 
-    injector.provider.registerComponent(mockComponent);
+    injector.injector.registerComponent(mockComponent);
 
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
 
-    expect(injector.provider.services.size).toBe(1);
-    expect(mockComponent.Service).toEqual(injector.provider.get(Service));
+    expect(injector.injector.services.size).toBe(1);
+    expect(mockComponent.Service).toEqual(injector.injector.get(Service));
   });
 
   it('register with import', () => {
@@ -94,25 +94,25 @@ describe('register component', () => {
       }
     };
 
-    injector.provider.registerComponent(mockComponent);
+    injector.injector.registerComponent(mockComponent);
 
-    expect(injector.provider.services.size).toBe(2);
+    expect(injector.injector.services.size).toBe(2);
 
-    expect(injector.provider.get(Service) instanceof Service).toBe(true);
+    expect(injector.injector.get(Service) instanceof Service).toBe(true);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(injector.provider.get(ServiceTwo) instanceof ServiceTwo).toBe(true);
+    expect(injector.injector.get(ServiceTwo) instanceof ServiceTwo).toBe(true);
     expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
-    expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service).toEqual(injector.provider.get(Service));
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
 
     expect(mockComponent.Service instanceof Service).toBe(true);
-    expect(mockComponent.Service).toEqual(injector.provider.get(Service));
+    expect(mockComponent.Service).toEqual(injector.injector.get(Service));
     expect(mockComponent.ServiceTwo instanceof ServiceTwo).toBe(true);
     expect(mockComponent.ServiceTwo.Service).toEqual(jasmine.any(Object));
 
-    expect(mockComponent.Service).toEqual(injector.provider.get(Service));
-    expect(mockComponent.ServiceTwo).toEqual(injector.provider.get(ServiceTwo));
-    expect(mockComponent.ServiceTwo.Service).toEqual(injector.provider.get(ServiceTwo).Service);
+    expect(mockComponent.Service).toEqual(injector.injector.get(Service));
+    expect(mockComponent.ServiceTwo).toEqual(injector.injector.get(ServiceTwo));
+    expect(mockComponent.ServiceTwo.Service).toEqual(injector.injector.get(ServiceTwo).Service);
   });
 
   it('error register', () => {
@@ -121,16 +121,16 @@ describe('register component', () => {
     };
 
     expect(
-        () => injector.provider.registerComponent(mockComponent)
+        () => injector.injector.registerComponent(mockComponent)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_004}`);
   });
 
   it('empty register', () => {
     const mockComponent: any = {};
 
-    injector.provider.registerComponent(mockComponent);
+    injector.injector.registerComponent(mockComponent);
 
-    expect(injector.provider.services.size).toBe(0);
+    expect(injector.injector.services.size).toBe(0);
     expect(mockComponent.length).toBe(undefined);
   });
 });

@@ -4,7 +4,7 @@ import { install } from './install';
 import { assert } from './util/warn';
 import { inBrowser } from './util/dom';
 
-import { Provider } from './di/provider';
+import { Injector } from './di/injector';
 
 import { Injectable, InjectableConstructor } from './di/decorators/injectable';
 import { Inject } from './di/decorators/inject';
@@ -27,13 +27,13 @@ export default class VueInjector implements PluginObject<null> {
 
   app: Vue | null;
   apps: Array<Vue>;
-  provider: Provider | null;
+  injector: Injector | null;
 
   rootProviders: Array<InjectableConstructor> = [];
 
   constructor (options: VueInjectorOptions = {}) {
     this.app = null;
-    this.provider = null;
+    this.injector = null;
     this.apps = [];
 
     this.rootProviders = options.root || [];
@@ -65,15 +65,15 @@ export default class VueInjector implements PluginObject<null> {
     }
 
     this.app = app;
-    this.provider = new Provider(this.app, this.rootProviders);
+    this.injector = new Injector(this.app, this.rootProviders);
   }
 
   initComponent (component: Vue) {
-    this.provider && this.provider.registerComponent(component);
+    this.injector && this.injector.registerComponent(component);
   }
 
   get (Provider: typeof Inject) {
-    return this.provider && this.provider.get(Provider);
+    return this.injector && this.injector.get(Provider);
   }
 }
 

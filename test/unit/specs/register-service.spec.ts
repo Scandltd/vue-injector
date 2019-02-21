@@ -21,11 +21,11 @@ describe('registerComponent service', () => {
     @Injectable
     class Service {}
 
-    const service = injector.provider.registerService('Service', Service);
+    const service = injector.injector.registerService('Service', Service);
 
-    expect(injector.provider.services.size).toBe(1);
+    expect(injector.injector.services.size).toBe(1);
 
-    expect(service).toEqual(injector.provider.get(Service));
+    expect(service).toEqual(injector.injector.get(Service));
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
   });
 
@@ -36,16 +36,16 @@ describe('registerComponent service', () => {
     @Injectable
     class ServiceTwo {}
 
-    const service = injector.provider.registerService('Service', Service);
-    const serviceTwo = injector.provider.registerService('ServiceTwo', ServiceTwo);
+    const service = injector.injector.registerService('Service', Service);
+    const serviceTwo = injector.injector.registerService('ServiceTwo', ServiceTwo);
 
-    expect(injector.provider.services.size).toBe(2);
+    expect(injector.injector.services.size).toBe(2);
 
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
 
-    expect(service).toEqual(injector.provider.get(Service));
-    expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
+    expect(service).toEqual(injector.injector.get(Service));
+    expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
   });
 
   it('register with import', () => {
@@ -57,18 +57,18 @@ describe('registerComponent service', () => {
       @Inject(Service) Service;
     }
 
-    const serviceTwo = injector.provider.registerService('ServiceTwo', ServiceTwo);
+    const serviceTwo = injector.injector.registerService('ServiceTwo', ServiceTwo);
 
-    expect(injector.provider.services.size).toBe(2);
+    expect(injector.injector.services.size).toBe(2);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
-    expect(injector.provider.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
-    expect(injector.provider.get(ServiceTwo).Service).toEqual(injector.provider.get(Service));
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
 
 
-    expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
-    expect(serviceTwo).toEqual(injector.provider.get(ServiceTwo));
-    expect(serviceTwo.Service).toEqual(injector.provider.get(Service));
+    expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
+    expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
+    expect(serviceTwo.Service).toEqual(injector.injector.get(Service));
   });
 
   it('register with FACTORY', () => {
@@ -92,15 +92,16 @@ describe('registerComponent service', () => {
     class Service {}
 
 
-    const factoryService = injector.provider.registerService('Service', Service);
-    const service = factoryService();
+    const service = injector.injector.provide(Service);
 
-    expect(injector.provider.services.size).toBe(1);
+    expect(injector.injector.services.size).toBe(1);
 
-    expect(injector.provider.get(Service).type).toEqual('FACTORY');
+    const a = injector.injector.get(Service);
+
+    expect(injector.injector.get(Service).type).toEqual('FACTORY');
     expect(service.type).toEqual('FACTORY');
 
-    expect(factory()).toEqual(injector.provider.get(Service));
+    expect(factory()).toEqual(injector.injector.get(Service));
 
     expect(Factory.a).toEqual(5);
   });
@@ -111,11 +112,11 @@ describe('registerComponent service', () => {
     })
     class Service {}
 
-    const service = injector.provider.registerService('Service', Service);
+    const service = injector.injector.registerService('Service', Service);
 
-    expect(injector.provider.services.size).toBe(1);
+    expect(injector.injector.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(injector.provider.get(Service)).toEqual('anyValue');
+    expect(injector.injector.get(Service)).toEqual('anyValue');
   });
 
   it('register with VALUE and FACTORY', () => {
@@ -167,10 +168,10 @@ describe('registerComponent service', () => {
     })
     class Service {}
 
-    injector.provider.registerService('Service', Service);
+    injector.injector.registerService('Service', Service);
 
     expect(
-      () => injector.provider.get(Service)
+      () => injector.injector.get(Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
   });
 
@@ -181,23 +182,23 @@ describe('registerComponent service', () => {
 
     const service = injector.get(Service);
 
-    expect(injector.provider.services.size).toBe(1);
+    expect(injector.injector.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(service).toEqual(injector.provider.get(Service));
+    expect(service).toEqual(injector.injector.get(Service));
   });
 
   it('get service after register', () => {
     @Injectable
     class Service {}
 
-    const service = injector.provider.registerService('Service', Service);
+    const service = injector.injector.registerService('Service', Service);
     const injectorService = injector.get(Service);
 
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(service).toEqual(injector.provider.get(Service));
+    expect(service).toEqual(injector.injector.get(Service));
 
-    expect(injector.provider.services.size).toBe(1);
-    expect(injectorService).toEqual(injector.provider.get(Service));
+    expect(injector.injector.services.size).toBe(1);
+    expect(injectorService).toEqual(injector.injector.get(Service));
   });
 
   it('register not Injectable', () => {
@@ -209,10 +210,10 @@ describe('registerComponent service', () => {
     }
 
     expect(
-        () => injector.provider.registerService('Service', Service)
+        () => injector.injector.registerService('Service', Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
     expect(
-        () => injector.provider.registerService('ServiceTwo', ServiceTwo)
+        () => injector.injector.registerService('ServiceTwo', ServiceTwo)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
   });
 });

@@ -20,17 +20,21 @@ interface Binding {
 }
 
 export declare class Provider {
-  app: Vue;
-  services: Map<InjectableConstructor, Object>;
-  rootProviders: Array<any>;
+  // app: Vue;
+  // services: Map<InjectableConstructor, Object>;
+  // rootProviders: Array<any>;
 
-  constructor (app: Vue, rootProviders: Array<any>);
+  // constructor (app: Vue, rootProviders: Array<any>);
 
-  registerComponent (component: Vue);
-  registerService (name: string, Service: InjectableConstructor): InjectableConstructor;
+  // registerComponent (component: Vue);
+  // registerService (name: string, Service: InjectableConstructor): InjectableConstructor;
 
-  set (Service: any);
-  get (Service: any): Object;
+  // set (Service: any);
+  // get (Service: any): Object;
+}
+
+export declare class Injector {
+
 }
 
 export declare interface InjectableOptions {
@@ -49,17 +53,17 @@ export declare class VueInjector {
 
   app: Vue | null;
   apps: Array<Vue>;
-  provider: Provider | null;
+  // provider: Injector | null;
   rootProviders: Array<InjectableConstructor>;
 
   constructor (options?: VueInjectorOptions);
 
   init (app: Vue);
   initComponent (component: Vue);
-  get (provider: any): Object;
+  // get (provider: any): Object;
 }
 
 export declare function Injectable (options: InjectableOptions): ClassDecorator;
 export declare function Inject (service: any): PropertyDecorator;
 
-export declare type InjectedObject = Vue | Component | Object;
+export declare type InjectedObject = Vue | Component | InjectableConstructor | Object;
