@@ -15,6 +15,7 @@ const $VUE = 'Vue';
 export class Provider {
 
   private $factory: () => any = null;
+  private $instance: any = null;
 
   private serviceBinding: ServiceBinding = new ServiceBinding();
   private serviceFactory: ServiceFactory = new ServiceFactory();
@@ -29,6 +30,10 @@ export class Provider {
 
   get () {
     return this.$factory;
+  }
+
+  instance () {
+    return this.$instance;
   }
 
   private set factory (factory: () => any) {
@@ -83,6 +88,8 @@ export class Provider {
       return this.factory;
     }
 
-    return this.serviceBinding.bind(this.strategy, this.factory(), this.name).to(this.target);
+    this.$instance = this.factory();
+
+    return this.serviceBinding.bind(this.strategy, this.$instance, this.name).to(this.target);
   }
 }

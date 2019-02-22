@@ -59,13 +59,15 @@ export class Injector {
     }
 
     const provider = new Provider(target, service, customName);
+
     const factory = provider.get();
+    const instance = provider.instance();
 
     if (!this.services.has(service)) {
       this.services.set(service, factory);
     }
 
-    return this.getInstance(service);
+    return instance;
   }
 
   private registerDependencies (service) {
