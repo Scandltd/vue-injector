@@ -54,7 +54,7 @@ export class ServiceFactory implements Factory {
     if (value) {
       return () => value;
     } else {
-      assert(false, ERROR_MESSAGE.ERROR_007);
+      throw assert(false, ERROR_MESSAGE.ERROR_007);
     }
   }
 }

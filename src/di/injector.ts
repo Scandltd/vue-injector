@@ -34,7 +34,7 @@ export class Injector {
           }
         });
       } else {
-        assert(false, ERROR_MESSAGE.ERROR_004);
+        throw assert(false, ERROR_MESSAGE.ERROR_004);
       }
     }
 
