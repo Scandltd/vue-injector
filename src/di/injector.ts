@@ -47,7 +47,7 @@ export class Injector {
 
   get (service) {
     if (this.services.has(service)) {
-      return this.services.get(service);
+      return this.getService(service);
     }
 
     return this.provide(service);
@@ -58,15 +58,20 @@ export class Injector {
       this.registerDependencies(service.prototype);
     }
 
-    const provider = new Provider(
-      this.app,
-      this.services,
-      target,
-      service,
-      customName
-    );
+    const provider = new Provider(target, service, customName);
+    const factory = provider.get();
 
-    return provider.instance;
+    if (!this.services.has(service)) {
+      this.services.set(service, factory);
+    }
+
+    return this.getService(service);
+  }
+
+  private getService (service) {
+    const factory = this.services.get(service);
+
+    return factory();
   }
 
   private registerDependencies (service) {

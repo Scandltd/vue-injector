@@ -24,7 +24,9 @@ export class ServiceFactory implements Factory {
   }
 
   private instance (Service: InjectableConstructor): () => any {
-    return () => new Service();
+    const service = new Service();
+
+    return () => service;
   }
 
   private useFactory (Service: InjectableConstructor): () => any {
@@ -35,13 +37,15 @@ export class ServiceFactory implements Factory {
       throw assert(false, message(ERROR_MESSAGE.ERROR_008, { name }));
     }
 
-    const result = factory();
+    return () => {
+      const result = factory();
 
-    if (!result) {
-      throw assert(false, ERROR_MESSAGE.ERROR_006);
-    }
+      if (!result) {
+        throw assert(false, ERROR_MESSAGE.ERROR_006);
+      }
 
-    return () => result;
+      return result;
+    };
   }
 
   private useValue (Service: InjectableConstructor): () => any {

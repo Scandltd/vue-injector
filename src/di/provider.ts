@@ -14,13 +14,13 @@ const $VUE = 'Vue';
 
 export class Provider {
 
+  $instance: any = null;
+  $factory: () => any = null;
+
   private serviceBinding: ServiceBinding = new ServiceBinding();
   private serviceFactory: ServiceFactory = new ServiceFactory();
 
   constructor (
-    private app: Vue,
-    private services: Map<InjectableConstructor, any>,
-
     public target: InjectedObject,
     public service: InjectableConstructor,
     public customName?: string
@@ -28,20 +28,16 @@ export class Provider {
     this.binding();
   }
 
-  get instance () {
-    if (this.factory) {
-      return this.factory;
-    }
-
-    return null;
+  get () {
+    return this.$factory;
   }
 
-  private get factory (): any {
-    return this.services.get(this.service);
+  private set factory (factory: () => any) {
+    this.$factory = factory;
   }
 
-  private set factory (factory: any) {
-    this.services.set(this.service, factory());
+  private get factory (): () => any {
+    return this.$factory;
   }
 
   private get strategy () {
@@ -70,11 +66,7 @@ export class Provider {
   }
 
   private register (): any {
-    if (this.service.name === $VUE) {
-      this.factory = () => this.app;
-    }
-
-    if (!this.factory && this.isService) {
+    if ((!this.$instance && this.isService) || this.service.name === $VUE) {
       this.factory = this.serviceFactory.make(this.service);
     }
 
@@ -92,6 +84,6 @@ export class Provider {
       return this.factory;
     }
 
-    return this.serviceBinding.bind(this.strategy, this.factory, this.name).to(this.target);
+    return this.serviceBinding.bind(this.strategy, this.factory(), this.name).to(this.target);
   }
 }

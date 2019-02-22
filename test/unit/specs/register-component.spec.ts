@@ -30,7 +30,7 @@ describe('register component', () => {
 
     injector.injector.registerComponent(mockComponent);
 
-    expect(mockComponent.Service).toEqual(injector.injector.services.get(Service));
+    expect(mockComponent.Service).toEqual(injector.injector.get(Service));
   });
 
   it('register two', () => {

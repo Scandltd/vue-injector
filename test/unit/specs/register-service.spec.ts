@@ -73,10 +73,14 @@ describe('registerComponent service', () => {
 
   it('register with FACTORY', () => {
     class Factory {
-      static a = 1;
+      a = 0;
 
       constructor () {
-        Factory.a += 1;
+        this.a += 1;
+      }
+
+      add () {
+        this.a += 1;
       }
 
       get type () {
@@ -98,12 +102,18 @@ describe('registerComponent service', () => {
 
     const a = injector.injector.get(Service);
 
+    a.add();
+    a.add();
+
     expect(injector.injector.get(Service).type).toEqual('FACTORY');
     expect(service.type).toEqual('FACTORY');
 
     expect(factory()).toEqual(injector.injector.get(Service));
 
-    expect(Factory.a).toEqual(3);
+    injector.injector.get(Service).add();
+    injector.injector.get(Service).add();
+
+    expect(injector.injector.get(Service).a).toEqual(1);
   });
 
   it('register with VALUE', () => {
