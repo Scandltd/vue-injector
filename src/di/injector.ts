@@ -7,13 +7,15 @@ import { ERROR_MESSAGE } from '../enums/messages';
 import { Provider } from './provider';
 
 export class Injector {
+  static app: Vue;
+
   app: Vue;
   services: Map<InjectableConstructor, Provider>;
 
   rootServices: Array<any> = [];
 
   constructor (app: Vue, rootServices) {
-    this.app = app;
+    Injector.app = this.app = app;
     this.rootServices = rootServices;
 
     this.services = new Map();

@@ -7,6 +7,7 @@ import { assert } from '../util/warn';
 
 import { METADATA } from '../enums/metadata';
 import { ERROR_MESSAGE } from '../enums/messages';
+import { Injector } from './injector';
 
 const $VUE = 'Vue';
 
@@ -57,7 +58,11 @@ export class Provider {
   }
 
   private register (): any {
-    if (!this.factory && (this.isService || this.service.name === $VUE)) {
+    if (this.service.name === $VUE) {
+      this.factory = () => Injector.app;
+    }
+
+    if (!this.factory && this.isService) {
       this.factory = ServiceFactory.make(this.service);
     }
 
