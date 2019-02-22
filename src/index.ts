@@ -25,18 +25,18 @@ export default class VueInjector implements PluginObject<null> {
   static install: PluginFunction<null>;
   static version: string;
 
-  app: Vue | null;
-  apps: Array<Vue>;
-  injector: Injector | null;
+  private app: Vue | null;
+  private apps: Array<Vue>;
+  private injector: Injector | null;
 
-  rootProviders: Array<InjectableConstructor> = [];
+  private rootServices: Array<InjectableConstructor> = [];
 
   constructor (options: VueInjectorOptions = {}) {
     this.app = null;
     this.injector = null;
     this.apps = [];
 
-    this.rootProviders = options.root || [];
+    this.rootServices = options.root || [];
 
     if (options.store) {
       options.store.$injector = this;
@@ -65,7 +65,7 @@ export default class VueInjector implements PluginObject<null> {
     }
 
     this.app = app;
-    this.injector = new Injector(this.app, this.rootProviders);
+    this.injector = new Injector(this.app, this.rootServices);
   }
 
   initComponent (component: Vue) {

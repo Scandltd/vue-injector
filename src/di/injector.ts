@@ -8,13 +8,13 @@ import { Provider } from './provider';
 
 export class Injector {
   app: Vue;
-  services: Map<InjectableConstructor, any>;
+  services: Map<InjectableConstructor, () => any>;
 
   rootServices: Array<any> = [];
 
-  constructor (app: Vue, rootProviders) {
+  constructor (app: Vue, rootServices) {
     this.app = app;
-    this.rootServices = rootProviders;
+    this.rootServices = rootServices;
 
     this.services = new Map();
   }
@@ -47,7 +47,7 @@ export class Injector {
 
   get (service) {
     if (this.services.has(service)) {
-      return this.getService(service);
+      return this.getInstance(service);
     }
 
     return this.provide(service);
@@ -65,13 +65,7 @@ export class Injector {
       this.services.set(service, factory);
     }
 
-    return this.getService(service);
-  }
-
-  private getService (service) {
-    const factory = this.services.get(service);
-
-    return factory();
+    return this.getInstance(service);
   }
 
   private registerDependencies (service) {
@@ -89,5 +83,9 @@ export class Injector {
       });
 
     delete service.providers;
+  }
+
+  private getInstance (service) {
+    return this.services.get(service)();
   }
 }

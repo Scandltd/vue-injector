@@ -14,8 +14,7 @@ const $VUE = 'Vue';
 
 export class Provider {
 
-  $instance: any = null;
-  $factory: () => any = null;
+  private $factory: () => any = null;
 
   private serviceBinding: ServiceBinding = new ServiceBinding();
   private serviceFactory: ServiceFactory = new ServiceFactory();
@@ -66,7 +65,7 @@ export class Provider {
   }
 
   private register (): any {
-    if ((!this.$instance && this.isService) || this.service.name === $VUE) {
+    if (this.isService || this.service.name === $VUE) {
       this.factory = this.serviceFactory.make(this.service);
     }
 
