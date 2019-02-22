@@ -4,6 +4,27 @@ import { ERROR_MESSAGE } from '../../../src/enums/messages';
 
 Vue.use(VueInjector);
 
+describe('root service', () => {
+  it('register root service', () => {
+    @Injectable
+    class Service {}
+
+    const injector = new VueInjector({ root: [Service] });
+
+    const app = new Vue({
+      injector
+    });
+
+    app.$forceUpdate();
+
+    const mockComponent: any = {};
+
+    injector.injector.registerComponent(mockComponent);
+
+    expect(mockComponent.Service).toEqual(injector.injector.get(Service));
+  });
+});
+
 describe('register component', () => {
   let injector;
   let app;

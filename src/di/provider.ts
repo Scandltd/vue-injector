@@ -21,15 +21,11 @@ export class Provider {
     this.register();
   }
 
-  get () {
-    return this.$factory;
-  }
-
   instance (): any {
     return this.$factory();
   }
 
-  bindTo (target: InjectedObject = null, name?: string) {
+  bindTo (target: InjectedObject, name?: string): (() => any) | boolean {
     if (!target) {
       return this.factory;
     }
@@ -47,10 +43,6 @@ export class Provider {
 
   private get name (): string {
     return Reflect.getMetadata(METADATA.NAME, this.service);
-  }
-
-  private get type (): string {
-    return Reflect.getMetadata(METADATA.TYPE, this.service);
   }
 
   private get isService (): boolean {

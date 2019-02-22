@@ -129,6 +129,17 @@ describe('registerComponent service', () => {
     expect(injector.injector.get(Service).a).toEqual(1);
   });
 
+  it('register error FACTORY', () => {
+    @Injectable({
+      useFactory: {}
+    })
+    class Service {}
+
+    expect(
+      () => injector.injector.provide(Service)
+    ).toThrowError(message(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_008}`, { name: 'Service' }));
+  });
+
   it('register with VALUE', () => {
     @Injectable({
       useValue: 'anyValue'
@@ -140,6 +151,17 @@ describe('registerComponent service', () => {
     expect(injector.injector.services.size).toBe(1);
     expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
     expect(injector.injector.get(Service)).toEqual('anyValue');
+  });
+
+  it('register error VALUE', () => {
+    @Injectable({
+      useValue: null
+    })
+    class Service {}
+
+    expect(
+      () => injector.injector.provide(Service)
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_007}`);
   });
 
   it('register with VALUE and FACTORY', () => {
@@ -177,6 +199,23 @@ describe('registerComponent service', () => {
 
     expect(console.warn)
       .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
+  });
+
+
+  it('register with Vue', () => {
+    @Injectable
+    class Service {
+      @Inject(Vue) vm;
+    }
+
+    const service = injector.injector.provide(Service);
+
+    expect(injector.injector.services.size).toBe(2);
+
+    expect(service).toEqual(injector.injector.get(Service));
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+
+    expect(service.vm).toEqual(app);
   });
 
   it('FACTORY invalid return', () => {

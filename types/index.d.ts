@@ -15,8 +15,8 @@ export declare interface InjectInterface {
 }
 
 export declare class Provider {
-  get (): () => any;
   instance (): any;
+  bindTo (target: InjectedObject, name?: string): (() => any) | boolean;
 }
 
 export declare class Injector {
@@ -38,13 +38,15 @@ export declare interface InjectableOptions {
 }
 
 export declare type VueInjectorOptions = {
-  root?: Array<InjectableConstructor>,
+  root?: Array<any>,
   store?: any
 };
 
 export declare class VueInjector {
   static install: (app: Vue) => void;
   static version: string;
+
+  injector: Injector | null;
 
   constructor (options?: VueInjectorOptions);
 

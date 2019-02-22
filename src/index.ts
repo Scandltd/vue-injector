@@ -17,7 +17,7 @@ export {
 };
 
 export type VueInjectorOptions = {
-  root?: Array<InjectableConstructor>,
+  root?: Array<any>,
   store?: any
 };
 
@@ -25,9 +25,10 @@ export default class VueInjector implements PluginObject<null> {
   static install: PluginFunction<null>;
   static version: string;
 
+  injector: Injector | null;
+
   private app: Vue | null;
   private apps: Array<Vue>;
-  private injector: Injector | null;
 
   private rootServices: Array<InjectableConstructor> = [];
 
