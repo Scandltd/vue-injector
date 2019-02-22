@@ -14,23 +14,22 @@ export declare interface InjectInterface {
   readonly vm: Vue;
 }
 
-interface Binding {
-  bind (strategy: Provider, binging: InjectableConstructor, name: string): this;
-  to (target: InjectedObject): boolean;
+export declare class Provider {
+  instance (): any;
+  bindTo (target: InjectedObject, name?: string): (() => any) | boolean;
 }
 
-export declare class Provider {
+export declare class Injector {
   app: Vue;
-  services: Map<InjectableConstructor, Object>;
-  rootProviders: Array<any>;
+  services: Map<InjectableConstructor, Provider>;
+  rootServices: Array<any>;
 
   constructor (app: Vue, rootProviders: Array<any>);
 
   registerComponent (component: Vue);
-  registerService (name: string, Service: InjectableConstructor): InjectableConstructor;
+  provide (service: InjectableConstructor, target: InjectedObject, customName?: string): any;
 
-  set (Service: any);
-  get (Service: any): Object;
+  get (Service: any): any;
 }
 
 export declare interface InjectableOptions {
@@ -39,7 +38,7 @@ export declare interface InjectableOptions {
 }
 
 export declare type VueInjectorOptions = {
-  root?: Array<InjectableConstructor>,
+  root?: Array<any>,
   store?: any
 };
 
@@ -47,19 +46,16 @@ export declare class VueInjector {
   static install: (app: Vue) => void;
   static version: string;
 
-  app: Vue | null;
-  apps: Array<Vue>;
-  provider: Provider | null;
-  rootProviders: Array<InjectableConstructor>;
+  injector: Injector | null;
 
   constructor (options?: VueInjectorOptions);
 
   init (app: Vue);
   initComponent (component: Vue);
-  get (provider: any): Object;
+  get (provider: any): any;
 }
 
 export declare function Injectable (options: InjectableOptions): ClassDecorator;
 export declare function Inject (service: any): PropertyDecorator;
 
-export declare type InjectedObject = Vue | Component | Object;
+export declare type InjectedObject = Vue | Component | InjectableConstructor | Object;

@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v2.1.2
+  * @scandltd/vue-injector v2.1.3
   * (c) 2019 Scandltd
   * @license GPL-2.0
   */
@@ -100,33 +100,15 @@ function checkObject(obj) {
 }
 
 var ServiceBinding = /** @class */function () {
-    function ServiceBinding() {
-        this.binging = null;
-        this.name = null;
-        this.strategy = null;
-    }
-    ServiceBinding.prototype.bind = function (strategy, binging, name) {
-        this.strategy = strategy;
-        this.binging = binging;
-        this.name = name;
-        return this;
-    };
-    ServiceBinding.prototype.to = function (target) {
-        if (this.binging) {
-            var injectService_1 = this.strategy.getService(this.binging);
-            Reflect.defineProperty(target, this.name, {
-                enumerable: true,
-                configurable: false,
-                get: function get() {
-                    return injectService_1;
-                }
-            });
-        }
-        this.binging = null;
-        return true;
-    };
-    ServiceBinding.prototype.get = function () {
-        return this.strategy.getService(this.binging);
+    function ServiceBinding() {}
+    ServiceBinding.bind = function (target, service, name) {
+        return Reflect.defineProperty(target, name, {
+            enumerable: true,
+            configurable: false,
+            get: function get() {
+                return service;
+            }
+        });
     };
     return ServiceBinding;
 }();
@@ -144,156 +126,184 @@ var FACTORY_TYPES;
     FACTORY_TYPES["useValue"] = "useValue";
 })(FACTORY_TYPES || (FACTORY_TYPES = {}));
 
-var ServiceFactory = /** @class */function () {
-    function ServiceFactory() {}
-    ServiceFactory.prototype.make = function (Service) {
-        var method = Reflect.getMetadata(METADATA.TYPE, Service);
-        if (method) {
-            if (typeof this[method] !== 'function') {
-                throw assert(false, message(ERROR_MESSAGE.ERROR_009, { method: method }));
-            }
-            return this[method](Service);
-        } else {
-            return this.instance(Service);
-        }
-    };
-    ServiceFactory.prototype.instance = function (Service) {
-        return new Service();
-    };
-    ServiceFactory.prototype.useFactory = function (Service) {
+var UseFactory = /** @class */function () {
+    function UseFactory() {}
+    UseFactory.prototype.getFactory = function (Service) {
         var name = Reflect.getMetadata(METADATA.NAME, Service);
         var factory = Reflect.getMetadata(METADATA.VALUE, Service);
         if (factory && typeof factory !== 'function') {
             throw assert(false, message(ERROR_MESSAGE.ERROR_008, { name: name }));
         }
-        return factory;
+        return function () {
+            var result = factory();
+            if (!result) {
+                throw assert(false, ERROR_MESSAGE.ERROR_006);
+            }
+            return result;
+        };
     };
-    ServiceFactory.prototype.useValue = function (Service) {
+    return UseFactory;
+}();
+
+var UseValue = /** @class */function () {
+    function UseValue() {}
+    UseValue.prototype.getFactory = function (Service) {
         var value = Reflect.getMetadata(METADATA.VALUE, Service);
         if (value) {
-            return value;
+            return function () {
+                return value;
+            };
         } else {
-            assert(false, ERROR_MESSAGE.ERROR_007);
+            throw assert(false, ERROR_MESSAGE.ERROR_007);
+        }
+    };
+    return UseValue;
+}();
+
+var Instance = /** @class */function () {
+    function Instance() {}
+    Instance.prototype.getFactory = function (Service) {
+        var service = new Service();
+        return function () {
+            return service;
+        };
+    };
+    return Instance;
+}();
+
+var ServiceFactory = /** @class */function () {
+    function ServiceFactory() {}
+    ServiceFactory.make = function (Service) {
+        var factoryName = Reflect.getMetadata(METADATA.TYPE, Service);
+        var factory = ServiceFactory.getFactoryByName(factoryName);
+        return factory.getFactory(Service);
+    };
+    ServiceFactory.getFactoryByName = function (name) {
+        switch (name) {
+            case FACTORY_TYPES.useFactory:
+                return new UseFactory();
+            case FACTORY_TYPES.useValue:
+                return new UseValue();
+            default:
+                return new Instance();
         }
     };
     return ServiceFactory;
 }();
 
-var Instance = /** @class */function () {
-    function Instance() {}
-    Instance.prototype.getService = function (service) {
-        return service;
-    };
-    return Instance;
-}();
-
-var Factory = /** @class */function () {
-    function Factory() {}
-    Factory.prototype.getService = function (service) {
-        var result = service();
-        if (result) {
-            return result;
-        } else {
-            throw assert(false, ERROR_MESSAGE.ERROR_006);
-        }
-    };
-    return Factory;
-}();
-
+var $VUE = 'Vue';
 var Provider = /** @class */function () {
-    function Provider(app, rootProviders) {
-        this.rootProviders = [];
-        this.serviceBinding = new ServiceBinding();
-        this.serviceFactory = new ServiceFactory();
-        this.app = app;
-        this.rootProviders = rootProviders;
+    function Provider(service) {
+        this.service = service;
+        this.$factory = null;
+        this.register();
+    }
+    Provider.prototype.instance = function () {
+        return this.$factory();
+    };
+    Provider.prototype.bindTo = function (target, name) {
+        if (!target) {
+            return this.factory;
+        }
+        return ServiceBinding.bind(target, this.$factory(), name || this.name);
+    };
+    Object.defineProperty(Provider.prototype, "factory", {
+        get: function get() {
+            return this.$factory;
+        },
+        set: function set(factory) {
+            this.$factory = factory;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Provider.prototype, "name", {
+        get: function get() {
+            return Reflect.getMetadata(METADATA.NAME, this.service);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Provider.prototype, "isService", {
+        get: function get() {
+            return Reflect.getMetadata(METADATA.SERVICE, this.service);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Provider.prototype.register = function () {
+        if (this.service.name === $VUE) {
+            this.factory = function () {
+                return Injector.app;
+            };
+        }
+        if (!this.factory && this.isService) {
+            this.factory = ServiceFactory.make(this.service);
+        }
+        if (this.factory) {
+            return this.factory;
+        }
+        throw assert(false, ERROR_MESSAGE.ERROR_005);
+    };
+    return Provider;
+}();
+
+var Injector = /** @class */function () {
+    function Injector(app, rootServices) {
+        this.rootServices = [];
+        Injector.app = this.app = app;
+        this.rootServices = rootServices;
         this.services = new Map();
     }
-    Provider.prototype.registerComponent = function (component) {
+    Injector.prototype.registerComponent = function (component) {
         var _this = this;
         if (component.hasOwnProperty('_providers')) {
             var providers_1 = component._providers;
             if (providers_1 && checkObject(providers_1)) {
                 Object.keys(providers_1).forEach(function (name) {
                     if (providers_1 && providers_1.hasOwnProperty(name)) {
-                        _this.binding(component, name, providers_1[name]);
+                        _this.provide(component._providers[name], component, name);
                     }
                 });
             } else {
-                assert(false, ERROR_MESSAGE.ERROR_004);
+                throw assert(false, ERROR_MESSAGE.ERROR_004);
             }
         }
-        if (this.rootProviders.length) {
-            this.rootProviders.forEach(function (provider) {
-                if (Reflect.getMetadata(METADATA.SERVICE, provider)) {
-                    var name = Reflect.getMetadata(METADATA.NAME, provider);
-                    _this.binding(component, name, provider);
-                }
+        if (this.rootServices.length) {
+            this.rootServices.forEach(function (provider) {
+                _this.provide(provider, component);
             });
         }
     };
-    Provider.prototype.registerService = function (name, Service) {
-        if (Service.name === 'Vue') {
-            return this.app;
-        }
-        if (!this.services.has(Service) && Reflect.getMetadata(METADATA.SERVICE, Service)) {
-            if (Service.prototype.providers) {
-                this.registerProviders(Service.prototype, Service.prototype.providers);
-                delete Service.prototype.providers;
-            }
-            this.services.set(Service, this.serviceFactory.make(Service));
-        }
-        var service = this.services.get(Service);
-        if (service) {
-            return service;
-        }
-        throw assert(false, ERROR_MESSAGE.ERROR_005);
+    Injector.prototype.get = function (service) {
+        return this.provide(service);
     };
-    Provider.prototype.registerProviders = function (provider, imports) {
+    Injector.prototype.provide = function (service, target, customName) {
+        if (target === void 0) {
+            target = null;
+        }
+        if (!this.services.has(service)) {
+            if (service.prototype.providers) {
+                this.registerDependencies(service.prototype);
+            }
+            var provider_1 = new Provider(service);
+            this.services.set(service, provider_1);
+        }
+        var provider = this.services.get(service);
+        provider.bindTo(target, customName);
+        return provider.instance();
+    };
+    Injector.prototype.registerDependencies = function (service) {
         var _this = this;
-        if (checkObject(imports)) {
-            Object.keys(imports).forEach(function (name) {
-                _this.binding(provider, name, imports[name]);
-            });
-        } else {
-            assert(false, ERROR_MESSAGE.ERROR_004);
+        if (!checkObject(service.providers)) {
+            throw assert(false, ERROR_MESSAGE.ERROR_004);
         }
+        Object.keys(service.providers).forEach(function (name) {
+            _this.provide(service.providers[name], service, name);
+        });
+        delete service.providers;
     };
-    Provider.prototype.set = function (Service) {
-        if (Reflect.getMetadata(METADATA.SERVICE, Service)) {
-            this.registerService(Reflect.getMetadata(METADATA.NAME, Service), Service);
-        }
-    };
-    Provider.prototype.get = function (Service) {
-        if (Service.name === 'Vue') {
-            return this.app;
-        }
-        if (!this.services.has(Service)) {
-            this.set(Service);
-        }
-        return this.getting(Service);
-    };
-    Provider.prototype.getting = function (Service) {
-        var name = Reflect.getMetadata(METADATA.NAME, Service);
-        var service = this.services.get(Service);
-        var strategy = this.getStrategy(Service);
-        return this.serviceBinding.bind(strategy, service, name).get();
-    };
-    Provider.prototype.binding = function (target, name, Service) {
-        var service = this.registerService(name, Service);
-        var strategy = this.getStrategy(Service);
-        this.serviceBinding.bind(strategy, service, name).to(target);
-    };
-    Provider.prototype.getStrategy = function (Service) {
-        var type = Reflect.getMetadata(METADATA.TYPE, Service);
-        switch (type) {
-            case FACTORY_TYPES.useFactory:
-                return new Factory();
-            default:
-                return new Instance();
-        }
-    };
-    return Provider;
+    return Injector;
 }();
 
 var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -1432,57 +1442,121 @@ var Reflect$1;
     });
 })(Reflect$1 || (Reflect$1 = {}));
 
-function injectableFactory(target, options) {
-    if (options === void 0) {
-        options = {};
+var InjectableFactory = /** @class */function () {
+    function InjectableFactory() {
+        this.target = null;
+        this.options = {};
     }
-    function getServiceType(options) {
-        var optionKeys = Reflect.ownKeys(options);
-        var whitelist = Reflect.ownKeys(FACTORY_TYPES);
-        // checks whether all options given are allowed. Allowed options (useValue, useFactory)
-        var checkOtherProperty = !optionKeys.every(function (prop) {
-            return !!~whitelist.indexOf(prop);
-        });
-        if (checkOtherProperty) {
-            var msg = message(WARNING_MESSAGE.WARNING_000, { name: target.name, options: JSON.stringify(options) });
-            warn(false, msg);
+    Object.defineProperty(InjectableFactory, "whitelist", {
+        get: function get() {
+            return Reflect.ownKeys(FACTORY_TYPES);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InjectableFactory.prototype, "decorators", {
+        get: function get() {
+            return this.target.__decorators__;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InjectableFactory.prototype, "optionKeys", {
+        get: function get() {
+            return Reflect.ownKeys(this.options);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InjectableFactory.prototype, "isOtherProperty", {
+        /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
+        get: function get() {
+            return !this.optionKeys.every(function (prop) {
+                return !!~InjectableFactory.whitelist.indexOf(prop);
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InjectableFactory.prototype, "isCollisionProps", {
+        get: function get() {
+            var _this = this;
+            var props = InjectableFactory.whitelist.filter(function (props) {
+                return Reflect.has(_this.options, props);
+            });
+            return props.length > 1;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InjectableFactory.prototype, "type", {
+        get: function get() {
+            var _this = this;
+            return InjectableFactory.whitelist.find(function (props) {
+                return Reflect.has(_this.options, props);
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(InjectableFactory.prototype, "serviceType", {
+        get: function get() {
+            if (this.isOtherProperty) {
+                this.warnMassage();
+            }
+            if (this.isCollisionProps) {
+                throw InjectableFactory.errorMassage();
+            }
+            if (this.type) {
+                return FACTORY_TYPES[this.type];
+            }
+            return null;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    InjectableFactory.errorMassage = function () {
+        throw assert(false, message(ERROR_MESSAGE.ERROR_001, { names: JSON.stringify(InjectableFactory.whitelist) }));
+    };
+    InjectableFactory.prototype.make = function (target, options) {
+        if (options === void 0) {
+            options = {};
         }
-        var findProps = whitelist.filter(function (props) {
-            return Reflect.has(options, props);
-        });
-        if (findProps.length > 1) {
-            throw assert(false, message(ERROR_MESSAGE.ERROR_001, { names: JSON.stringify(whitelist) }));
+        this.target = target;
+        this.options = options;
+        this.defineMetadata();
+        this.createDecorators();
+        return this.target;
+    };
+    InjectableFactory.prototype.warnMassage = function () {
+        warn(false, message(WARNING_MESSAGE.WARNING_000, { name: this.target.name, options: JSON.stringify(this.options) }));
+    };
+    InjectableFactory.prototype.defineMetadata = function () {
+        if (this.serviceType) {
+            Reflect.defineMetadata(METADATA.TYPE, this.serviceType, this.target);
+            Reflect.defineMetadata(METADATA.VALUE, this.options[this.serviceType], this.target);
         }
-        var type = whitelist.find(function (props) {
-            return Reflect.has(options, props);
-        });
-        if (type) {
-            return FACTORY_TYPES[type];
+        Reflect.defineMetadata(METADATA.NAME, this.target.name, this.target);
+        Reflect.defineMetadata(METADATA.SERVICE, true, this.target);
+    };
+    InjectableFactory.prototype.createDecorators = function () {
+        var _this = this;
+        if (this.decorators) {
+            this.decorators.forEach(function (fn) {
+                return fn(_this.target.prototype);
+            });
+            delete this.target.__decorators__;
         }
-        return null;
-    }
-    var serviceType = getServiceType(options);
-    if (serviceType) {
-        Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
-        Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
-    }
-    Reflect.defineMetadata(METADATA.NAME, target.name, target);
-    Reflect.defineMetadata(METADATA.SERVICE, true, target);
-    var decorators = target.__decorators__;
-    if (decorators) {
-        decorators.forEach(function (fn) {
-            return fn(target.prototype);
-        });
-        delete target.__decorators__;
-    }
-    return target;
-}
+    };
+    return InjectableFactory;
+}();
 function Injectable(options) {
+    var injectableFactory = new InjectableFactory();
     if (typeof options === 'function') {
-        return injectableFactory(options);
+        return injectableFactory.make(options);
     }
     return function (target) {
-        return injectableFactory(target, options);
+        return injectableFactory.make(target, options);
     };
 }
 
@@ -1515,11 +1589,11 @@ var VueInjector = /** @class */function () {
         if (options === void 0) {
             options = {};
         }
-        this.rootProviders = [];
+        this.rootServices = [];
         this.app = null;
-        this.provider = null;
+        this.injector = null;
         this.apps = [];
-        this.rootProviders = options.root || [];
+        this.rootServices = options.root || [];
         if (options.store) {
             options.store.$injector = this;
         }
@@ -1546,18 +1620,18 @@ var VueInjector = /** @class */function () {
             return;
         }
         this.app = app;
-        this.provider = new Provider(this.app, this.rootProviders);
+        this.injector = new Injector(this.app, this.rootServices);
     };
     VueInjector.prototype.initComponent = function (component) {
-        this.provider && this.provider.registerComponent(component);
+        this.injector && this.injector.registerComponent(component);
     };
-    VueInjector.prototype.get = function (Provider$$1) {
-        return this.provider && this.provider.get(Provider$$1);
+    VueInjector.prototype.get = function (Provider) {
+        return this.injector && this.injector.get(Provider);
     };
     return VueInjector;
 }();
 VueInjector.install = install;
-VueInjector.version = '2.1.2';
+VueInjector.version = '2.1.3';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
