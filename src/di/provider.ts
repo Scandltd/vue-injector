@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import { InjectedObject } from '../../types';
 import { InjectableConstructor } from './decorators/injectable';
-import { Factory } from './bindings/factory';
-import { Instance } from './bindings/instance';
 import { ServiceBinding } from './bindings/binding';
-import { ServiceFactory } from './factory';
+import { ServiceFactory } from './factory/Factory';
 import { assert } from '../util/warn';
 
-import { FACTORY_TYPES, METADATA } from '../enums/metadata';
+import { METADATA } from '../enums/metadata';
 import { ERROR_MESSAGE } from '../enums/messages';
 
 const $VUE = 'Vue';
@@ -15,9 +13,6 @@ const $VUE = 'Vue';
 export class Provider {
 
   private $factory: () => any = null;
-
-  private serviceBinding: ServiceBinding = new ServiceBinding();
-  private serviceFactory: ServiceFactory = new ServiceFactory();
 
   constructor (
     public service: InjectableConstructor
@@ -38,7 +33,7 @@ export class Provider {
       return this.factory;
     }
 
-    return this.serviceBinding.bind(this.strategy, this.$factory(), name || this.name).to(target);
+    return ServiceBinding.bind(target, this.$factory(), name || this.name);
   }
 
   private set factory (factory: () => any) {
@@ -47,10 +42,6 @@ export class Provider {
 
   private get factory (): () => any {
     return this.$factory;
-  }
-
-  private get strategy () {
-    return this.getStrategy();
   }
 
   private get name (): string {
@@ -65,18 +56,9 @@ export class Provider {
     return Reflect.getMetadata(METADATA.SERVICE, this.service);
   }
 
-  private getStrategy () {
-    switch (this.type) {
-      case FACTORY_TYPES.useFactory:
-        return new Factory();
-      default:
-        return new Instance();
-    }
-  }
-
   private register (): any {
     if (!this.factory && (this.isService || this.service.name === $VUE)) {
-      this.factory = this.serviceFactory.make(this.service);
+      this.factory = ServiceFactory.make(this.service);
     }
 
     if (this.factory) {
