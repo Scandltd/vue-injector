@@ -1,5 +1,6 @@
-import { assert, warn } from '../../util/warn';
 import 'reflect-metadata';
+import { assert, warn } from '../../util/warn';
+
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
 import { FACTORY_TYPES, METADATA } from '../../enums/metadata';
 
@@ -17,67 +18,108 @@ export interface InjectableOptions {
   useValue?: any;
 }
 
-function injectableFactory (target: InjectableConstructor, options: InjectableOptions = {}) {
+class InjectableFactory {
 
-  function getServiceType (options) {
+  private target: InjectableConstructor = null;
+  private options: InjectableOptions = {};
 
-    const optionKeys = Reflect.ownKeys(options);
-    const whitelist = Reflect.ownKeys(FACTORY_TYPES);
+  private static get whitelist () {
+    return Reflect.ownKeys(FACTORY_TYPES);
+  }
 
-    // checks whether all options given are allowed. Allowed options (useValue, useFactory)
-    const checkOtherProperty = !optionKeys.every((prop: PropertyKey) => {
-      return !!~whitelist.indexOf(prop);
+  private get decorators () {
+    return this.target.__decorators__;
+  }
+
+  private get optionKeys () {
+    return Reflect.ownKeys(this.options);
+  }
+
+  /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
+  private get isOtherProperty (): boolean {
+    return !this.optionKeys.every((prop: PropertyKey) => {
+      return !!~InjectableFactory.whitelist.indexOf(prop);
     });
+  }
 
-    if (checkOtherProperty) {
-      let msg = message(WARNING_MESSAGE.WARNING_000, { name: target.name, options: JSON.stringify(options) });
-      warn(false, msg);
+  private get isCollisionProps () {
+    const props = InjectableFactory.whitelist
+      .filter(props => Reflect.has(this.options, props));
+
+    return props.length > 1;
+  }
+
+  private get type () {
+    return InjectableFactory.whitelist.find(props => Reflect.has(this.options, props));
+  }
+
+  private get serviceType () {
+
+    if (this.isOtherProperty) {
+      this.warnMassage();
     }
 
-    const findProps = whitelist.filter(props => Reflect.has(options, props));
-
-    if (findProps.length > 1) {
-      throw assert(false, message(
-        ERROR_MESSAGE.ERROR_001,
-        { names: JSON.stringify(whitelist) }
-        )
-      );
+    if (this.isCollisionProps) {
+      throw InjectableFactory.errorMassage();
     }
 
-    const type = whitelist.find(props => Reflect.has(options, props));
-
-    if (type) {
-      return FACTORY_TYPES[type];
+    if (this.type) {
+      return FACTORY_TYPES[this.type];
     }
 
     return null;
   }
 
-  let serviceType = getServiceType(options);
-
-  if (serviceType) {
-    Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
-    Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
+  private static errorMassage () {
+    throw assert(false, message(
+      ERROR_MESSAGE.ERROR_001,
+      { names: JSON.stringify(InjectableFactory.whitelist) }
+      )
+    );
   }
 
-  Reflect.defineMetadata(METADATA.NAME, target.name, target);
-  Reflect.defineMetadata(METADATA.SERVICE, true, target);
+  make (target: InjectableConstructor, options: InjectableOptions = {}) {
+    this.target = target;
+    this.options = options;
 
-  const decorators = target.__decorators__;
+    this.defineMetadata();
+    this.createDecorators();
 
-  if (decorators) {
-    decorators.forEach(function (fn) { return fn(target.prototype); });
-    delete target.__decorators__;
+    return this.target;
   }
 
-  return target;
+  private warnMassage () {
+    warn(
+      false,
+      message(WARNING_MESSAGE.WARNING_000, { name: this.target.name, options: JSON.stringify(this.options) })
+    );
+  }
+
+  private defineMetadata () {
+    if (this.serviceType) {
+      Reflect.defineMetadata(METADATA.TYPE, this.serviceType, this.target);
+      Reflect.defineMetadata(METADATA.VALUE, this.options[this.serviceType], this.target);
+    }
+
+    Reflect.defineMetadata(METADATA.NAME, this.target.name, this.target);
+    Reflect.defineMetadata(METADATA.SERVICE, true, this.target);
+  }
+
+  private createDecorators () {
+    if (this.decorators) {
+      this.decorators.forEach((fn) => { return fn(this.target.prototype); });
+      delete this.target.__decorators__;
+    }
+  }
 }
 
 export function Injectable (options): any {
+  const injectableFactory = new InjectableFactory();
+
   if (typeof options === 'function') {
-    return injectableFactory(options);
+    return injectableFactory.make(options);
   }
   return function (target) {
-    return injectableFactory(target, options);
+    return injectableFactory.make(target, options);
   };
 }
