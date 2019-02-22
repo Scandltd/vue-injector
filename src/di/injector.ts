@@ -8,7 +8,7 @@ import { Provider } from './provider';
 
 export class Injector {
   app: Vue;
-  services: Map<InjectableConstructor, () => any>;
+  services: Map<InjectableConstructor, Provider>;
 
   rootServices: Array<any> = [];
 
@@ -46,28 +46,25 @@ export class Injector {
   }
 
   get (service) {
-    if (this.services.has(service)) {
-      return this.getInstance(service);
-    }
-
     return this.provide(service);
   }
 
   provide (service: InjectableConstructor, target: InjectedObject = null, customName?: string) {
-    if (service.prototype.providers) {
-      this.registerDependencies(service.prototype);
-    }
-
-    const provider = new Provider(target, service, customName);
-
-    const factory = provider.get();
-    const instance = provider.instance();
-
     if (!this.services.has(service)) {
-      this.services.set(service, factory);
+      if (service.prototype.providers) {
+        this.registerDependencies(service.prototype);
+      }
+
+      const provider = new Provider(service);
+
+      this.services.set(service, provider);
     }
 
-    return instance;
+    const provider = this.services.get(service);
+
+    provider.bindTo(target, customName);
+
+    return provider.instance();
   }
 
   private registerDependencies (service) {
@@ -85,9 +82,5 @@ export class Injector {
       });
 
     delete service.providers;
-  }
-
-  private getInstance (service) {
-    return this.services.get(service)();
   }
 }

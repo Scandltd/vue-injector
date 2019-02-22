@@ -21,11 +21,12 @@ interface Binding {
 
 export declare class Provider {
   get (): () => any;
+  instance (): any;
 }
 
 export declare class Injector {
   app: Vue;
-  services: Map<InjectableConstructor, () => any>;
+  services: Map<InjectableConstructor, Provider>;
   rootServices: Array<any>;
 
   constructor (app: Vue, rootProviders: Array<any>);

@@ -15,29 +15,33 @@ const $VUE = 'Vue';
 export class Provider {
 
   private $factory: () => any = null;
-  private $instance: any = null;
 
   private serviceBinding: ServiceBinding = new ServiceBinding();
   private serviceFactory: ServiceFactory = new ServiceFactory();
 
   constructor (
-    public target: InjectedObject,
-    public service: InjectableConstructor,
-    public customName?: string
+    public service: InjectableConstructor
   ) {
-    this.binding();
+    this.register();
   }
 
   get () {
     return this.$factory;
   }
 
-  instance () {
-    return this.$instance;
+  instance (): any {
+    return this.$factory();
+  }
+
+  bindTo (target: InjectedObject = null, name?: string) {
+    if (!target) {
+      return this.factory;
+    }
+
+    return this.serviceBinding.bind(this.strategy, this.$factory(), name || this.name).to(target);
   }
 
   private set factory (factory: () => any) {
-    this.$instance = factory();
     this.$factory = factory;
   }
 
@@ -50,7 +54,7 @@ export class Provider {
   }
 
   private get name (): string {
-    return this.customName || Reflect.getMetadata(METADATA.NAME, this.service);
+    return Reflect.getMetadata(METADATA.NAME, this.service);
   }
 
   private get type (): string {
@@ -71,7 +75,7 @@ export class Provider {
   }
 
   private register (): any {
-    if (this.isService || this.service.name === $VUE) {
+    if (!this.factory && (this.isService || this.service.name === $VUE)) {
       this.factory = this.serviceFactory.make(this.service);
     }
 
@@ -80,15 +84,5 @@ export class Provider {
     }
 
     throw assert(false, ERROR_MESSAGE.ERROR_005);
-  }
-
-  private binding (): any {
-    this.register();
-
-    if (!this.target) {
-      return this.factory;
-    }
-
-    return this.serviceBinding.bind(this.strategy, this.$instance, this.name).to(this.target);
   }
 }
