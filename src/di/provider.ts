@@ -37,6 +37,7 @@ export class Provider {
   }
 
   private set factory (factory: () => any) {
+    this.$instance = factory();
     this.$factory = factory;
   }
 
@@ -87,8 +88,6 @@ export class Provider {
     if (!this.target) {
       return this.factory;
     }
-
-    this.$instance = this.factory();
 
     return this.serviceBinding.bind(this.strategy, this.$instance, this.name).to(this.target);
   }
