@@ -124,7 +124,7 @@
   "bugs": {
     "url": "https://github.com/Scandltd/vue-injector/issues"
   },
-  "homepage": "https://github.com/Scandltd/vue-injector",
+  "homepage": "https://scand.com/products/vue-injector/",
   "nyc": {
     "include": [
       "src/**/*.js"
