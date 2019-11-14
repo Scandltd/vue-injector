@@ -41,7 +41,7 @@
     "build": "node build/build.js",
     "lint": "eslint examples && eslint 'src/**/*.ts'",
     "lint:fix": "eslint examples --fix && eslint 'src/**/*.ts' --fix",
-    "test": "yarn run lint && yarn run test:unit && yarn run test:e2e && yarn run test:types",
+    "test": "yarn run lint && yarn run test:unit && yarn run test:types",
     "test:unit": "node_modules/.bin/jest",
     "test:cover": "node_modules/.bin/jest --collect-coverag",
     "test:types": "tsc --noEmit -p .",
@@ -129,9 +129,6 @@
     "coverageDirectory": "test/unit/coverage",
     "collectCoverageFrom": [
       "src/**/*.ts"
-    ],
-    "setupFiles": [
-      "jest.init.js"
     ]
   },
   "nyc": {
