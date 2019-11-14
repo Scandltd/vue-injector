@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { assert } from '../util/warn';
-import { InjectedObject } from '../../types';
+import { InjectedObject } from '../intefaces';
 import { InjectableConstructor } from './decorators/injectable';
 import { checkObject } from '../util/object';
 import { ERROR_MESSAGE } from '../enums/messages';
@@ -14,20 +14,21 @@ export class Injector {
 
   rootServices: Array<any> = [];
 
-  constructor (app: Vue, rootServices) {
-    Injector.app = this.app = app;
+  constructor(app: Vue, rootServices) {
+    Injector.app = app;
+    this.app = app;
     this.rootServices = rootServices;
 
     this.services = new Map();
   }
 
-  registerComponent (component: Vue) {
-    if (component.hasOwnProperty('_providers')) {
+  registerComponent(component: Vue) {
+    if (Object.hasOwnProperty.call(component, '_providers')) {
       const providers = component._providers;
 
       if (providers && checkObject(providers)) {
-        Object.keys(providers).forEach(name => {
-          if (providers && providers.hasOwnProperty(name)) {
+        Object.keys(providers).forEach((name) => {
+          if (providers && Object.hasOwnProperty.call(providers, name)) {
             this.provide(
               component._providers[name],
               component,
@@ -41,17 +42,17 @@ export class Injector {
     }
 
     if (this.rootServices.length) {
-      this.rootServices.forEach(provider => {
+      this.rootServices.forEach((provider) => {
         this.provide(provider, component);
       });
     }
   }
 
-  get (service) {
+  get(service) {
     return this.provide(service);
   }
 
-  provide (service: InjectableConstructor, target: InjectedObject = null, customName?: string) {
+  provide(service: InjectableConstructor, target: InjectedObject = null, customName?: string) {
     if (!this.services.has(service)) {
       if (service.prototype.providers) {
         this.registerDependencies(service.prototype);
@@ -69,7 +70,7 @@ export class Injector {
     return provider.instance();
   }
 
-  private registerDependencies (service) {
+  private registerDependencies(service) {
     if (!checkObject(service.providers)) {
       throw assert(false, ERROR_MESSAGE.ERROR_004);
     }

@@ -10,14 +10,14 @@ export interface FactoryInterface {
 }
 
 export class ServiceFactory {
-  static make (Service: InjectableConstructor): () => any {
+  static make(Service: InjectableConstructor): () => any {
     const factoryName = Reflect.getMetadata(METADATA.TYPE, Service);
     const factory = ServiceFactory.getFactoryByName(factoryName);
 
     return factory.getFactory(Service);
   }
 
-  private static getFactoryByName (name: keyof typeof FACTORY_TYPES) {
+  private static getFactoryByName(name: keyof typeof FACTORY_TYPES) {
     switch (name) {
       case FACTORY_TYPES.useFactory:
         return new UseFactory();
