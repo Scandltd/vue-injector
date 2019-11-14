@@ -28,6 +28,12 @@ import Vue from 'vue'
 import VueInjector from '@scandltd/vue-injector'
 
 Vue.use(VueInjector)
+
+const injector = new VueInjector()
+
+new Vue({
+  injector
+}).$mount('#app')
 ```
 
 You don't need to do this when using global `script` tags.
