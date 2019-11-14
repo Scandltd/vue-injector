@@ -1,12 +1,13 @@
-import Vue from 'vue'
-import VueInjector, { Injectable, Inject } from '@scandltd/vue-injector'
-import Code from './../mixin'
+/* eslint-disable max-classes-per-file */
+import Vue from 'vue';
+import VueInjector, { Injectable, Inject } from '@scandltd/vue-injector';
+import Code from '../mixin';
 
-Vue.mixin(Code)
+Vue.mixin(Code);
 
 // 1. Use plugin.
 // This injects $injector to all injector-enabled child components
-Vue.use(VueInjector)
+Vue.use(VueInjector);
 
 // 2. Create services
 @Injectable
@@ -18,8 +19,8 @@ class Service {
 class AnyService {
   @Inject(Service) service;
 
-  constructor () {
-    console.log('constructor', this.service)
+  constructor() {
+    console.log('constructor', this.service);
   }
 }
 
@@ -38,18 +39,18 @@ Vue.component('VueInjector', {
         <div ref="import" class="service inject-service"></div>
       </div>
     </div>`,
-  mounted () {
-    this.code(this.$AnyService, this.$refs.main)
-    this.code(this.$AnyService.service, this.$refs.import)
+  mounted() {
+    this.code(this.$AnyService, this.$refs.main);
+    this.code(this.$AnyService.service, this.$refs.import);
   }
-})
+});
 
 // 4. Create the provider
-const injector = new VueInjector()
+const injector = new VueInjector();
 
 // 5. Create and mount root instance.
 // Make sure to inject the services.
 new Vue({
   el: '#app',
   injector
-})
+});

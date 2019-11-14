@@ -32,7 +32,7 @@ export default class VueInjector implements PluginObject<null> {
 
   private rootServices: Array<InjectableConstructor> = [];
 
-  constructor (options: VueInjectorOptions = {}) {
+  constructor(options: VueInjectorOptions = {}) {
     this.app = null;
     this.injector = null;
     this.apps = [];
@@ -44,19 +44,21 @@ export default class VueInjector implements PluginObject<null> {
     }
   }
 
-  static get app () {
+  static get app() {
     return this;
   }
 
-  get install (): PluginFunction<null> {
+  get install(): PluginFunction<null> {
     return VueInjector.install;
   }
 
-  init (app: Vue) {
-    process.env.NODE_ENV !== 'production' && assert(
+  init(app: Vue) {
+    if (process.env.NODE_ENV !== 'production') {
+      assert(
         (install as any).installed,
-      ERROR_MESSAGE.ERROR_003
-    );
+        ERROR_MESSAGE.ERROR_003
+      );
+    }
 
     this.apps.push(app);
 
@@ -69,11 +71,11 @@ export default class VueInjector implements PluginObject<null> {
     this.injector = new Injector(this.app, this.rootServices);
   }
 
-  initComponent (component: Vue) {
-    this.injector && this.injector.registerComponent(component);
+  initComponent(component: Vue) {
+    return this.injector && this.injector.registerComponent(component);
   }
 
-  get (Provider: typeof Inject) {
+  get(Provider: typeof Inject) {
     return this.injector && this.injector.get(Provider);
   }
 }

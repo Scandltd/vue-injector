@@ -5,7 +5,7 @@ import { METADATA } from '../../enums/metadata';
 import { ERROR_MESSAGE, message } from '../../enums/messages';
 
 export class UseFactory implements FactoryInterface {
-  getFactory (Service: InjectableConstructor): () => any {
+  getFactory(Service: InjectableConstructor): () => any {
     const name = Reflect.getMetadata(METADATA.NAME, Service);
     const factory = Reflect.getMetadata(METADATA.VALUE, Service);
 

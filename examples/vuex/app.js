@@ -1,33 +1,34 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import VueInjector, { Injectable } from '@scandltd/vue-injector'
-import Code from './../mixin'
+/* eslint-disable no-param-reassign */
+import Vue from 'vue';
+import Vuex from 'vuex';
+import VueInjector, { Injectable } from '@scandltd/vue-injector';
+import Code from '../mixin';
 
-Vue.mixin(Code)
+Vue.mixin(Code);
 
 // 1. init store
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
     count: 0
   },
   mutations: {
-    increment (state) {
-      state.count++
+    increment(state) {
+      state.count += 1;
     }
   },
   actions: {
-    increment (context) {
+    increment(context) {
       // this.$injector.get(Service)
-      context.commit('increment')
+      context.commit('increment');
     }
   }
-})
+});
 
 // 2. Use plugin.
 // This injects $injector to all injector-enabled child components
-Vue.use(VueInjector)
+Vue.use(VueInjector);
 
 // 3. Create services
 @Injectable
@@ -40,15 +41,15 @@ Vue.component('VueInjector', {
     $AnyService: AnyService
   },
   template:
-    `<div class="block"></div>`,
-  mounted () {
-    this.$store.dispatch('increment')
-    this.code(this.$AnyService, this.$el)
+    '<div class="block"></div>',
+  mounted() {
+    this.$store.dispatch('increment');
+    this.code(this.$AnyService, this.$el);
   }
-})
+});
 
 // 5. Create the provider
-const injector = new VueInjector({ store })
+const injector = new VueInjector({ store });
 
 // 6. Create and mount root instance.
 // Make sure to inject the services.
@@ -56,4 +57,4 @@ new Vue({
   store,
   injector,
   el: '#app'
-})
+});

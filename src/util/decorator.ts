@@ -1,4 +1,5 @@
-export function createDecorator (
+/* eslint-disable no-proto */
+export function createDecorator(
   factory: (target: any, key: string) => void
 ): PropertyDecorator {
   return function (target: any, key: string) {
@@ -9,16 +10,14 @@ export function createDecorator (
     const descriptor = {
       enumerable: true,
       configurable: true,
-      initializer: function () {
+      initializer() {
         return this.__proto__[key];
       }
     };
 
     Reflect.defineProperty(target, key, descriptor);
 
-    (Ctor.__decorators__ || (Ctor.__decorators__ = [])).push(function (options) {
-      return factory(options, key);
-    });
+    (Ctor.__decorators__ || (Ctor.__decorators__ = [])).push((options) => factory(options, key));
 
     return descriptor;
   };

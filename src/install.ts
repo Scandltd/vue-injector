@@ -1,15 +1,16 @@
+/* eslint-disable import/no-mutable-exports */
 export let $Vue;
 
-export function install (Vue) {
+export function install(Vue) {
   if ((install as any).installed && $Vue === Vue) return;
   (install as any).installed = true;
 
   $Vue = Vue;
 
-  const isDef = v => v !== undefined;
+  const isDef = (v) => v !== undefined;
 
   Vue.mixin({
-    beforeCreate () {
+    beforeCreate() {
       if (isDef(this.$options.providers)) {
         this._providers = this.$options.providers;
       }
@@ -20,13 +21,13 @@ export function install (Vue) {
         this._injector.init(this);
       } else {
         this._injectorRoot = (this.$parent && this.$parent._injectorRoot) || this;
-        this._injectorRoot._injector && this._injectorRoot._injector.initComponent(this);
+        if (this._injectorRoot._injector) this._injectorRoot._injector.initComponent(this);
       }
     }
   });
 
   Object.defineProperty(Vue.prototype, '$injector', {
-    get () {
+    get() {
       return this._injectorRoot && this._injectorRoot._injector;
     }
   });
