@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { InjectedObject } from '../intefaces';
 import { InjectableConstructor } from './decorators/injectable';
 import { ServiceBinding } from './bindings/binding';
@@ -6,11 +7,12 @@ import { assert } from '../util/warn';
 
 import { METADATA } from '../enums/metadata';
 import { ERROR_MESSAGE } from '../enums/messages';
-import { Injector } from './injector';
 
 const $VUE = 'Vue';
 
 export class Provider {
+  static app: Vue;
+
   private $factory: () => any = null;
 
   constructor(
@@ -49,7 +51,7 @@ export class Provider {
 
   private register(): any {
     if (this.service.name === $VUE) {
-      this.factory = () => Injector.app;
+      this.factory = () => Provider.app;
     }
 
     if (!this.factory && this.isService) {
