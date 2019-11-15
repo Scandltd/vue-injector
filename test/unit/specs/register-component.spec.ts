@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueInjector, { Injectable, Inject } from '../../../src/index';
+import { VueInjector, Injectable, Inject } from '../../../src/index';
 import { ERROR_MESSAGE } from '../../../src/enums/messages';
 
 Vue.use(VueInjector);

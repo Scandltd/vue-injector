@@ -7,7 +7,7 @@
 ```js
 import Vue from 'vue'
 import Vuex from 'vuex'
-import VueInjector from '@scandltd/vue-injector'
+import { VueInjector } from '@scandltd/vue-injector'
 
 Vue.use(Vuex)
 Vue.use(VueInjector)

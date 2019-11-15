@@ -21,7 +21,7 @@ export type VueInjectorOptions = {
   store?: any
 };
 
-export default class VueInjector implements PluginObject<null> {
+export class VueInjector implements PluginObject<null> {
   static install: PluginFunction<null>;
   static version: string;
 

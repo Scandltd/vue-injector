@@ -229,7 +229,7 @@
       });
       Provider.prototype.register = function () {
           if (this.service.name === $VUE) {
-              this.factory = function () { return Injector.app; };
+              this.factory = function () { return Provider.app; };
           }
           if (!this.factory && this.isService) {
               this.factory = ServiceFactory.make(this.service);
@@ -245,7 +245,7 @@
   var Injector = /** @class */ (function () {
       function Injector(app, rootServices) {
           this.rootServices = [];
-          Injector.app = app;
+          Provider.app = app;
           this.app = app;
           this.rootServices = rootServices;
           this.services = new Map();
@@ -1625,7 +1625,7 @@
 
   exports.Inject = Inject;
   exports.Injectable = Injectable;
-  exports.default = VueInjector;
+  exports.VueInjector = VueInjector;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
