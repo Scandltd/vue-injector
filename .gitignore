@@ -9,3 +9,4 @@ dist/*.gz
 dist/*.map
 explorations
 docs-gitbook
+docs/.vuepress/dist
