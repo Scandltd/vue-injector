@@ -8,7 +8,7 @@ To be connected to `vue-injector`, a file with a plugin is to be added to the `p
 ``` js
 // injector.js
 import Vue from 'vue'
-import VueInjector from '@scandltd/vue-injector'
+import { VueInjector } from '@scandltd/vue-injector'
 
 Vue.use(VueInjector)
 ```

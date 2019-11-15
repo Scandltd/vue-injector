@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-classes-per-file */
 import Vue from 'vue';
-import VueInjector, { Injectable, Inject } from '@scandltd/vue-injector';
+import { VueInjector, Injectable, Inject } from '@scandltd/vue-injector';
 import Component from 'vue-class-component';
 import Code from '../mixin';
 

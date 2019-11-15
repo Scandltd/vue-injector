@@ -8,7 +8,7 @@
 ``` js
 // injector.js
 import Vue from 'vue'
-import VueInjector from '@scandltd/vue-injector'
+import { VueInjector } from '@scandltd/vue-injector'
 
 Vue.use(VueInjector)
 ```
