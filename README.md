@@ -20,6 +20,122 @@ Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/
 
 Get started with the [documentation](https://vue-injector.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/master/examples) (see how to run them below).
 
+### Example
+
+This is a small example of using the `vue-injector` to create an `http` service using Observables:
+
+```js
+// component/todoList.js
+
+/** ... */
+
+/** 
+ *  You also can use @Inject(Http) httpClient;
+ *  It is possible for class-style Vue components.
+ */
+
+import Http from '../services/http';
+
+export default {
+  name: 'TodoList',
+  providers: {
+    httpClient: Http
+  },
+  created() {
+    this.httpClient
+      .get(URL)
+      /** any pipes */
+      .subscribe(
+        this.taskHandler
+      )
+  },
+  methods: {
+    taskHandler(tasks) {
+      /** ... */
+    }
+  }
+}
+
+/** ... */
+
+```
+
+```js
+// services/setup.js
+
+import Vue from 'vue';
+import { VueInjector } from '@scandltd/vue-injector';
+
+Vue.use(VueInjector);
+
+export default new VueInjector();
+
+```
+
+```js
+// main.js
+
+import injector from './services/setup';
+
+/** ... */
+
+const root = new Vue({
+  /** ... */
+  injector
+});
+
+```
+
+```js
+// services/client.js
+
+import axios from 'axios';
+import { Injectable } from '@scandltd/vue-injector';
+
+@Injectable({
+  useFactory: () => axios.create(/** ... */)
+})
+class Client {}
+
+export default Client;
+
+```
+
+```js
+// services/http.js
+
+import { Injectable, Inject } from '@scandltd/vue-injector';
+import * as Observable from 'rxjs/internal/observable/fromPromise';
+import { map } from 'rxjs/operators';
+
+import Client from './Client';
+
+@Injectable
+class Http {
+  @Inject(Client) client;
+
+  observableFactory(promise) {
+    return Observable
+      .fromPromise(promise)
+      .pipe(
+        map(({ data }) => data)
+      );
+  }
+  
+  /** ... */
+
+  get(url, params) {
+    return this.observableFactory(
+      this.client.get(url, { params })
+    );
+  }
+}
+
+export default Http
+
+```
+
+
 ### Development Setup
 
 ``` bash

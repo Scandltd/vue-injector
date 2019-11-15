@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { InjectedObject } from '../../types';
+import { InjectedObject } from '../intefaces';
 import { InjectableConstructor } from './decorators/injectable';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory/Factory';
@@ -7,25 +7,25 @@ import { assert } from '../util/warn';
 
 import { METADATA } from '../enums/metadata';
 import { ERROR_MESSAGE } from '../enums/messages';
-import { Injector } from './injector';
 
 const $VUE = 'Vue';
 
 export class Provider {
+  static app: Vue;
 
   private $factory: () => any = null;
 
-  constructor (
+  constructor(
     public service: InjectableConstructor
   ) {
     this.register();
   }
 
-  instance (): any {
+  instance(): any {
     return this.$factory();
   }
 
-  bindTo (target: InjectedObject, name?: string): (() => any) | boolean {
+  bindTo(target: InjectedObject, name?: string): (() => any) | boolean {
     if (!target) {
       return this.factory;
     }
@@ -33,25 +33,25 @@ export class Provider {
     return ServiceBinding.bind(target, this.$factory(), name || this.name);
   }
 
-  private set factory (factory: () => any) {
+  private set factory(factory: () => any) {
     this.$factory = factory;
   }
 
-  private get factory (): () => any {
+  private get factory(): () => any {
     return this.$factory;
   }
 
-  private get name (): string {
+  private get name(): string {
     return Reflect.getMetadata(METADATA.NAME, this.service);
   }
 
-  private get isService (): boolean {
+  private get isService(): boolean {
     return Reflect.getMetadata(METADATA.SERVICE, this.service);
   }
 
-  private register (): any {
+  private register(): any {
     if (this.service.name === $VUE) {
-      this.factory = () => Injector.app;
+      this.factory = () => Provider.app;
     }
 
     if (!this.factory && this.isService) {

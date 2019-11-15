@@ -1,10 +1,11 @@
-import JSONFormatter from 'json-formatter-js'
+/* eslint-disable import/no-extraneous-dependencies */
+import JSONFormatter from 'json-formatter-js';
 
 export default {
   methods: {
-    code (obj, target) {
-      const formatter = new JSONFormatter(obj)
-      target.appendChild(formatter.render())
+    code(obj, target) {
+      const formatter = new JSONFormatter(obj);
+      target.appendChild(formatter.render());
     }
   }
-}
+};

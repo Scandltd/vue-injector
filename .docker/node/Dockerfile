@@ -1,4 +1,4 @@
-FROM node:8.11.1
+FROM node:10
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && apt-get update \

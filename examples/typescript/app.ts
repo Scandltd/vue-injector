@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueInjector from '@scandltd/vue-injector';
+import { VueInjector } from '@scandltd/vue-injector';
 
 import AnyComponent from './AnyComponent.vue';
 
@@ -13,7 +13,7 @@ const injector = new VueInjector();
 
 // 3. Create and mount root instance.
 // Make sure to inject the services.
-const app = new Vue({
+new Vue({
   el: '#app',
   injector,
   components: {

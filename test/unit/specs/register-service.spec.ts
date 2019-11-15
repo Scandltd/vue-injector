@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import VueInjector, { Injectable, Inject } from '../../../src/index';
+import { VueInjector, Injectable, Inject } from '../../../src/index';
 import { message, ERROR_MESSAGE, WARNING_MESSAGE } from '../../../src/enums/messages';
 import { FACTORY_TYPES } from '../../../src/enums/metadata';
 

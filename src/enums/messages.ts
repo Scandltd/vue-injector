@@ -12,23 +12,22 @@ export enum ERROR_MESSAGE {
 }
 
 export enum WARNING_MESSAGE {
-  WARNING_000 = 'Wrong service registration. Service name: {name}.\n' +
-    '@injectable can take only one parameter either useFactory or useValue, but got {options}'
+  WARNING_000 = 'Wrong service registration. Service name: {name}.\n'
+    + '@injectable can take only one parameter either useFactory or useValue, but got {options}'
 }
 
-export function message (str: string, arg: Object = {}): string {
-  let spareParameters = Reflect.ownKeys(arg).filter((val) => {
-    return null === str.match(new RegExp(`{${String(val)}}`));
-  });
+export function message(str: string, arg: Object = {}): string {
+  let newStr = str;
+  const spareParameters = Reflect.ownKeys(arg).filter((val) => str.match(new RegExp(`{${String(val)}}`)) === null);
 
   if (spareParameters.length) {
     console.warn(ERROR_MESSAGE.ERROR_002 + spareParameters);
   }
 
   Object.keys(arg).forEach((key) => {
-    let regex = new RegExp(`{${key}}`);
-    str = str.replace(regex, arg[key]);
+    const regex = new RegExp(`{${key}}`);
+    newStr = str.replace(regex, arg[key]);
   });
 
-  return str;
+  return newStr;
 }

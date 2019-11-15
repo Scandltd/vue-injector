@@ -25,7 +25,7 @@ When used with a module system, you must explicitly install the injector via `Vu
 
 ``` js
 import Vue from 'vue'
-import VueInjector from '@scandltd/vue-injector'
+import { VueInjector } from '@scandltd/vue-injector'
 
 Vue.use(VueInjector)
 

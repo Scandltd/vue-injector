@@ -11,5 +11,14 @@ services:
     ports:
       - ${PUBLIC_PORT}:8080
 
+  puppeteer:
+    build:
+      dockerfile: ./.docker/puppeteer/Dockerfile
+      context: .
+    image: injector_puppeteer
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules/
+
 volumes:
   node_modules:

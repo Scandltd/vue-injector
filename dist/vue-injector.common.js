@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v2.1.4
+  * @scandltd/vue-injector v3.0.0
   * (c) 2019 Scandltd
   * @license GPL-2.0
   */
@@ -7,16 +7,16 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+/* eslint-disable import/no-mutable-exports */
 var $Vue;
 function install(Vue) {
-    if (install.installed && $Vue === Vue) { return; }
+    if (install.installed && $Vue === Vue)
+        { return; }
     install.installed = true;
     $Vue = Vue;
-    var isDef = function isDef(v) {
-        return v !== undefined;
-    };
+    var isDef = function (v) { return v !== undefined; };
     Vue.mixin({
-        beforeCreate: function beforeCreate() {
+        beforeCreate: function () {
             if (isDef(this.$options.providers)) {
                 this._providers = this.$options.providers;
             }
@@ -24,21 +24,25 @@ function install(Vue) {
                 this._injectorRoot = this;
                 this._injector = this.$options.injector;
                 this._injector.init(this);
-            } else {
-                this._injectorRoot = this.$parent && this.$parent._injectorRoot || this;
-                this._injectorRoot._injector && this._injectorRoot._injector.initComponent(this);
+            }
+            else {
+                this._injectorRoot = (this.$parent && this.$parent._injectorRoot) || this;
+                if (this._injectorRoot._injector)
+                    { this._injectorRoot._injector.initComponent(this); }
             }
         }
     });
     Object.defineProperty(Vue.prototype, '$injector', {
-        get: function get() {
+        get: function () {
             return this._injectorRoot && this._injectorRoot._injector;
         }
     });
     // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
     var strats = Vue.config.optionMergeStrategies;
     strats._injectorRoot = function (parentVal, childVal) {
-        return childVal === undefined ? parentVal : childVal;
+        return childVal === undefined
+            ? parentVal
+            : childVal;
     };
 }
 
@@ -60,58 +64,49 @@ var WARNING_MESSAGE;
     WARNING_MESSAGE["WARNING_000"] = "Wrong service registration. Service name: {name}.\n@injectable can take only one parameter either useFactory or useValue, but got {options}";
 })(WARNING_MESSAGE || (WARNING_MESSAGE = {}));
 function message(str, arg) {
-    if (arg === void 0) {
-        arg = {};
-    }
-    var spareParameters = Reflect.ownKeys(arg).filter(function (val) {
-        return null === str.match(new RegExp("{" + String(val) + "}"));
-    });
+    if (arg === void 0) { arg = {}; }
+    var newStr = str;
+    var spareParameters = Reflect.ownKeys(arg).filter(function (val) { return str.match(new RegExp("{" + String(val) + "}")) === null; });
     if (spareParameters.length) {
         console.warn(ERROR_MESSAGE.ERROR_002 + spareParameters);
     }
     Object.keys(arg).forEach(function (key) {
         var regex = new RegExp("{" + key + "}");
-        str = str.replace(regex, arg[key]);
+        newStr = str.replace(regex, arg[key]);
     });
-    return str;
+    return newStr;
 }
 
-function assert(condition, message$$1) {
+function assert(condition, message) {
     if (!condition) {
-        throw new Error(ERROR_MESSAGE.ERROR_000 + " " + message$$1);
+        throw new Error(ERROR_MESSAGE.ERROR_000 + " " + message);
     }
 }
-function warn(condition, message$$1) {
+function warn(condition, message) {
     if (process.env.NODE_ENV !== 'production' && !condition) {
-        typeof console !== 'undefined' && console.warn(ERROR_MESSAGE.ERROR_000 + " " + message$$1);
+        if (typeof window.console !== 'undefined')
+            { console.warn(ERROR_MESSAGE.ERROR_000 + " " + message); }
     }
 }
 
 var inBrowser = typeof window !== 'undefined';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
 function checkObject(obj) {
-    return !Array.isArray(obj) && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' && obj !== null;
+    return !Array.isArray(obj) && typeof obj === 'object' && obj !== null;
 }
 
-var ServiceBinding = /** @class */function () {
-    function ServiceBinding() {}
+var ServiceBinding = /** @class */ (function () {
+    function ServiceBinding() {
+    }
     ServiceBinding.bind = function (target, service, name) {
         return Reflect.defineProperty(target, name, {
             enumerable: true,
             configurable: false,
-            get: function get() {
-                return service;
-            }
+            get: function () { return service; }
         });
     };
     return ServiceBinding;
-}();
+}());
 
 var METADATA;
 (function (METADATA) {
@@ -126,8 +121,9 @@ var FACTORY_TYPES;
     FACTORY_TYPES["useValue"] = "useValue";
 })(FACTORY_TYPES || (FACTORY_TYPES = {}));
 
-var UseFactory = /** @class */function () {
-    function UseFactory() {}
+var UseFactory = /** @class */ (function () {
+    function UseFactory() {
+    }
     UseFactory.prototype.getFactory = function (Service) {
         var name = Reflect.getMetadata(METADATA.NAME, Service);
         var factory = Reflect.getMetadata(METADATA.VALUE, Service);
@@ -143,36 +139,34 @@ var UseFactory = /** @class */function () {
         };
     };
     return UseFactory;
-}();
+}());
 
-var UseValue = /** @class */function () {
-    function UseValue() {}
+var UseValue = /** @class */ (function () {
+    function UseValue() {
+    }
     UseValue.prototype.getFactory = function (Service) {
         var value = Reflect.getMetadata(METADATA.VALUE, Service);
         if (value) {
-            return function () {
-                return value;
-            };
-        } else {
-            throw assert(false, ERROR_MESSAGE.ERROR_007);
+            return function () { return value; };
         }
+        throw assert(false, ERROR_MESSAGE.ERROR_007);
     };
     return UseValue;
-}();
+}());
 
-var Instance = /** @class */function () {
-    function Instance() {}
+var Instance = /** @class */ (function () {
+    function Instance() {
+    }
     Instance.prototype.getFactory = function (Service) {
         var service = new Service();
-        return function () {
-            return service;
-        };
+        return function () { return service; };
     };
     return Instance;
-}();
+}());
 
-var ServiceFactory = /** @class */function () {
-    function ServiceFactory() {}
+var ServiceFactory = /** @class */ (function () {
+    function ServiceFactory() {
+    }
     ServiceFactory.make = function (Service) {
         var factoryName = Reflect.getMetadata(METADATA.TYPE, Service);
         var factory = ServiceFactory.getFactoryByName(factoryName);
@@ -189,10 +183,10 @@ var ServiceFactory = /** @class */function () {
         }
     };
     return ServiceFactory;
-}();
+}());
 
 var $VUE = 'Vue';
-var Provider = /** @class */function () {
+var Provider = /** @class */ (function () {
     function Provider(service) {
         this.service = service;
         this.$factory = null;
@@ -208,24 +202,24 @@ var Provider = /** @class */function () {
         return ServiceBinding.bind(target, this.$factory(), name || this.name);
     };
     Object.defineProperty(Provider.prototype, "factory", {
-        get: function get() {
+        get: function () {
             return this.$factory;
         },
-        set: function set(factory) {
+        set: function (factory) {
             this.$factory = factory;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Provider.prototype, "name", {
-        get: function get() {
+        get: function () {
             return Reflect.getMetadata(METADATA.NAME, this.service);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(Provider.prototype, "isService", {
-        get: function get() {
+        get: function () {
             return Reflect.getMetadata(METADATA.SERVICE, this.service);
         },
         enumerable: true,
@@ -233,9 +227,7 @@ var Provider = /** @class */function () {
     });
     Provider.prototype.register = function () {
         if (this.service.name === $VUE) {
-            this.factory = function () {
-                return Injector.app;
-            };
+            this.factory = function () { return Provider.app; };
         }
         if (!this.factory && this.isService) {
             this.factory = ServiceFactory.make(this.service);
@@ -246,26 +238,28 @@ var Provider = /** @class */function () {
         throw assert(false, ERROR_MESSAGE.ERROR_005);
     };
     return Provider;
-}();
+}());
 
-var Injector = /** @class */function () {
+var Injector = /** @class */ (function () {
     function Injector(app, rootServices) {
         this.rootServices = [];
-        Injector.app = this.app = app;
+        Provider.app = app;
+        this.app = app;
         this.rootServices = rootServices;
         this.services = new Map();
     }
     Injector.prototype.registerComponent = function (component) {
         var _this = this;
-        if (component.hasOwnProperty('_providers')) {
+        if (Object.hasOwnProperty.call(component, '_providers')) {
             var providers_1 = component._providers;
             if (providers_1 && checkObject(providers_1)) {
                 Object.keys(providers_1).forEach(function (name) {
-                    if (providers_1 && providers_1.hasOwnProperty(name)) {
+                    if (providers_1 && Object.hasOwnProperty.call(providers_1, name)) {
                         _this.provide(component._providers[name], component, name);
                     }
                 });
-            } else {
+            }
+            else {
                 throw assert(false, ERROR_MESSAGE.ERROR_004);
             }
         }
@@ -279,9 +273,7 @@ var Injector = /** @class */function () {
         return this.provide(service);
     };
     Injector.prototype.provide = function (service, target, customName) {
-        if (target === void 0) {
-            target = null;
-        }
+        if (target === void 0) { target = null; }
         if (!this.services.has(service)) {
             if (service.prototype.providers) {
                 this.registerDependencies(service.prototype);
@@ -298,15 +290,16 @@ var Injector = /** @class */function () {
         if (!checkObject(service.providers)) {
             throw assert(false, ERROR_MESSAGE.ERROR_004);
         }
-        Object.keys(service.providers).forEach(function (name) {
+        Object.keys(service.providers)
+            .forEach(function (name) {
             _this.provide(service.providers[name], service, name);
         });
         delete service.providers;
     };
     return Injector;
-}();
+}());
 
-var commonjsGlobal = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 /*! *****************************************************************************
 Copyright (C) Microsoft. All rights reserved.
@@ -1277,14 +1270,12 @@ var Reflect$1;
                     return this;
                 };
                 Map.prototype.delete = function (key) {
-                    var this$1 = this;
-
                     var index = this._find(key, /*insert*/ false);
                     if (index >= 0) {
                         var size = this._keys.length;
                         for (var i = index + 1; i < size; i++) {
-                            this$1._keys[i - 1] = this$1._keys[i];
-                            this$1._values[i - 1] = this$1._values[i];
+                            this._keys[i - 1] = this._keys[i];
+                            this._values[i - 1] = this._values[i];
                         }
                         this._keys.length--;
                         this._values.length--;
@@ -1442,27 +1433,27 @@ var Reflect$1;
     });
 })(Reflect$1 || (Reflect$1 = {}));
 
-var InjectableFactory = /** @class */function () {
+var InjectableFactory = /** @class */ (function () {
     function InjectableFactory() {
         this.target = null;
         this.options = {};
     }
     Object.defineProperty(InjectableFactory, "whitelist", {
-        get: function get() {
+        get: function () {
             return Reflect.ownKeys(FACTORY_TYPES);
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(InjectableFactory.prototype, "decorators", {
-        get: function get() {
+        get: function () {
             return this.target.__decorators__;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(InjectableFactory.prototype, "optionKeys", {
-        get: function get() {
+        get: function () {
             return Reflect.ownKeys(this.options);
         },
         enumerable: true,
@@ -1470,37 +1461,32 @@ var InjectableFactory = /** @class */function () {
     });
     Object.defineProperty(InjectableFactory.prototype, "isOtherProperty", {
         /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
-        get: function get() {
-            return !this.optionKeys.every(function (prop) {
-                return !!~InjectableFactory.whitelist.indexOf(prop);
-            });
+        get: function () {
+            return !this.optionKeys.every(function (prop) { return InjectableFactory.whitelist.indexOf(prop) !== -1; });
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(InjectableFactory.prototype, "isCollisionProps", {
-        get: function get() {
+        get: function () {
             var _this = this;
-            var props = InjectableFactory.whitelist.filter(function (props) {
-                return Reflect.has(_this.options, props);
-            });
+            var props = InjectableFactory.whitelist
+                .filter(function (p) { return Reflect.has(_this.options, p); });
             return props.length > 1;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(InjectableFactory.prototype, "type", {
-        get: function get() {
+        get: function () {
             var _this = this;
-            return InjectableFactory.whitelist.find(function (props) {
-                return Reflect.has(_this.options, props);
-            });
+            return InjectableFactory.whitelist.find(function (props) { return Reflect.has(_this.options, props); });
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(InjectableFactory.prototype, "serviceType", {
-        get: function get() {
+        get: function () {
             if (this.isOtherProperty) {
                 this.warnMassage();
             }
@@ -1519,9 +1505,7 @@ var InjectableFactory = /** @class */function () {
         throw assert(false, message(ERROR_MESSAGE.ERROR_001, { names: JSON.stringify(InjectableFactory.whitelist) }));
     };
     InjectableFactory.prototype.make = function (target, options) {
-        if (options === void 0) {
-            options = {};
-        }
+        if (options === void 0) { options = {}; }
         this.target = target;
         this.options = options;
         this.defineMetadata();
@@ -1529,7 +1513,9 @@ var InjectableFactory = /** @class */function () {
         return this.target;
     };
     InjectableFactory.prototype.warnMassage = function () {
-        warn(false, message(WARNING_MESSAGE.WARNING_000, { name: this.target.name, options: JSON.stringify(this.options) }));
+        warn(false, message(WARNING_MESSAGE.WARNING_000, {
+            name: this.target.name, options: JSON.stringify(this.options)
+        }));
     };
     InjectableFactory.prototype.defineMetadata = function () {
         if (this.serviceType) {
@@ -1542,14 +1528,12 @@ var InjectableFactory = /** @class */function () {
     InjectableFactory.prototype.createDecorators = function () {
         var _this = this;
         if (this.decorators) {
-            this.decorators.forEach(function (fn) {
-                return fn(_this.target.prototype);
-            });
+            this.decorators.forEach(function (fn) { return fn(_this.target.prototype); });
             delete this.target.__decorators__;
         }
     };
     return InjectableFactory;
-}();
+}());
 function Injectable(options) {
     var injectableFactory = new InjectableFactory();
     if (typeof options === 'function') {
@@ -1560,20 +1544,21 @@ function Injectable(options) {
     };
 }
 
+/* eslint-disable no-proto */
 function createDecorator(factory) {
     return function (target, key) {
-        var Ctor = typeof target === 'function' ? target : target.constructor;
+        var Ctor = typeof target === 'function'
+            ? target
+            : target.constructor;
         var descriptor = {
             enumerable: true,
             configurable: true,
-            initializer: function initializer() {
+            initializer: function () {
                 return this.__proto__[key];
             }
         };
         Reflect.defineProperty(target, key, descriptor);
-        (Ctor.__decorators__ || (Ctor.__decorators__ = [])).push(function (options) {
-            return factory(options, key);
-        });
+        (Ctor.__decorators__ || (Ctor.__decorators__ = [])).push(function (options) { return factory(options, key); });
         return descriptor;
     };
 }
@@ -1584,11 +1569,9 @@ function Inject(service) {
     });
 }
 
-var VueInjector = /** @class */function () {
+var VueInjector = /** @class */ (function () {
     function VueInjector(options) {
-        if (options === void 0) {
-            options = {};
-        }
+        if (options === void 0) { options = {}; }
         this.rootServices = [];
         this.app = null;
         this.injector = null;
@@ -1599,21 +1582,23 @@ var VueInjector = /** @class */function () {
         }
     }
     Object.defineProperty(VueInjector, "app", {
-        get: function get() {
+        get: function () {
             return this;
         },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty(VueInjector.prototype, "install", {
-        get: function get() {
+        get: function () {
             return VueInjector.install;
         },
         enumerable: true,
         configurable: true
     });
     VueInjector.prototype.init = function (app) {
-        process.env.NODE_ENV !== 'production' && assert(install.installed, ERROR_MESSAGE.ERROR_003);
+        if (process.env.NODE_ENV !== 'production') {
+            assert(install.installed, ERROR_MESSAGE.ERROR_003);
+        }
         this.apps.push(app);
         // main app already initialized.
         if (this.app) {
@@ -1623,19 +1608,19 @@ var VueInjector = /** @class */function () {
         this.injector = new Injector(this.app, this.rootServices);
     };
     VueInjector.prototype.initComponent = function (component) {
-        this.injector && this.injector.registerComponent(component);
+        return this.injector && this.injector.registerComponent(component);
     };
     VueInjector.prototype.get = function (Provider) {
         return this.injector && this.injector.get(Provider);
     };
     return VueInjector;
-}();
+}());
 VueInjector.install = install;
-VueInjector.version = '2.1.4';
+VueInjector.version = '3.0.0';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
 
-exports.Injectable = Injectable;
 exports.Inject = Inject;
-exports.default = VueInjector;
+exports.Injectable = Injectable;
+exports.VueInjector = VueInjector;
