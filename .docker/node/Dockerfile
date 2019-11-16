@@ -10,11 +10,14 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
-RUN npm cache clean --force && npm install && npm cache clean --force
+RUN yarn install
 COPY . .
 
 EXPOSE 8080
 
-CMD ["npm", "run", "dev"]
+COPY .docker/node/startup.sh /
+RUN chmod +x /startup.sh
+
+ENTRYPOINT ["/startup.sh"]
