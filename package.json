@@ -145,8 +145,5 @@
     ],
     "sourceMap": false,
     "instrument": false
-  },
-  "dependencies": {
-    "npm": "^6.13.0"
   }
 }
