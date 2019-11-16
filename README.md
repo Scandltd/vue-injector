@@ -140,19 +140,19 @@ export default Http
 
 ``` bash
 # install deps
-npm install
+yarn install
 
 # build dist files
-npm run build
+yarn build
 
 # serve examples at localhost:8080
-npm run dev
+yarn dev
 
 # lint & run all tests
-npm test
+yarn test
 
 # serve docs at localhost:8080
-npm run docs
+yarn docs
 ```
 
 ## License
