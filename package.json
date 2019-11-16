@@ -1,6 +1,6 @@
 {
   "name": "@scandltd/vue-injector",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Dependency Injection for Vue.js 2",
   "type": "library",
   "license": "GPL-2.0",
@@ -145,8 +145,5 @@
     ],
     "sourceMap": false,
     "instrument": false
-  },
-  "dependencies": {
-    "npm": "^6.13.0"
   }
 }
