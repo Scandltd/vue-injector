@@ -2,7 +2,7 @@
 Dependency Injection for [Vue.js](http://vuejs.org). 
 
 [![Build Status](https://img.shields.io/circleci/project/github/Scandltd/vue-injector/master.svg?longCache=true&style=flat-square)](https://circleci.com/gh/Scandltd/vue-injector)
-[![Size](https://img.shields.io/bundlephobia/min/@scandltd/vue-injector.svg)](https://www.npmjs.com/package/@scandltd/vue-injector)
+[![Size](https://img.shields.io/bundlephobia/minzip/@scandltd/vue-injector.svg?style=flat-square)](https://www.npmjs.com/package/@scandltd/vue-injector)
 [![Downloads](https://img.shields.io/npm/dt/@scandltd/vue-injector.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/@scandltd/vue-injector)
 [![Version](https://img.shields.io/npm/v/@scandltd/vue-injector.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/@scandltd/vue-injector)
 [![License](https://img.shields.io/npm/l/@scandltd/vue-injector.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/@scandltd/vue-injector)
