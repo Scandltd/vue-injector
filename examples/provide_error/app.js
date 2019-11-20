@@ -1,36 +1,20 @@
 import Vue from 'vue';
-import { VueInjector } from '@scandltd/vue-injector';
-import Code from '../mixin';
 
-Vue.mixin(Code);
+/** 0. Setup vue injector */
+import('../demo.setup');
 
-// 1. Use plugin.
-// This injects $injector to all injector-enabled child components
-Vue.use(VueInjector);
+/** 1. Create other service */
+class OtherService {}
 
-// 2. Create services
-
-class AnyService {}
-
-// 3. Define components
+/** 2. Define components */
 Vue.component('VueInjector', {
-  name: 'anyComponent',
+  name: 'ListComponent',
   providers: {
-    $AnyService: AnyService
+    $OtherService: OtherService
   },
   template:
     '<div class="block"></div>',
   mounted() {
-    this.code(this.$AnyService, this.$el);
+    this.demo(this.$OtherService);
   }
-});
-
-// 4. Create the provider
-const injector = new VueInjector();
-
-// 5. Create and mount root instance.
-// Make sure to inject the services.
-new Vue({
-  el: '#app',
-  injector
 });

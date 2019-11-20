@@ -1,22 +1,24 @@
 import Vue from 'vue';
 import { VueInjector } from '@scandltd/vue-injector';
 
-import AnyComponent from './AnyComponent.vue';
+import UserComponent from './UserComponent.vue';
 
-// 1. Use plugin.
-// This injects $injector to all injector-enabled child components
+import Demo from '../demo.mixin';
+
+/** Use mixin for showing injectable object */
+Vue.mixin(Demo);
+
+/** 1. Use plugins. */
 Vue.use(VueInjector);
 
-
-// 2. Create the provider
+/** 2. Create the provider */
 const injector = new VueInjector();
 
-// 3. Create and mount root instance.
-// Make sure to inject the services.
-new Vue({
+/** 4. Create and mount root instance. */
+export default new Vue({
   el: '#app',
   injector,
   components: {
-    VueInjector: AnyComponent
+    VueInjector: UserComponent
   }
 });

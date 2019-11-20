@@ -1,60 +1,24 @@
 /* eslint-disable no-param-reassign */
 import Vue from 'vue';
-import Vuex from 'vuex';
-import { VueInjector, Injectable } from '@scandltd/vue-injector';
-import Code from '../mixin';
+import { Injectable } from '@scandltd/vue-injector';
 
-Vue.mixin(Code);
-
-// 1. init store
-Vue.use(Vuex);
-
-const store = new Vuex.Store({
-  state: {
-    count: 0
-  },
-  mutations: {
-    increment(state) {
-      state.count += 1;
-    }
-  },
-  actions: {
-    increment(context) {
-      // this.$injector.get(Service)
-      context.commit('increment');
-    }
-  }
-});
-
-// 2. Use plugin.
-// This injects $injector to all injector-enabled child components
-Vue.use(VueInjector);
+/** 0. Setup vue injector */
+import('../demo.setup.vuex');
 
 // 3. Create services
 @Injectable
-class AnyService {}
+class StoreService {}
 
 // 4. Define components
 Vue.component('VueInjector', {
   name: 'anyComponent',
   providers: {
-    $AnyService: AnyService
+    $StoreService: StoreService
   },
   template:
     '<div class="block"></div>',
   mounted() {
     this.$store.dispatch('increment');
-    this.code(this.$AnyService, this.$el);
+    this.demo(this.$StoreService);
   }
-});
-
-// 5. Create the provider
-const injector = new VueInjector({ store });
-
-// 6. Create and mount root instance.
-// Make sure to inject the services.
-new Vue({
-  store,
-  injector,
-  el: '#app'
 });

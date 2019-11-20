@@ -1,43 +1,27 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable max-classes-per-file */
 import Vue from 'vue';
-import { VueInjector, Injectable, Inject } from '@scandltd/vue-injector';
 import Component from 'vue-class-component';
-import Code from '../mixin';
 
-Vue.mixin(Code);
+import { Injectable, Inject } from '@scandltd/vue-injector';
 
-// 1. Use plugin.
-// This injects $injector to all injector-enabled child components
-Vue.use(VueInjector);
+/** 0. Setup vue injector */
+import('../demo.setup');
 
-// 2. Create services
-
+/** 1. Create services */
 @Injectable
-class AnyService {}
+class LogService {}
 
-// 3. Define components
-
+/** 2. Define components */
 @Component({
   template:
     '<div class="block"></div>'
 })
-class AnyComponent extends Vue {
-  @Inject(AnyService) service;
+class MenuComponent extends Vue {
+  @Inject(LogService) logger;
 
   mounted() {
-    this.code(this.service, this.$el);
+    this.demo(this.logger);
   }
 }
 
-Vue.component('VueInjector', AnyComponent);
-
-// 4. Create the provider
-const injector = new VueInjector();
-
-// 5. Create and mount root instance.
-// Make sure to inject the services.
-new Vue({
-  el: '#app',
-  injector
-});
+Vue.component('VueInjector', MenuComponent);
