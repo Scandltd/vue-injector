@@ -3,9 +3,11 @@ import JSONFormatter from 'json-formatter-js';
 
 export default {
   methods: {
-    code(obj, target) {
+    demo(obj) {
       const formatter = new JSONFormatter(obj);
-      target.appendChild(formatter.render());
+      this.$el.appendChild(formatter.render());
+
+      console.log(obj);
     }
   }
 };

@@ -11,15 +11,14 @@ import { Injectable, Inject } from '@scandltd/vue-injector';
 import JSONFormatter from 'json-formatter-js';
 
 @Injectable
-class AnyService {}
+class UserService {}
 
 @Component
-export default class AnyComponent extends Vue {
-  @Inject(AnyService) service: AnyService;
+export default class UserComponent extends Vue {
+  @Inject(UserService) userService: UserService;
 
   mounted () {
-    const formatter = new JSONFormatter(this.service);
-    this.$el.appendChild(formatter.render());
+    (<any>this).demo(this.userService);
   }
 }
 </script>
