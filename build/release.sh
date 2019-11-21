@@ -15,7 +15,7 @@ release() {
   yarn version --new-version $VERSION
 
   # publish
-  git push origin refs/tags/v$VERSION
+  git push origin --tags
   git push
 }
 
