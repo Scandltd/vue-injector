@@ -10,7 +10,7 @@ release() {
   VERSION=$VERSION yarn run build
 
   # commit
-  git add -A
+  git add dist/*
   git commit -m "[build] $VERSION"
   yarn version --new-version $VERSION
 
