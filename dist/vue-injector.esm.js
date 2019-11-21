@@ -1,5 +1,5 @@
 /*!
-  * @scandltd/vue-injector v3.0.3
+  * @scandltd/vue-injector v3.1.0
   * (c) 2019 Scandltd
   * @license GPL-2.0
   */
@@ -54,6 +54,7 @@ var ERROR_MESSAGE;
     ERROR_MESSAGE["ERROR_007"] = "invalid useValue";
     ERROR_MESSAGE["ERROR_008"] = "{name} invalid type useFactory: must be 'function'";
     ERROR_MESSAGE["ERROR_009"] = "{method} is not a function";
+    ERROR_MESSAGE["ERROR_010"] = "@inject must get a service as parameter";
 })(ERROR_MESSAGE || (ERROR_MESSAGE = {}));
 var WARNING_MESSAGE;
 (function (WARNING_MESSAGE) {
@@ -110,6 +111,7 @@ var METADATA;
     METADATA["VALUE"] = "inject:value";
     METADATA["NAME"] = "inject:name";
     METADATA["SERVICE"] = "inject:service";
+    METADATA["TS_TYPE"] = "design:type";
 })(METADATA || (METADATA = {}));
 var FACTORY_TYPES;
 (function (FACTORY_TYPES) {
@@ -1559,10 +1561,20 @@ function createDecorator(factory) {
     };
 }
 
-function Inject(service) {
+function decoratorFactory(service) {
     return createDecorator(function (target, keyProp) {
         (target.providers || (target.providers = {}))[keyProp] = service;
     });
+}
+function Inject(option, key) {
+    if (typeof option === 'function') {
+        return decoratorFactory(option);
+    }
+    var service = Reflect.getMetadata(METADATA.TS_TYPE, option, key);
+    if (service === undefined) {
+        throw assert(false, ERROR_MESSAGE.ERROR_010);
+    }
+    decoratorFactory(service)(option, key);
 }
 
 var VueInjector = /** @class */ (function () {
@@ -1612,7 +1624,7 @@ var VueInjector = /** @class */ (function () {
     return VueInjector;
 }());
 VueInjector.install = install;
-VueInjector.version = '3.0.3';
+VueInjector.version = '3.1.0';
 if (inBrowser && window.Vue) {
     window.Vue.use(VueInjector);
 }
