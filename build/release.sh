@@ -1,11 +1,10 @@
+#!/bin/bash
+
 set -e
 echo "Enter release version: "
 read VERSION
 
-read -p "Releasing $VERSION - are you sure? (y/n)" -n 1 -r
-echo    # (optional) move to a new line
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
+release() {
   echo "Releasing $VERSION ..."
   yarn test
   VERSION=$VERSION yarn run build
@@ -18,4 +17,13 @@ then
   # publish
   git push origin refs/tags/v$VERSION
   git push
-fi
+}
+
+while true; do
+  read -p "Releasing $VERSION - are you sure? (y/n)" yn
+  case $yn in
+    [Yy]* ) release; break;;
+    [Nn]* ) exit;;
+    * ) echo "Please answer yes or no.";;
+  esac
+done
