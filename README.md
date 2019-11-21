@@ -30,8 +30,21 @@ This is a small example of using the `vue-injector` to create an `http` service 
 /** ... */
 
 /** 
- *  You also can use @Inject(Http) httpClient;
- *  It is possible for class-style Vue components.
+ *  Class-style Vue components:
+ *  
+ *  @Component
+ *  class TodoListComponent extends Vue {
+ *    @Inject(Http) httpClient;
+ *  }
+ *  
+ *  
+ *  Typescript:
+ *  
+ *  @Component
+ *  class TodoListComponent extends Vue {
+ *    @Inject httpClient: Http;
+ *  }
+ *  
  */
 
 import Http from '../services/http';

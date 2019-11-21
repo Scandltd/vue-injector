@@ -8,14 +8,12 @@ import { Component } from 'vue-property-decorator';
 
 import { Injectable, Inject } from '@scandltd/vue-injector';
 
-import JSONFormatter from 'json-formatter-js';
-
 @Injectable
 class UserService {}
 
 @Component
 export default class UserComponent extends Vue {
-  @Inject(UserService) userService: UserService;
+  @Inject userService: UserService;
 
   mounted () {
     (<any>this).demo(this.userService);

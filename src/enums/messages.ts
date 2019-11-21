@@ -8,7 +8,8 @@ export enum ERROR_MESSAGE {
   ERROR_006 = 'useFactory invalid return',
   ERROR_007 = 'invalid useValue',
   ERROR_008 = '{name} invalid type useFactory: must be \'function\'',
-  ERROR_009 = '{method} is not a function'
+  ERROR_009 = '{method} is not a function',
+  ERROR_010 = '@inject must get a service as parameter'
 }
 
 export enum WARNING_MESSAGE {
