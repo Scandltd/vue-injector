@@ -32,6 +32,7 @@ If your environment doesn't support one of these you will need to import a shim 
 
 ::: warning Required
 **The `reflect-metadata` polyfill should be imported only once in your entire application** because the Reflect object is meant to be a global singleton.
+:::
 
 When used with a module system, you must explicitly install the injector via `Vue.use()`:
 
