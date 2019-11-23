@@ -1,6 +1,6 @@
 {
   "name": "@scandltd/vue-injector",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Dependency Injection for Vue.js 2",
   "type": "library",
   "license": "GPL-2.0",
@@ -111,7 +111,7 @@
   "jest": {
     "preset": "ts-jest",
     "testRegex": "/test/unit/.*(\\.test.ts|\\.spec.ts)$",
-    "setupFiles" : [
+    "setupFiles": [
       "./src/polyfill.ts"
     ],
     "moduleFileExtensions": [
