@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { assert, warn } from '../../util/warn';
 
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';

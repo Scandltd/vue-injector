@@ -20,6 +20,31 @@ Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/
 
 Get started with the [documentation](https://vue-injector.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/master/examples) (see how to run them below).
 
+### Install
+
+```bash 
+$ npm install @scandltd/vue-injector core-js
+```
+
+Vue-injector requires a modern JavaScript engine with support for:
+
+- [Reflect](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Reflect)
+- [Reflect Metadata](https://rbuckton.github.io/reflect-metadata/)
+- [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+If your environment doesn't support one of these you will need to import a shim or [polyfill](https://github.com/zloirock/core-js/).
+
+```js
+// polifill.js
+
+import 'core-js/features/reflect';
+import 'core-js/features/promise';
+import 'core-js/features/map';
+```
+
+> :warning: **The `reflect-metadata` polyfill should be imported only once in your entire application** because the Reflect object is meant to be a global singleton.
+
 ### Example
 
 This is a small example of using the `vue-injector` to create an `http` service using Observables:

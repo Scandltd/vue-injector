@@ -21,7 +21,7 @@ module.exports = {
     }
 
     if (fs.statSync(fullDir).isDirectory() && fs.existsSync(entry)) {
-      newEntries[dir] = ['es6-promise/auto', entry];
+      newEntries[dir] = [path.join(__dirname, '..', 'src', 'polyfill.ts'), entry];
     }
 
     return newEntries;

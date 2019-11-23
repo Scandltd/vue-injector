@@ -1,83 +1,65 @@
-const fs = require('fs')
-const path = require('path')
-const zlib = require('zlib')
-const uglify = require('uglify-js')
-const rollup = require('rollup')
-const configs = require('./configs')
+const fs = require('fs');
+const path = require('path');
+const zlib = require('zlib');
+const webpack = require('webpack');
+const WebpackConfig = require('./webpack.config');
+const configs = require('./configs');
 
 if (!fs.existsSync('dist')) {
-  fs.mkdirSync('dist')
+  fs.mkdirSync('dist');
 }
 
-build(configs)
-
-function build (builds) {
-  let built = 0
-  const total = builds.length
-  const next = () => {
-    buildEntry(builds[built]).then(() => {
-      built++
-      if (built < total) {
-        next()
-      }
-    }).catch(logError)
-  }
-
-  next()
+function getSize(size) {
+  return `${(size / 1024).toFixed(2)}kb`;
 }
 
-function buildEntry ({ input, output }) {
-  const isProd = /min\.js$/.test(output.file)
-  return rollup.rollup(input)
-    .then(bundle => {
-      return bundle.generate(output)
-    })
-    .then(({ output: [ { code } ] }) => {
-      if (isProd) {
-        const minified = uglify.minify(code, {
-          output: {
-            preamble: output.banner,
-            /* eslint-disable camelcase */
-            ascii_only: true
-            /* eslint-enable camelcase */
-          }
-        }).code
-        return write(output.file, minified, true)
-      } else {
-        return write(output.file, code)
-      }
-    })
+function blue(str) {
+  return `\x1b[1m\x1b[34m${str}\x1b[39m\x1b[22m`;
 }
 
-function write (dest, code, zip) {
+function write(dest, size, zip) {
   return new Promise((resolve, reject) => {
-    function report (extra) {
-      console.log(blue(path.relative(process.cwd(), dest)) + ' ' + getSize(code) + (extra || ''))
-      resolve()
+    function report(extra) {
+      // eslint-disable-next-line no-console
+      console.log(
+        blue(path.relative(process.cwd(), dest)),
+        ' ',
+        getSize(size),
+        (extra || '')
+      );
+
+      resolve();
     }
 
-    fs.writeFile(dest, code, err => {
-      if (err) return reject(err)
-      if (zip) {
-        zlib.gzip(code, (err, zipped) => {
-          if (err) return reject(err)
-          report(' (gzipped: ' + getSize(zipped) + ')')
-        })
-      } else {
-        report()
+    if (zip) {
+      zlib.gzip(fs.readFileSync(dest), (err, { length }) => {
+        if (err) return reject(err);
+        report(` (gzipped: ${getSize(length)})`);
+      });
+    }
+  });
+}
+
+function build(builds) {
+  builds.forEach((config) => {
+    const mode = config.env === 'production';
+
+    webpack({
+      ...WebpackConfig,
+      output: {
+        ...WebpackConfig.output,
+        libraryTarget: config.format,
+        filename: config.file
+      },
+      optimization: {
+        ...WebpackConfig.optimization,
+        minimize: mode
       }
-    })
-  })
+    }, (err, stats) => {
+      const chank = stats.toJson().assets[0];
+      write(path.join(__dirname, '..', 'dist', chank.name), chank.size, true);
+    });
+  });
 }
 
-function getSize (code) {
-  return (code.length / 1024).toFixed(2) + 'kb'
-}
-
-function logError (e) {
-  console.log(e)
-}
-
-function blue (str) {
-  return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m'
-}
+build(configs);
