@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.1.0
+ *   @scandltd/vue-injector v3.2.0
  *   (c) 2019 Scandltd
  *   @license GPL-2.0
  * 
@@ -141,6 +141,7 @@ function install(Vue) {
     });
     // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
     var strats = Vue.config.optionMergeStrategies;
+    // eslint-disable-next-line func-names
     strats._injectorRoot = function (parentVal, childVal) {
         return childVal === undefined
             ? parentVal
@@ -175,6 +176,7 @@ function messages_message(str, arg) {
     var newStr = str;
     var spareParameters = Reflect.ownKeys(arg).filter(function (val) { return str.match(new RegExp("{" + String(val) + "}")) === null; });
     if (spareParameters.length) {
+        // eslint-disable-next-line no-console
         console.warn(ERROR_MESSAGE.ERROR_002 + spareParameters);
     }
     Object.keys(arg).forEach(function (key) {
@@ -552,6 +554,7 @@ function Injectable(options) {
     if (typeof options === 'function') {
         return injectableFactory.make(options);
     }
+    // eslint-disable-next-line func-names
     return function (target) {
         return injectableFactory.make(target, options);
     };
@@ -560,6 +563,7 @@ function Injectable(options) {
 // CONCATENATED MODULE: ./src/util/decorator.ts
 /* eslint-disable no-proto */
 function createDecorator(factory) {
+    // eslint-disable-next-line func-names
     return function (target, key) {
         var Ctor = typeof target === 'function'
             ? target
