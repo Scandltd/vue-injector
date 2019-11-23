@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { assert, warn } from '../../util/warn';
 
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
@@ -118,6 +117,7 @@ export function Injectable(options): any {
   if (typeof options === 'function') {
     return injectableFactory.make(options);
   }
+  // eslint-disable-next-line func-names
   return function (target) {
     return injectableFactory.make(target, options);
   };

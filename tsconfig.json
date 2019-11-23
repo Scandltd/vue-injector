@@ -28,6 +28,7 @@
     "types": [
       "node",
       "jest",
+      "core-js",
       "reflect-metadata"
     ]
   },

@@ -2,6 +2,7 @@
 export function createDecorator(
   factory: (target: any, key: string) => void
 ): PropertyDecorator {
+  // eslint-disable-next-line func-names
   return function (target: any, key: string) {
     const Ctor = typeof target === 'function'
       ? target

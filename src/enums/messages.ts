@@ -22,6 +22,7 @@ export function message(str: string, arg: Object = {}): string {
   const spareParameters = Reflect.ownKeys(arg).filter((val) => str.match(new RegExp(`{${String(val)}}`)) === null);
 
   if (spareParameters.length) {
+    // eslint-disable-next-line no-console
     console.warn(ERROR_MESSAGE.ERROR_002 + spareParameters);
   }
 

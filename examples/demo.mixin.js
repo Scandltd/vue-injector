@@ -7,6 +7,7 @@ export default {
       const formatter = new JSONFormatter(obj);
       this.$el.appendChild(formatter.render());
 
+      // eslint-disable-next-line no-console
       console.log(obj);
     }
   }

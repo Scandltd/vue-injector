@@ -32,5 +32,6 @@ app.use(express.static(__dirname));
 
 const port = process.env.PORT || 8080;
 module.exports = app.listen(port, () => {
+  // eslint-disable-next-line no-console
   console.log(`Server listening on http://localhost:${port}, Ctrl+C to stop`);
 });

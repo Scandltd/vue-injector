@@ -8,6 +8,7 @@ export function assert(condition: any, message: string) {
 
 export function warn(condition: any, message: string) {
   if (process.env.NODE_ENV !== 'production' && !condition) {
+    // eslint-disable-next-line no-console
     if (typeof window.console !== 'undefined') console.warn(`${ERROR_MESSAGE.ERROR_000} ${message}`);
   }
 }

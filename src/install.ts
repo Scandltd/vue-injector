@@ -34,6 +34,7 @@ export function install(Vue) {
 
   // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
   const strats = Vue.config.optionMergeStrategies;
+  // eslint-disable-next-line func-names
   strats._injectorRoot = function (parentVal, childVal) {
     return childVal === undefined
       ? parentVal
