@@ -30,22 +30,21 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-      - run: npm run lint
-      - run: npm run test:types
+      - run: yarn lint
+      - run: yarn test:types
 
   test-unit:
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/project
-      - run: npm run test:unit
-      # add codecov once it is actually ran
-      # - run:
-      #    name: report coverage stats for non-PRs
-      #    command: |
-      #      if [[ -z $CI_PULL_REQUEST ]]; then
-      #        ./node_modules/.bin/codecov
-      #      fi
+      - run: yarn test:unit
+      - run:
+          name: report coverage
+          command: |
+            if [[ -z $CI_PULL_REQUEST ]]; then
+              yarn test:cover
+            fi
       
   deploy:
     <<: *defaults
@@ -57,7 +56,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/project/vue-injector/.npmrc
       - run:
           name: Publish package
-          command: npm publish || exit 0
+          command: yarn publish || exit 0
 
 workflows:
   version: 2
