@@ -84,6 +84,43 @@ describe('registerComponent service', () => {
     expect(injector.injector.get(Service).count).toEqual(2);
   });
 
+
+  it('register with type', () => {
+    @Injectable
+    class Service {
+      count = 0;
+    }
+
+    @Injectable
+    class ServiceTwo {
+      @Inject Service: Service;
+    }
+
+    @Injectable
+    class ServiceThree {
+      @Inject Service: Service;
+    }
+
+    const serviceTwo = injector.injector.provide(ServiceTwo);
+    const serviceThree = injector.injector.provide(ServiceThree);
+
+    serviceTwo.Service.count += 1;
+    serviceThree.Service.count += 1;
+
+    expect(injector.injector.services.size).toBe(3);
+    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
+
+
+    expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
+    expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
+    expect(serviceTwo.Service).toEqual(injector.injector.get(Service));
+
+    expect(injector.injector.get(Service).count).toEqual(2);
+  });
+
   it('register with FACTORY', () => {
     class Factory {
       a = 0;
