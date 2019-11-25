@@ -2,12 +2,22 @@
 
 ::: warning Зависимости
 [ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
-Если вы используете Babel, необходим [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy).
-Если вы используете TypeScript, включите флаг `--experimentalDecorators`.
+Если вы используете Babel, необходим [@babel/plugin-proposal-decorators](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators).
+Если вы используете TypeScript, включите флаги `--experimentalDecorators` и `--emitDecoratorMetadata`.
 :::
 
-::: tip Примечание
-Мы будем использовать синтаксис [ES2015](https://github.com/lukehoban/es6features) в примерах кода в этом руководстве.
+Vue-injector requires a modern JavaScript engine with support for:
+
+- [Reflect](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Reflect)
+- [Reflect Metadata](https://rbuckton.github.io/reflect-metadata/)
+- [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+If your environment doesn't support one of these you will need to import a shim or [polyfill](https://github.com/zloirock/core-js/) .
+
+::: warning Required
+**The `reflect` polyfill should be imported only once in your entire application** because the Reflect object is meant to be a global singleton.
+:::
 
 Кроме того, все примеры будут использовать полную сборку Vue, чтобы позволить компиляцию шаблонов на лету. Подробнее о различиях сборок читайте [здесь](https://ru.vuejs.org/v2/guide/installation.html#Runtime-Компилятор-vs-Runtime-only).
 :::

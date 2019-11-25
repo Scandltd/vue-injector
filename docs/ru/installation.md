@@ -18,8 +18,21 @@
 ## npm
 
 ``` bash
-npm install @scandltd/vue-injector
+npm install @scandltd/vue-injector core-js
 ```
+
+Vue-injector requires a modern JavaScript engine with support for:
+
+- [Reflect](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Reflect)
+- [Reflect Metadata](https://rbuckton.github.io/reflect-metadata/)
+- [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+- [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
+If your environment doesn't support one of these you will need to import a shim or [polyfill](https://github.com/zloirock/core-js/) .
+
+::: warning Required
+**The `reflect-metadata` polyfill should be imported only once in your entire application** because the Reflect object is meant to be a global singleton.
+:::
 
 При использовании модульной системы необходимо явно обозначить использование инжектора при помощи `Vue.use()`:
 

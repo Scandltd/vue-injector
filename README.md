@@ -26,6 +26,11 @@ Get started with the [documentation](https://vue-injector.netlify.com/guide/), o
 $ npm install @scandltd/vue-injector core-js
 ```
 
+> :warning:
+[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+If you use Babel, [@babel/plugin-proposal-decorators](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators) is needed.
+If you use TypeScript, enable `--experimentalDecorators` and `--emitDecoratorMetadata` flags.
+
 Vue-injector requires a modern JavaScript engine with support for:
 
 - [Reflect](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Reflect)
@@ -43,7 +48,7 @@ import 'core-js/features/promise';
 import 'core-js/features/map';
 ```
 
-> :warning: **The `reflect-metadata` polyfill should be imported only once in your entire application** because the Reflect object is meant to be a global singleton.
+> :warning: **The `reflect` polyfill should be imported only once in your entire application** because the Reflect object is meant to be a global singleton.
 
 ### Example
 
