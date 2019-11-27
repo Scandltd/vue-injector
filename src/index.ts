@@ -21,8 +21,8 @@ export type VueInjectorOptions = {
   store?: any
 };
 
-export class VueInjector implements PluginObject<null> {
-  static install: PluginFunction<null>;
+export class VueInjector implements PluginObject<VueInjectorOptions> {
+  static install: PluginFunction<VueInjectorOptions>;
   static version: string;
 
   injector: Injector | null;
@@ -48,7 +48,7 @@ export class VueInjector implements PluginObject<null> {
     return this;
   }
 
-  get install(): PluginFunction<null> {
+  get install(): PluginFunction<VueInjectorOptions> {
     return VueInjector.install;
   }
 
@@ -75,7 +75,7 @@ export class VueInjector implements PluginObject<null> {
     return this.injector && this.injector.registerComponent(component);
   }
 
-  get(Provider: typeof Inject) {
+  get(Provider: InjectableConstructor) {
     return this.injector && this.injector.get(Provider);
   }
 }

@@ -16,6 +16,7 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "declaration": true,
     "baseUrl": ".",
     "rootDirs": ["./"],
     "paths": {
@@ -32,12 +33,14 @@
       "reflect-metadata"
     ]
   },
+  "exclude": [
+    "node_modules"
+  ],
   "include": [
     "**/*.ts",
     "**/*.vue"
   ],
   "files": [
-    "types/index.d.ts",
     "types/vue.d.ts",
     "types/vue.options.d.ts"
   ]

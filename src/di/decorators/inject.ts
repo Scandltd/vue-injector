@@ -2,23 +2,30 @@ import { createDecorator } from '../../util/decorator';
 import { METADATA } from '../../enums/metadata';
 import { ERROR_MESSAGE } from '../../enums/messages';
 import { assert } from '../../util/warn';
+import { InjectableConstructor, InjectedObject } from './injectable';
 
-function decoratorFactory(service: any): PropertyDecorator {
+function decoratorFactory(service: any): any {
   return createDecorator((target: any, keyProp: string) => {
     (target.providers || (target.providers = {}))[keyProp] = service;
   });
 }
 
-export function Inject(option: any, key?: string): any | PropertyDecorator {
-  if (typeof option === 'function') {
-    return decoratorFactory(option);
+export interface Inject {
+  service?: InjectableConstructor;
+}
+
+export function Inject(servise: InjectableConstructor): any
+export function Inject(target: InjectedObject, key: string): any
+export function Inject(target: InjectableConstructor | InjectedObject, key?: string): any {
+  if (typeof target === 'function') {
+    return decoratorFactory(target);
   }
 
-  const service = Reflect.getMetadata(METADATA.TS_TYPE, option, key);
+  const service = Reflect.getMetadata(METADATA.TS_TYPE, target, key);
 
   if (service === undefined) {
     throw assert(false, ERROR_MESSAGE.ERROR_010);
   }
 
-  decoratorFactory(service)(option, key);
+  decoratorFactory(service)(target, key);
 }

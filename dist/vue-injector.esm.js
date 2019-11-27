@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.2.2
+ *   @scandltd/vue-injector v3.2.5
  *   (c) 2019 Scandltd
  *   @license GPL-2.0
  * 
@@ -582,15 +582,15 @@ function decoratorFactory(service) {
         (target.providers || (target.providers = {}))[keyProp] = service;
     });
 }
-function Inject(option, key) {
-    if (typeof option === 'function') {
-        return decoratorFactory(option);
+function Inject(target, key) {
+    if (typeof target === 'function') {
+        return decoratorFactory(target);
     }
-    var service = Reflect.getMetadata(METADATA.TS_TYPE, option, key);
+    var service = Reflect.getMetadata(METADATA.TS_TYPE, target, key);
     if (service === undefined) {
         throw assert(false, ERROR_MESSAGE.ERROR_010);
     }
-    decoratorFactory(service)(option, key);
+    decoratorFactory(service)(target, key);
 }
 
 // CONCATENATED MODULE: ./src/index.ts

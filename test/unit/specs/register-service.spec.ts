@@ -6,7 +6,7 @@ import { FACTORY_TYPES } from '../../../src/enums/metadata';
 Vue.use(VueInjector);
 
 describe('registerComponent service', () => {
-  let injector;
+  let injector: VueInjector;
   let app;
 
   beforeEach(function () {
@@ -167,6 +167,7 @@ describe('registerComponent service', () => {
   });
 
   it('register error FACTORY', () => {
+    // @ts-ignore: Unreachable code error
     @Injectable({
       useFactory: {}
     })
@@ -228,7 +229,7 @@ describe('registerComponent service', () => {
     const options = {
       anyKey: 'anyValue'
     };
-
+    // @ts-ignore: Unreachable code error
     @Injectable(options)
     class Service {}
 
@@ -259,7 +260,7 @@ describe('registerComponent service', () => {
     class Factory {
       constructor (public vm) {}
     }
-
+    // @ts-ignore: Unreachable code error
     @Injectable({
       useFactory: (vm) => {
         const f = new Factory(vm);

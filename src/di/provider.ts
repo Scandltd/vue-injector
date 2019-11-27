@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import { InjectedObject } from '../intefaces';
-import { InjectableConstructor } from './decorators/injectable';
+import { InjectableConstructor, InjectedObject } from './decorators/injectable';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory/Factory';
 import { assert } from '../util/warn';

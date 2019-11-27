@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { assert } from '../util/warn';
-import { InjectedObject } from '../intefaces';
-import { InjectableConstructor } from './decorators/injectable';
+import { InjectableConstructor, InjectedObject } from './decorators/injectable';
 import { checkObject } from '../util/object';
 import { ERROR_MESSAGE } from '../enums/messages';
 import { Provider } from './provider';
