@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Inject, VueInjector } from './index';
+import { Inject, VueInjector } from '../src/index';
 
 declare module 'vue/types/vue' {
   interface Vue {

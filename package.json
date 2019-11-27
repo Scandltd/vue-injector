@@ -1,6 +1,6 @@
 {
   "name": "@scandltd/vue-injector",
-  "version": "3.2.2",
+  "version": "3.2.4",
   "description": "Dependency Injection for Vue.js 2",
   "type": "library",
   "license": "GPL-2.0",
@@ -22,29 +22,32 @@
   "typings": "types/index.d.ts",
   "files": [
     "dist/*.js",
-    "types/*.d.ts"
+    "types/*.d.ts",
+    "src/*.d.ts"
   ],
   "keywords": [
     "vue",
-    "inject",
-    "dependency injection",
-    "injection",
-    "injector",
-    "provider",
-    "services",
-    "service",
-    "di"
+    "typescript",
+    "typescript inject",
+    "vue inject",
+    "vue injector",
+    "vue provider",
+    "vue services",
+    "vue di",
+    "di",
+    "dependency injection"
   ],
   "scripts": {
     "dev": "node examples/server.js",
     "dev:dist": "rollup -wm -c build/rollup.dev.config.js",
     "build": "node build/build.js",
-    "lint": "eslint examples src/**/*.ts",
-    "lint:fix": "eslint examples src/**/*.ts --fix",
+    "lint": "eslint examples src/**/*.ts --ignore-pattern *.d.ts",
+    "lint:fix": "eslint examples src/**/*.ts --ignore-pattern *.d.ts --fix",
     "test": "yarn run lint && yarn run test:unit && yarn run test:types",
     "test:unit": "node_modules/.bin/jest",
     "test:cover": "node_modules/.bin/jest --coverage --coverageReporters=text-lcov | coveralls",
     "test:types": "tsc --noEmit -p .",
+    "types": "tsc --emitDeclarationOnly -p .",
     "docs": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "release": "bash build/release.sh"

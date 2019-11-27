@@ -1,11 +1,12 @@
-import { assert, warn } from '../../util/warn';
+import Vue, { Component } from 'vue';
 
+import { assert, warn } from '../../util/warn';
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
 import { FACTORY_TYPES, METADATA } from '../../enums/metadata';
 
 export interface InjectableConstructor {
 
-  providers: { [key: string]: any };
+  providers?: { [key: string]: any };
 
   __decorators__?: Array<Function>;
 
@@ -16,6 +17,8 @@ export interface InjectableOptions {
   useFactory?: () => any;
   useValue?: any;
 }
+
+export type InjectedObject = Vue | Component | InjectableConstructor | Object;
 
 class InjectableFactory {
   private target: InjectableConstructor = null;
@@ -74,7 +77,7 @@ class InjectableFactory {
     ));
   }
 
-  make(target: InjectableConstructor, options: InjectableOptions = {}) {
+  make(target: InjectableConstructor, options: InjectableOptions = {}): InjectableConstructor {
     this.target = target;
     this.options = options;
 
@@ -111,7 +114,11 @@ class InjectableFactory {
   }
 }
 
-export function Injectable(options): any {
+export interface Injectable extends InjectableOptions{}
+
+export function Injectable(target: InjectableConstructor): any
+export function Injectable(options: InjectableOptions): any
+export function Injectable(options: InjectableOptions | InjectableConstructor): any {
   const injectableFactory = new InjectableFactory();
 
   if (typeof options === 'function') {
