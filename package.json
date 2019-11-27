@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/Scandltd/vue-injector.git"
   },
-  "typings": "types/index.d.ts",
+  "typings": "src/index.d.ts",
   "files": [
     "dist/*.js",
     "types/*.d.ts",
