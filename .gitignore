@@ -10,3 +10,6 @@ dist/*.map
 explorations
 docs-gitbook
 docs/.vuepress/dist
+src/*.d.ts
+test/*.d.ts
+examples/*.d.ts
