@@ -1,6 +1,6 @@
 {
   "name": "@scandltd/vue-injector",
-  "version": "3.2.6",
+  "version": "3.2.7",
   "description": "Dependency Injection for Vue.js 2",
   "type": "library",
   "license": "GPL-2.0",
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "https://github.com/Scandltd/vue-injector.git"
   },
-  "typings": "types/index.d.ts",
+  "typings": "src/index.d.ts",
   "files": [
     "dist/*.js",
     "types/*.d.ts",
