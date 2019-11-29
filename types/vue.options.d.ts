@@ -11,7 +11,7 @@ declare module 'vue/types/vue' {
 
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
-    readonly injector: VueInjector;
+    readonly injector?: VueInjector;
     providers?: {[key: string]: typeof Inject};
     _providers?;
   }
