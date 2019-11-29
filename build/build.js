@@ -56,7 +56,9 @@ function build(builds) {
         minimize: mode
       }
     }, (err, stats) => {
-      const chank = stats.toJson().assets[0];
+      //TODO: get assets
+      const assets = stats.toJson().assets;
+      const chank = assets[assets.length - 1];
       write(path.join(__dirname, '..', 'dist', chank.name), chank.size, true);
     });
   });
