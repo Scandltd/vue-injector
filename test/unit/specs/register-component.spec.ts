@@ -57,6 +57,7 @@ describe('register component', () => {
     injector.injector.registerComponent(mockComponent);
 
     expect(mockComponent.Service).toEqual(injector.injector.get(Service));
+    expect(VueInjector).toEqual(VueInjector.app);
   });
 
   it('register two', () => {
