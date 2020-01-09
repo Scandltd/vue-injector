@@ -21,6 +21,10 @@ Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/
 
 Get started with the [documentation](https://vue-injector.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/master/examples) (see how to run them below).
 
+### Live Playground
+
+For examples of the plugin in action, go to [codesandbox](https://codesandbox.io/s/github/stelitsyn-sc/vue-injector-example).
+
 ### Install
 
 ```bash 
