@@ -1,7 +1,11 @@
+/* eslint-disable no-empty-function */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-classes-per-file */
 import Vue from 'vue';
 import { VueInjector, Injectable, Inject } from '../../../src/index';
 import { message, ERROR_MESSAGE, WARNING_MESSAGE } from '../../../src/enums/messages';
-import { FACTORY_TYPES } from '../../../src/enums/metadata';
+import { FACTORY_TYPES, METADATA } from '../../../src/enums/metadata';
 
 Vue.use(VueInjector);
 
@@ -9,7 +13,7 @@ describe('registerComponent service', () => {
   let injector: VueInjector;
   let app;
 
-  beforeEach(function () {
+  beforeEach(() => {
     injector = new VueInjector();
 
     app = new Vue({
@@ -26,7 +30,7 @@ describe('registerComponent service', () => {
     expect(injector.injector.services.size).toBe(1);
 
     expect(service).toEqual(injector.injector.get(Service));
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
   });
 
   it('register two', () => {
@@ -41,8 +45,8 @@ describe('registerComponent service', () => {
 
     expect(injector.injector.services.size).toBe(2);
 
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
 
     expect(service).toEqual(injector.injector.get(Service));
     expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
@@ -71,8 +75,8 @@ describe('registerComponent service', () => {
     serviceThree.Service.count += 1;
 
     expect(injector.injector.services.size).toBe(3);
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
     expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
     expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
 
@@ -108,8 +112,8 @@ describe('registerComponent service', () => {
     serviceThree.Service.count += 1;
 
     expect(injector.injector.services.size).toBe(3);
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
     expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
     expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
 
@@ -125,15 +129,15 @@ describe('registerComponent service', () => {
     class Factory {
       a = 0;
 
-      constructor () {
+      constructor() {
         this.a += 1;
       }
 
-      add () {
+      add() {
         this.a += 1;
       }
 
-      get type () {
+      get type() {
         return 'FACTORY';
       }
     }
@@ -184,10 +188,10 @@ describe('registerComponent service', () => {
     })
     class Service {}
 
-    const service = injector.injector.provide(Service);
+    injector.injector.provide(Service);
 
     expect(injector.injector.services.size).toBe(1);
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
     expect(injector.injector.get(Service)).toEqual('anyValue');
   });
 
@@ -205,7 +209,7 @@ describe('registerComponent service', () => {
   it('register with VALUE and FACTORY', () => {
     const options = {
       useValue: 'anyValue',
-      useFactory: function () {}
+      useFactory() {}
     };
 
     const whitelist = Reflect.ownKeys(FACTORY_TYPES);
@@ -224,7 +228,7 @@ describe('registerComponent service', () => {
   });
 
   it('register with random keys', () => {
-    spyOn(console, 'warn');
+    jest.spyOn(console, 'warn');
 
     const options = {
       anyKey: 'anyValue'
@@ -233,7 +237,7 @@ describe('registerComponent service', () => {
     @Injectable(options)
     class Service {}
 
-    let msg = message(WARNING_MESSAGE.WARNING_000, { name: 'Service', options: JSON.stringify(options) });
+    const msg = message(WARNING_MESSAGE.WARNING_000, { name: 'Service', options: JSON.stringify(options) });
 
     expect(console.warn)
       .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
@@ -251,19 +255,19 @@ describe('registerComponent service', () => {
     expect(injector.injector.services.size).toBe(2);
 
     expect(service).toEqual(injector.injector.get(Service));
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
 
     expect(service.vm).toEqual(app);
   });
 
   it('FACTORY invalid return', () => {
     class Factory {
-      constructor (public vm) {}
+      constructor(public vm) {}
     }
     // @ts-ignore: Unreachable code error
     @Injectable({
       useFactory: (vm) => {
-        const f = new Factory(vm);
+        new Factory(vm);
       }
     })
     class Service {}
@@ -281,7 +285,7 @@ describe('registerComponent service', () => {
     const service = injector.get(Service);
 
     expect(injector.injector.services.size).toBe(1);
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
     expect(service).toEqual(injector.injector.get(Service));
   });
 
@@ -292,7 +296,7 @@ describe('registerComponent service', () => {
     const service = injector.injector.provide(Service);
     const injectorService = injector.get(Service);
 
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
     expect(service).toEqual(injector.injector.get(Service));
 
     expect(injector.injector.services.size).toBe(1);
@@ -308,10 +312,10 @@ describe('registerComponent service', () => {
     }
 
     expect(
-        () => injector.injector.provide(Service)
+      () => injector.injector.provide(Service)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
     expect(
-        () => injector.injector.provide(ServiceTwo)
+      () => injector.injector.provide(ServiceTwo)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
   });
 });

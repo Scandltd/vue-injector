@@ -1,7 +1,7 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.2.10
- *   (c) 2019 Scandltd
+ *   @scandltd/vue-injector v3.3.0
+ *   (c) 2020 Scandltd
  *   @license GPL-2.0
  * 
  */
@@ -212,14 +212,13 @@ var ServiceBinding = /** @class */ (function () {
 
 
 // CONCATENATED MODULE: ./src/enums/metadata.ts
-var METADATA;
-(function (METADATA) {
-    METADATA["TYPE"] = "inject:type";
-    METADATA["VALUE"] = "inject:value";
-    METADATA["NAME"] = "inject:name";
-    METADATA["SERVICE"] = "inject:service";
-    METADATA["TS_TYPE"] = "design:type";
-})(METADATA || (METADATA = {}));
+var METADATA = {
+    TYPE: Symbol('inject:type'),
+    VALUE: Symbol('inject:value'),
+    NAME: Symbol('inject:name'),
+    SERVICE: Symbol('inject:service'),
+    TS_TYPE: 'design:type'
+};
 var FACTORY_TYPES;
 (function (FACTORY_TYPES) {
     FACTORY_TYPES["useFactory"] = "useFactory";
