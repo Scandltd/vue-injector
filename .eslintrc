@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb"],
+  "extends": ["airbnb-base"],
   "plugins": ["@typescript-eslint", "jest"],
   "parser": "@typescript-eslint/parser",
   "rules": {
