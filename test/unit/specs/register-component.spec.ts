@@ -1,6 +1,11 @@
+/* eslint-disable no-empty-function */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-classes-per-file */
 import Vue from 'vue';
 import { VueInjector, Injectable, Inject } from '../../../src/index';
 import { ERROR_MESSAGE } from '../../../src/enums/messages';
+import { METADATA } from '../../../src/enums/metadata';
 
 Vue.use(VueInjector);
 
@@ -29,7 +34,7 @@ describe('register component', () => {
   let injector;
   let app;
 
-  beforeEach(function () {
+  beforeEach(() => {
     injector = new VueInjector();
 
     app = new Vue({
@@ -70,8 +75,8 @@ describe('register component', () => {
 
     injector.injector.registerComponent(mockComponent);
 
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
-    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
 
     expect(injector.injector.services.size).toBe(2);
 
@@ -93,7 +98,7 @@ describe('register component', () => {
 
     injector.injector.registerComponent(mockComponent);
 
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
 
     expect(injector.injector.services.size).toBe(1);
     expect(mockComponent.Service).toEqual(injector.injector.get(Service));
@@ -120,9 +125,9 @@ describe('register component', () => {
     expect(injector.injector.services.size).toBe(2);
 
     expect(injector.injector.get(Service) instanceof Service).toBe(true);
-    expect(Reflect.getMetadata('inject:name', Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
     expect(injector.injector.get(ServiceTwo) instanceof ServiceTwo).toBe(true);
-    expect(Reflect.getMetadata('inject:name', ServiceTwo)).toEqual('ServiceTwo');
+    expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
     expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
     expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
 
@@ -142,7 +147,7 @@ describe('register component', () => {
     };
 
     expect(
-        () => injector.injector.registerComponent(mockComponent)
+      () => injector.injector.registerComponent(mockComponent)
     ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_004}`);
   });
 
