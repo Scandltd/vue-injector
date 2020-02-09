@@ -3,7 +3,7 @@ import { ERROR_MESSAGE, message } from '../../../src/enums/messages';
 
 describe('warn', () => {
   it('assert false', () => {
-    expect(() => assert(false, 'error text')).toThrowError(`${ERROR_MESSAGE.ERROR_000} error text`);
+    expect(() => assert(false, 'error text')).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} error text`);
   });
 
   it('assert true', () => {
@@ -28,11 +28,10 @@ describe('warn', () => {
     });
 
     it('error message', () => {
-
       message('', { name: 'name' });
 
       expect(console.warn).toHaveBeenCalledTimes(1);
-      expect(console.warn).toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_002}name`);
+      expect(console.warn).toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_BUILD_MESSAGE}name`);
     });
 
     it('empty message', () => {
@@ -46,7 +45,7 @@ describe('warn', () => {
 
     it('warn false', () => {
       warn(false, 'error text');
-      expect(console.warn).toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} error text`);
+      expect(console.warn).toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_TYPE} error text`);
     });
   });
 });

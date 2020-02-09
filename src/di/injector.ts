@@ -9,7 +9,7 @@ export class Injector {
   app: Vue;
   services: Map<InjectableConstructor, Provider>;
 
-  rootServices: Array<any> = [];
+  rootServices: Array<InjectableConstructor> = [];
 
   constructor(app: Vue, rootServices) {
     Provider.app = app;
@@ -21,23 +21,7 @@ export class Injector {
   }
 
   registerComponent(component: Vue) {
-    if (Object.hasOwnProperty.call(component, '_providers')) {
-      const providers = component._providers;
-
-      if (providers && checkObject(providers)) {
-        Object.keys(providers).forEach((name) => {
-          if (providers && Object.hasOwnProperty.call(providers, name)) {
-            this.provide(
-              component._providers[name],
-              component,
-              name
-            );
-          }
-        });
-      } else {
-        throw assert(false, ERROR_MESSAGE.ERROR_004);
-      }
-    }
+    this.provideAllServices(component);
 
     if (this.rootServices.length) {
       this.rootServices.forEach((provider) => {
@@ -46,41 +30,54 @@ export class Injector {
     }
   }
 
-  get(service) {
-    return this.provide(service);
+  get<T>(service: InjectableConstructor<T>): T {
+    return this.provide<T>(service);
   }
 
-  provide(service: InjectableConstructor, target: InjectedObject = null, customName?: string) {
+  provide<T>(
+    service: InjectableConstructor<T>,
+    target: InjectedObject = null,
+    customName?: string
+  ) {
     if (!this.services.has(service)) {
       if (service.prototype.providers) {
-        this.registerDependencies(service.prototype);
+        this.registerDependencies<T>(service.prototype);
       }
 
-      const provider = new Provider(service);
-
-      this.services.set(service, provider);
+      this.services.set(service, new Provider<T>(service));
     }
 
     const provider = this.services.get(service);
 
-    provider.bindTo(target, customName);
-
-    return provider.instance();
-  }
-
-  private registerDependencies(service) {
-    if (!checkObject(service.providers)) {
-      throw assert(false, ERROR_MESSAGE.ERROR_004);
+    if (target) {
+      provider.bindTo(target, customName);
     }
 
-    Object.keys(service.providers)
-      .forEach((name: string) => {
-        this.provide(
-          service.providers[name],
-          service,
-          name
-        );
-      });
+    return provider.instance as T;
+  }
+
+  private provideAllServices(target: InjectedObject) {
+    if (Object.hasOwnProperty.call(target, 'providers')) {
+      const { providers } = target;
+
+      if (providers && checkObject(providers)) {
+        Object.keys(providers).forEach((name) => {
+          if (providers && Object.hasOwnProperty.call(providers, name)) {
+            this.provide(
+              providers[name],
+              target,
+              name
+            );
+          }
+        });
+      } else {
+        throw assert(false, ERROR_MESSAGE.ERROR_PROVIDERS_TYPE);
+      }
+    }
+  }
+
+  private registerDependencies<T>(service: InjectableConstructor<T>) {
+    this.provideAllServices(service);
 
     delete service.providers;
   }

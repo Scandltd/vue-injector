@@ -147,7 +147,7 @@ describe('registerComponent service', () => {
     @Injectable({
       useFactory: factory
     })
-    class Service {}
+    class Service extends Factory {}
 
 
     const service = injector.injector.provide(Service);
@@ -162,12 +162,13 @@ describe('registerComponent service', () => {
     expect(injector.injector.get(Service).type).toEqual('FACTORY');
     expect(service.type).toEqual('FACTORY');
 
-    expect(factory()).toEqual(injector.injector.get(Service));
+    expect(factory().a).toEqual(1);
+    expect(injector.injector.get(Service).a).toEqual(3);
 
     injector.injector.get(Service).add();
     injector.injector.get(Service).add();
 
-    expect(injector.injector.get(Service).a).toEqual(1);
+    expect(injector.injector.get(Service).a).toEqual(5);
   });
 
   it('register error FACTORY', () => {
@@ -179,7 +180,7 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.injector.provide(Service)
-    ).toThrowError(message(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_008}`, { name: 'Service' }));
+    ).toThrowError(message(`${ERROR_MESSAGE.ERROR_TYPE} ${ERROR_MESSAGE.ERROR_USE_FACTORY_TYPE}`, { name: 'Service' }));
   });
 
   it('register with VALUE', () => {
@@ -203,7 +204,7 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.injector.provide(Service)
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_007}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} ${ERROR_MESSAGE.ERROR_USE_VALUE_RETURN}`);
   });
 
   it('register with VALUE and FACTORY', () => {
@@ -215,7 +216,7 @@ describe('registerComponent service', () => {
     const whitelist = Reflect.ownKeys(FACTORY_TYPES);
 
     const error = message(
-      ERROR_MESSAGE.ERROR_001,
+      ERROR_MESSAGE.ERROR_INJECTABLE_OPTIONS_CONFLICT,
       { names: JSON.stringify(whitelist) }
     );
 
@@ -224,7 +225,7 @@ describe('registerComponent service', () => {
         @Injectable(options)
         class Service {}
       }
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${error}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} ${error}`);
   });
 
   it('register with random keys', () => {
@@ -240,7 +241,7 @@ describe('registerComponent service', () => {
     const msg = message(WARNING_MESSAGE.WARNING_000, { name: 'Service', options: JSON.stringify(options) });
 
     expect(console.warn)
-      .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_000} ${msg}`);
+      .toHaveBeenCalledWith(`${ERROR_MESSAGE.ERROR_TYPE} ${msg}`);
   });
 
 
@@ -274,7 +275,7 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.injector.provide(Service)
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_006}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} ${ERROR_MESSAGE.ERROR_USE_FACTORY_RETURN}`);
   });
 
 
@@ -313,9 +314,9 @@ describe('registerComponent service', () => {
 
     expect(
       () => injector.injector.provide(Service)
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} ${ERROR_MESSAGE.ERROR_USE_DECORATOR}`);
     expect(
       () => injector.injector.provide(ServiceTwo)
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_005}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} ${ERROR_MESSAGE.ERROR_USE_DECORATOR}`);
   });
 });

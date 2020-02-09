@@ -1,5 +1,6 @@
 .idea
 .env
+.vscode
 node_modules
 coverage
 test/e2e/reports

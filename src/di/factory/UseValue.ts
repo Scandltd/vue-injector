@@ -5,12 +5,13 @@ import { METADATA } from '../../enums/metadata';
 import { ERROR_MESSAGE } from '../../enums/messages';
 
 export class UseValue implements FactoryInterface {
-  getFactory(Service: InjectableConstructor): () => any {
+  getFactory<T, R>(Service: InjectableConstructor<T>): () => R {
     const value = Reflect.getMetadata(METADATA.VALUE, Service);
 
     if (value) {
       return () => value;
     }
-    throw assert(false, ERROR_MESSAGE.ERROR_007);
+
+    throw assert(false, ERROR_MESSAGE.ERROR_USE_VALUE_RETURN);
   }
 }

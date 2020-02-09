@@ -1,24 +1,16 @@
-import Vue from 'vue';
-import { Inject, VueInjector } from '../src/index';
+import { VueInjector } from '../src/index';
+import { InjectableConstructor } from '../src/di/decorators/injectable';
 
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $injector: VueInjector;
-    providers: {[key: string]: typeof Inject};
-    _providers;
+    providers: { [key: string]: InjectableConstructor };
   }
 }
 
 declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
     readonly injector?: VueInjector;
-    providers?: {[key: string]: typeof Inject};
-    _providers?;
-  }
-}
-
-declare global {
-  interface Window {
-    Vue: typeof Vue;
+    providers?: { [key: string]: InjectableConstructor };
   }
 }

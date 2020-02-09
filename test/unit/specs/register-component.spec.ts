@@ -49,7 +49,7 @@ describe('register component', () => {
     class Service {}
 
     const mockComponent: any = {
-      _providers: {
+      providers: {
         Service
       }
     };
@@ -68,7 +68,7 @@ describe('register component', () => {
     class ServiceTwo {}
 
     const mockComponent: any = {
-      _providers: {
+      providers: {
         Service,
         ServiceTwo
       }
@@ -92,7 +92,7 @@ describe('register component', () => {
     class Service {}
 
     const mockComponent: any = {
-      _providers: {
+      providers: {
         Service
       }
     };
@@ -115,7 +115,7 @@ describe('register component', () => {
     }
 
     const mockComponent: any = {
-      _providers: {
+      providers: {
         Service,
         ServiceTwo
       }
@@ -144,12 +144,12 @@ describe('register component', () => {
 
   it('error register', () => {
     const mockComponent = {
-      _providers: null
+      providers: null
     };
 
     expect(
       () => injector.injector.registerComponent(mockComponent)
-    ).toThrowError(`${ERROR_MESSAGE.ERROR_000} ${ERROR_MESSAGE.ERROR_004}`);
+    ).toThrowError(`${ERROR_MESSAGE.ERROR_TYPE} ${ERROR_MESSAGE.ERROR_PROVIDERS_TYPE}`);
   });
 
   it('empty register', () => {
