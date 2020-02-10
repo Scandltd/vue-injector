@@ -1,4 +1,4 @@
-import Vue from 'Vue';
+import Vue from 'vue';
 import { VueInjector } from '../src/index';
 import { InjectableConstructor } from '../src/di/decorators/injectable';
 
