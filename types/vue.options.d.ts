@@ -17,8 +17,3 @@ declare module 'vue/types/options' {
         };
     }
 }
-declare global {
-    interface Window {
-        Vue: typeof Vue;
-    }
-}

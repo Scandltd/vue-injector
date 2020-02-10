@@ -15,9 +15,3 @@ declare module 'vue/types/options' {
     providers?: { [key: string]: InjectableConstructor };
   }
 }
-
-declare global {
-  interface Window {
-    Vue: typeof Vue;
-  }
-}
