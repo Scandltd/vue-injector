@@ -12,7 +12,7 @@ export function install(Vue) {
   Vue.mixin({
     beforeCreate() {
       if (isDef(this.$options.providers)) {
-        this._providers = this.$options.providers;
+        this.providers = this.$options.providers;
       }
 
       if (isDef(this.$options.injector)) {

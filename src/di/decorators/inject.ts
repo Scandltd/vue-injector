@@ -24,7 +24,7 @@ export function Inject(target: InjectableConstructor | InjectedObject, key?: str
   const service = Reflect.getMetadata(METADATA.TS_TYPE, target, key);
 
   if (service === undefined) {
-    throw assert(false, ERROR_MESSAGE.ERROR_010);
+    throw assert(false, ERROR_MESSAGE.ERROR_EMTY_INJECT_PARAMS);
   }
 
   decoratorFactory(service)(target, key);

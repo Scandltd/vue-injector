@@ -1,15 +1,14 @@
 export enum ERROR_MESSAGE {
-  ERROR_000 = '[@scandltd/vue-injector]:',
-  ERROR_001 = '@injectable can take only one parameter either {names}',
-  ERROR_002 = 'function "message". Parameters in a string do not match those in array: ',
-  ERROR_003 = 'not installed. Make sure to call `Vue.use(VueInjector)` before creating root instance.',
-  ERROR_004 = 'providers are not objects',
-  ERROR_005 = 'no decorator Injectable',
-  ERROR_006 = 'useFactory invalid return',
-  ERROR_007 = 'invalid useValue',
-  ERROR_008 = '{name} invalid type useFactory: must be \'function\'',
-  ERROR_009 = '{method} is not a function',
-  ERROR_010 = '@inject must get a service as parameter'
+  ERROR_TYPE = '[@scandltd/vue-injector]:',
+  ERROR_INJECTABLE_OPTIONS_CONFLICT = '@injectable can take only one parameter either {names}',
+  ERROR_BUILD_MESSAGE = 'function "message". Parameters in a string do not match those in array: ',
+  ERROR_INIT_PLUGIN = 'not installed. Make sure to call `Vue.use(VueInjector)` before creating root instance.',
+  ERROR_PROVIDERS_TYPE = 'providers are not objects',
+  ERROR_USE_DECORATOR = 'no decorator Injectable',
+  ERROR_USE_FACTORY_RETURN = 'useFactory invalid return',
+  ERROR_USE_VALUE_RETURN = 'invalid useValue',
+  ERROR_USE_FACTORY_TYPE = '{name} invalid type useFactory: must be \'function\'',
+  ERROR_EMTY_INJECT_PARAMS = '@inject must get a service as parameter'
 }
 
 export enum WARNING_MESSAGE {
@@ -23,7 +22,7 @@ export function message(str: string, arg: Object = {}): string {
 
   if (spareParameters.length) {
     // eslint-disable-next-line no-console
-    console.warn(ERROR_MESSAGE.ERROR_002 + spareParameters);
+    console.warn(ERROR_MESSAGE.ERROR_BUILD_MESSAGE + spareParameters);
   }
 
   Object.keys(arg).forEach((key) => {

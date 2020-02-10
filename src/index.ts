@@ -56,7 +56,7 @@ export class VueInjector implements PluginObject<VueInjectorOptions> {
     if (process.env.NODE_ENV !== 'production') {
       assert(
         (install as any).installed,
-        ERROR_MESSAGE.ERROR_003
+        ERROR_MESSAGE.ERROR_INIT_PLUGIN
       );
     }
 
@@ -75,7 +75,7 @@ export class VueInjector implements PluginObject<VueInjectorOptions> {
     return this.injector && this.injector.registerComponent(component);
   }
 
-  get(Provider: InjectableConstructor) {
+  get<T>(Provider: InjectableConstructor<T>): T {
     return this.injector && this.injector.get(Provider);
   }
 }

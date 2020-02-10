@@ -1,16 +1,13 @@
-import Vue, { Component } from 'vue';
+import Vue from 'vue';
 
 import { assert, warn } from '../../util/warn';
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
 import { FACTORY_TYPES, METADATA } from '../../enums/metadata';
 
-export interface InjectableConstructor {
-
-  providers?: { [key: string]: any };
-
+export type InjectableConstructor<T = any> = {
   __decorators__?: Array<Function>;
-
-  new (): any;
+  providers?: { [key: string]: InjectableConstructor };
+  new (): T;
 }
 
 export interface InjectableOptions {
@@ -18,53 +15,46 @@ export interface InjectableOptions {
   useValue?: any;
 }
 
-export type InjectedObject = Vue | Component | InjectableConstructor | Object;
+export type InjectedObject = Vue | InjectableConstructor | any;
 
 class InjectableFactory {
-  private target: InjectableConstructor = null;
-  private options: InjectableOptions = {};
-
   private static get whitelist() {
     return Reflect.ownKeys(FACTORY_TYPES);
   }
 
-  private get decorators() {
-    return this.target.__decorators__;
-  }
-
-  private get optionKeys() {
-    return Reflect.ownKeys(this.options);
+  private static getOptionKeys(options: InjectableOptions): PropertyKey[] {
+    return Reflect.ownKeys(options);
   }
 
   /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
-  private get isOtherProperty(): boolean {
-    return !this.optionKeys.every(
+  private static isOtherProperty(options: InjectableOptions): boolean {
+    return !InjectableFactory.getOptionKeys(options).every(
       (prop: PropertyKey) => InjectableFactory.whitelist.indexOf(prop) !== -1
     );
   }
 
-  private get isCollisionProps() {
+  private static isCollisionProps(options: InjectableOptions) {
     const props = InjectableFactory.whitelist
-      .filter((p) => Reflect.has(this.options, p));
+      .filter((p) => Reflect.has(options, p));
 
     return props.length > 1;
   }
 
-  private get type() {
-    return InjectableFactory.whitelist.find((props) => Reflect.has(this.options, props));
+  private static getType(options: InjectableOptions) {
+    return InjectableFactory.whitelist.find((props) => Reflect.has(options, props));
   }
 
-  private get serviceType() {
-    if (this.isOtherProperty) {
-      this.warnMassage();
+  private static getServiceType(target: InjectableConstructor, options: InjectableOptions) {
+    if (InjectableFactory.isOtherProperty(options)) {
+      InjectableFactory.warnMassage(target, options);
     }
 
-    if (this.isCollisionProps) {
+    if (InjectableFactory.isCollisionProps(options)) {
       throw InjectableFactory.errorMassage();
     }
 
-    if (this.type) {
-      return FACTORY_TYPES[this.type];
+    if (InjectableFactory.getType(options)) {
+      return FACTORY_TYPES[InjectableFactory.getType(options)];
     }
 
     return null;
@@ -72,60 +62,58 @@ class InjectableFactory {
 
   private static errorMassage() {
     throw assert(false, message(
-      ERROR_MESSAGE.ERROR_001,
+      ERROR_MESSAGE.ERROR_INJECTABLE_OPTIONS_CONFLICT,
       { names: JSON.stringify(InjectableFactory.whitelist) }
     ));
   }
 
-  make(target: InjectableConstructor, options: InjectableOptions = {}): InjectableConstructor {
-    this.target = target;
-    this.options = options;
-
-    this.defineMetadata();
-    this.createDecorators();
-
-    return this.target;
-  }
-
-  private warnMassage() {
+  private static warnMassage(target: InjectableConstructor, options: InjectableOptions) {
     warn(
       false,
       message(WARNING_MESSAGE.WARNING_000, {
-        name: this.target.name, options: JSON.stringify(this.options)
+        name: target.name, options: JSON.stringify(options)
       })
     );
   }
 
-  private defineMetadata() {
-    if (this.serviceType) {
-      Reflect.defineMetadata(METADATA.TYPE, this.serviceType, this.target);
-      Reflect.defineMetadata(METADATA.VALUE, this.options[this.serviceType], this.target);
-    }
+  static make(
+    target: InjectableConstructor,
+    options: InjectableOptions = {}
+  ): InjectableConstructor {
+    this.defineMetadata(target, options);
+    this.createDecorators(target);
 
-    Reflect.defineMetadata(METADATA.NAME, this.target.name, this.target);
-    Reflect.defineMetadata(METADATA.SERVICE, true, this.target);
+    return target;
   }
 
-  private createDecorators() {
-    if (this.decorators) {
-      this.decorators.forEach((fn) => fn(this.target.prototype));
-      delete this.target.__decorators__;
+  private static defineMetadata(target: InjectableConstructor, options: InjectableOptions) {
+    const serviceType = InjectableFactory.getServiceType(target, options);
+
+    if (serviceType) {
+      Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
+      Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
+    }
+
+    Reflect.defineMetadata(METADATA.NAME, target.name, target);
+    Reflect.defineMetadata(METADATA.SERVICE, true, target);
+  }
+
+  private static createDecorators(target: InjectableConstructor) {
+    if (target.__decorators__) {
+      target.__decorators__.forEach((fn) => fn(target.prototype));
+      delete target.__decorators__;
     }
   }
 }
 
-export interface Injectable extends InjectableOptions{}
+export interface Injectable extends InjectableOptions {}
 
 export function Injectable(target: InjectableConstructor): any
 export function Injectable(options: InjectableOptions): any
 export function Injectable(options: InjectableOptions | InjectableConstructor): any {
-  const injectableFactory = new InjectableFactory();
-
   if (typeof options === 'function') {
-    return injectableFactory.make(options);
+    return InjectableFactory.make(options);
   }
-  // eslint-disable-next-line func-names
-  return function (target) {
-    return injectableFactory.make(target, options);
-  };
+
+  return (target) => InjectableFactory.make(target, options);
 }

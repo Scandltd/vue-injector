@@ -1,7 +1,11 @@
-import { InjectableConstructor, InjectedObject } from '../decorators/injectable';
+import { InjectedObject } from '../decorators/injectable';
 
 export class ServiceBinding {
-  static bind(target: InjectedObject, service: InjectableConstructor, name: string): boolean {
+  static bind<T>(
+    target: InjectedObject,
+    service: T,
+    name: string
+  ): boolean {
     return Reflect.defineProperty(target, name, {
       enumerable: true,
       configurable: false,

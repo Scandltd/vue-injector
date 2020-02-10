@@ -9,35 +9,23 @@ import { ERROR_MESSAGE } from '../enums/messages';
 
 const $VUE = 'Vue';
 
-export class Provider {
+export class Provider<T = any> {
   static app: Vue;
 
-  private $factory: () => any = null;
+  private factory: () => any = null;
 
   constructor(
-    public service: InjectableConstructor
+    public service: InjectableConstructor<T>
   ) {
     this.register();
   }
 
-  instance(): any {
-    return this.$factory();
+  get instance(): T {
+    return this.factory();
   }
 
-  bindTo(target: InjectedObject, name?: string): (() => any) | boolean {
-    if (!target) {
-      return this.factory;
-    }
-
-    return ServiceBinding.bind(target, this.$factory(), name || this.name);
-  }
-
-  private set factory(factory: () => any) {
-    this.$factory = factory;
-  }
-
-  private get factory(): () => any {
-    return this.$factory;
+  bindTo(target: InjectedObject, name?: string): boolean {
+    return ServiceBinding.bind(target, this.instance, name || this.name);
   }
 
   private get name(): string {
@@ -45,7 +33,7 @@ export class Provider {
   }
 
   private get isService(): boolean {
-    return Reflect.getMetadata(METADATA.SERVICE, this.service);
+    return !!Reflect.getMetadata(METADATA.SERVICE, this.service);
   }
 
   private register(): any {
@@ -61,6 +49,6 @@ export class Provider {
       return this.factory;
     }
 
-    throw assert(false, ERROR_MESSAGE.ERROR_005);
+    throw assert(false, ERROR_MESSAGE.ERROR_USE_DECORATOR);
   }
 }

@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.0
+ *   @scandltd/vue-injector v3.3.1
  *   (c) 2020 Scandltd
  *   @license GPL-2.0
  * 
@@ -120,7 +120,7 @@ function install(Vue) {
     Vue.mixin({
         beforeCreate: function () {
             if (isDef(this.$options.providers)) {
-                this._providers = this.$options.providers;
+                this.providers = this.$options.providers;
             }
             if (isDef(this.$options.injector)) {
                 this._injectorRoot = this;
@@ -155,17 +155,16 @@ var inBrowser = typeof window !== 'undefined';
 // CONCATENATED MODULE: ./src/enums/messages.ts
 var ERROR_MESSAGE;
 (function (ERROR_MESSAGE) {
-    ERROR_MESSAGE["ERROR_000"] = "[@scandltd/vue-injector]:";
-    ERROR_MESSAGE["ERROR_001"] = "@injectable can take only one parameter either {names}";
-    ERROR_MESSAGE["ERROR_002"] = "function \"message\". Parameters in a string do not match those in array: ";
-    ERROR_MESSAGE["ERROR_003"] = "not installed. Make sure to call `Vue.use(VueInjector)` before creating root instance.";
-    ERROR_MESSAGE["ERROR_004"] = "providers are not objects";
-    ERROR_MESSAGE["ERROR_005"] = "no decorator Injectable";
-    ERROR_MESSAGE["ERROR_006"] = "useFactory invalid return";
-    ERROR_MESSAGE["ERROR_007"] = "invalid useValue";
-    ERROR_MESSAGE["ERROR_008"] = "{name} invalid type useFactory: must be 'function'";
-    ERROR_MESSAGE["ERROR_009"] = "{method} is not a function";
-    ERROR_MESSAGE["ERROR_010"] = "@inject must get a service as parameter";
+    ERROR_MESSAGE["ERROR_TYPE"] = "[@scandltd/vue-injector]:";
+    ERROR_MESSAGE["ERROR_INJECTABLE_OPTIONS_CONFLICT"] = "@injectable can take only one parameter either {names}";
+    ERROR_MESSAGE["ERROR_BUILD_MESSAGE"] = "function \"message\". Parameters in a string do not match those in array: ";
+    ERROR_MESSAGE["ERROR_INIT_PLUGIN"] = "not installed. Make sure to call `Vue.use(VueInjector)` before creating root instance.";
+    ERROR_MESSAGE["ERROR_PROVIDERS_TYPE"] = "providers are not objects";
+    ERROR_MESSAGE["ERROR_USE_DECORATOR"] = "no decorator Injectable";
+    ERROR_MESSAGE["ERROR_USE_FACTORY_RETURN"] = "useFactory invalid return";
+    ERROR_MESSAGE["ERROR_USE_VALUE_RETURN"] = "invalid useValue";
+    ERROR_MESSAGE["ERROR_USE_FACTORY_TYPE"] = "{name} invalid type useFactory: must be 'function'";
+    ERROR_MESSAGE["ERROR_EMTY_INJECT_PARAMS"] = "@inject must get a service as parameter";
 })(ERROR_MESSAGE || (ERROR_MESSAGE = {}));
 var WARNING_MESSAGE;
 (function (WARNING_MESSAGE) {
@@ -177,7 +176,7 @@ function messages_message(str, arg) {
     var spareParameters = Reflect.ownKeys(arg).filter(function (val) { return str.match(new RegExp("{" + String(val) + "}")) === null; });
     if (spareParameters.length) {
         // eslint-disable-next-line no-console
-        console.warn(ERROR_MESSAGE.ERROR_002 + spareParameters);
+        console.warn(ERROR_MESSAGE.ERROR_BUILD_MESSAGE + spareParameters);
     }
     Object.keys(arg).forEach(function (key) {
         var regex = new RegExp("{" + key + "}");
@@ -190,7 +189,7 @@ function messages_message(str, arg) {
 
 function assert(condition, message) {
     if (!condition) {
-        throw new Error(ERROR_MESSAGE.ERROR_000 + " " + message);
+        throw new Error(ERROR_MESSAGE.ERROR_TYPE + " " + message);
     }
 }
 function warn(condition, message) {
@@ -245,15 +244,13 @@ var UseFactory_UseFactory = /** @class */ (function () {
         var name = Reflect.getMetadata(METADATA.NAME, Service);
         var factory = Reflect.getMetadata(METADATA.VALUE, Service);
         if (factory && typeof factory !== 'function') {
-            throw assert(false, messages_message(ERROR_MESSAGE.ERROR_008, { name: name }));
+            throw assert(false, messages_message(ERROR_MESSAGE.ERROR_USE_FACTORY_TYPE, { name: name }));
         }
-        return function () {
-            var result = factory();
-            if (!result) {
-                throw assert(false, ERROR_MESSAGE.ERROR_006);
-            }
-            return result;
-        };
+        var result = factory();
+        if (!result) {
+            throw assert(false, ERROR_MESSAGE.ERROR_USE_FACTORY_RETURN);
+        }
+        return function () { return result; };
     };
     return UseFactory;
 }());
@@ -271,7 +268,7 @@ var UseValue_UseValue = /** @class */ (function () {
         if (value) {
             return function () { return value; };
         }
-        throw assert(false, ERROR_MESSAGE.ERROR_007);
+        throw assert(false, ERROR_MESSAGE.ERROR_USE_VALUE_RETURN);
     };
     return UseValue;
 }());
@@ -326,28 +323,19 @@ var $VUE = 'Vue';
 var provider_Provider = /** @class */ (function () {
     function Provider(service) {
         this.service = service;
-        this.$factory = null;
+        this.factory = null;
         this.register();
     }
-    Provider.prototype.instance = function () {
-        return this.$factory();
-    };
-    Provider.prototype.bindTo = function (target, name) {
-        if (!target) {
-            return this.factory;
-        }
-        return ServiceBinding.bind(target, this.$factory(), name || this.name);
-    };
-    Object.defineProperty(Provider.prototype, "factory", {
+    Object.defineProperty(Provider.prototype, "instance", {
         get: function () {
-            return this.$factory;
-        },
-        set: function (factory) {
-            this.$factory = factory;
+            return this.factory();
         },
         enumerable: true,
         configurable: true
     });
+    Provider.prototype.bindTo = function (target, name) {
+        return ServiceBinding.bind(target, this.instance, name || this.name);
+    };
     Object.defineProperty(Provider.prototype, "name", {
         get: function () {
             return Reflect.getMetadata(METADATA.NAME, this.service);
@@ -357,7 +345,7 @@ var provider_Provider = /** @class */ (function () {
     });
     Object.defineProperty(Provider.prototype, "isService", {
         get: function () {
-            return Reflect.getMetadata(METADATA.SERVICE, this.service);
+            return !!Reflect.getMetadata(METADATA.SERVICE, this.service);
         },
         enumerable: true,
         configurable: true
@@ -372,7 +360,7 @@ var provider_Provider = /** @class */ (function () {
         if (this.factory) {
             return this.factory;
         }
-        throw assert(false, ERROR_MESSAGE.ERROR_005);
+        throw assert(false, ERROR_MESSAGE.ERROR_USE_DECORATOR);
     };
     return Provider;
 }());
@@ -393,19 +381,7 @@ var injector_Injector = /** @class */ (function () {
     }
     Injector.prototype.registerComponent = function (component) {
         var _this = this;
-        if (Object.hasOwnProperty.call(component, '_providers')) {
-            var providers_1 = component._providers;
-            if (providers_1 && checkObject(providers_1)) {
-                Object.keys(providers_1).forEach(function (name) {
-                    if (providers_1 && Object.hasOwnProperty.call(providers_1, name)) {
-                        _this.provide(component._providers[name], component, name);
-                    }
-                });
-            }
-            else {
-                throw assert(false, ERROR_MESSAGE.ERROR_004);
-            }
-        }
+        this.provideAllServices(component);
         if (this.rootServices.length) {
             this.rootServices.forEach(function (provider) {
                 _this.provide(provider, component);
@@ -421,22 +397,32 @@ var injector_Injector = /** @class */ (function () {
             if (service.prototype.providers) {
                 this.registerDependencies(service.prototype);
             }
-            var provider_1 = new provider_Provider(service);
-            this.services.set(service, provider_1);
+            this.services.set(service, new provider_Provider(service));
         }
         var provider = this.services.get(service);
-        provider.bindTo(target, customName);
-        return provider.instance();
+        if (target) {
+            provider.bindTo(target, customName);
+        }
+        return provider.instance;
+    };
+    Injector.prototype.provideAllServices = function (target) {
+        var _this = this;
+        if (Object.hasOwnProperty.call(target, 'providers')) {
+            var providers_1 = target.providers;
+            if (providers_1 && checkObject(providers_1)) {
+                Object.keys(providers_1).forEach(function (name) {
+                    if (providers_1 && Object.hasOwnProperty.call(providers_1, name)) {
+                        _this.provide(providers_1[name], target, name);
+                    }
+                });
+            }
+            else {
+                throw assert(false, ERROR_MESSAGE.ERROR_PROVIDERS_TYPE);
+            }
+        }
     };
     Injector.prototype.registerDependencies = function (service) {
-        var _this = this;
-        if (!checkObject(service.providers)) {
-            throw assert(false, ERROR_MESSAGE.ERROR_004);
-        }
-        Object.keys(service.providers)
-            .forEach(function (name) {
-            _this.provide(service.providers[name], service, name);
-        });
+        this.provideAllServices(service);
         delete service.providers;
     };
     return Injector;
@@ -449,8 +435,6 @@ var injector_Injector = /** @class */ (function () {
 
 var injectable_InjectableFactory = /** @class */ (function () {
     function InjectableFactory() {
-        this.target = null;
-        this.options = {};
     }
     Object.defineProperty(InjectableFactory, "whitelist", {
         get: function () {
@@ -459,110 +443,74 @@ var injectable_InjectableFactory = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(InjectableFactory.prototype, "decorators", {
-        get: function () {
-            return this.target.__decorators__;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InjectableFactory.prototype, "optionKeys", {
-        get: function () {
-            return Reflect.ownKeys(this.options);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InjectableFactory.prototype, "isOtherProperty", {
-        /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
-        get: function () {
-            return !this.optionKeys.every(function (prop) { return InjectableFactory.whitelist.indexOf(prop) !== -1; });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InjectableFactory.prototype, "isCollisionProps", {
-        get: function () {
-            var _this = this;
-            var props = InjectableFactory.whitelist
-                .filter(function (p) { return Reflect.has(_this.options, p); });
-            return props.length > 1;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InjectableFactory.prototype, "type", {
-        get: function () {
-            var _this = this;
-            return InjectableFactory.whitelist.find(function (props) { return Reflect.has(_this.options, props); });
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(InjectableFactory.prototype, "serviceType", {
-        get: function () {
-            if (this.isOtherProperty) {
-                this.warnMassage();
-            }
-            if (this.isCollisionProps) {
-                throw InjectableFactory.errorMassage();
-            }
-            if (this.type) {
-                return FACTORY_TYPES[this.type];
-            }
-            return null;
-        },
-        enumerable: true,
-        configurable: true
-    });
+    InjectableFactory.getOptionKeys = function (options) {
+        return Reflect.ownKeys(options);
+    };
+    /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
+    InjectableFactory.isOtherProperty = function (options) {
+        return !InjectableFactory.getOptionKeys(options).every(function (prop) { return InjectableFactory.whitelist.indexOf(prop) !== -1; });
+    };
+    InjectableFactory.isCollisionProps = function (options) {
+        var props = InjectableFactory.whitelist
+            .filter(function (p) { return Reflect.has(options, p); });
+        return props.length > 1;
+    };
+    InjectableFactory.getType = function (options) {
+        return InjectableFactory.whitelist.find(function (props) { return Reflect.has(options, props); });
+    };
+    InjectableFactory.getServiceType = function (target, options) {
+        if (InjectableFactory.isOtherProperty(options)) {
+            InjectableFactory.warnMassage(target, options);
+        }
+        if (InjectableFactory.isCollisionProps(options)) {
+            throw InjectableFactory.errorMassage();
+        }
+        if (InjectableFactory.getType(options)) {
+            return FACTORY_TYPES[InjectableFactory.getType(options)];
+        }
+        return null;
+    };
     InjectableFactory.errorMassage = function () {
-        throw assert(false, messages_message(ERROR_MESSAGE.ERROR_001, { names: JSON.stringify(InjectableFactory.whitelist) }));
+        throw assert(false, messages_message(ERROR_MESSAGE.ERROR_INJECTABLE_OPTIONS_CONFLICT, { names: JSON.stringify(InjectableFactory.whitelist) }));
     };
-    InjectableFactory.prototype.make = function (target, options) {
-        if (options === void 0) { options = {}; }
-        this.target = target;
-        this.options = options;
-        this.defineMetadata();
-        this.createDecorators();
-        return this.target;
-    };
-    InjectableFactory.prototype.warnMassage = function () {
+    InjectableFactory.warnMassage = function (target, options) {
         warn(false, messages_message(WARNING_MESSAGE.WARNING_000, {
-            name: this.target.name, options: JSON.stringify(this.options)
+            name: target.name, options: JSON.stringify(options)
         }));
     };
-    InjectableFactory.prototype.defineMetadata = function () {
-        if (this.serviceType) {
-            Reflect.defineMetadata(METADATA.TYPE, this.serviceType, this.target);
-            Reflect.defineMetadata(METADATA.VALUE, this.options[this.serviceType], this.target);
-        }
-        Reflect.defineMetadata(METADATA.NAME, this.target.name, this.target);
-        Reflect.defineMetadata(METADATA.SERVICE, true, this.target);
+    InjectableFactory.make = function (target, options) {
+        if (options === void 0) { options = {}; }
+        this.defineMetadata(target, options);
+        this.createDecorators(target);
+        return target;
     };
-    InjectableFactory.prototype.createDecorators = function () {
-        var _this = this;
-        if (this.decorators) {
-            this.decorators.forEach(function (fn) { return fn(_this.target.prototype); });
-            delete this.target.__decorators__;
+    InjectableFactory.defineMetadata = function (target, options) {
+        var serviceType = InjectableFactory.getServiceType(target, options);
+        if (serviceType) {
+            Reflect.defineMetadata(METADATA.TYPE, serviceType, target);
+            Reflect.defineMetadata(METADATA.VALUE, options[serviceType], target);
+        }
+        Reflect.defineMetadata(METADATA.NAME, target.name, target);
+        Reflect.defineMetadata(METADATA.SERVICE, true, target);
+    };
+    InjectableFactory.createDecorators = function (target) {
+        if (target.__decorators__) {
+            target.__decorators__.forEach(function (fn) { return fn(target.prototype); });
+            delete target.__decorators__;
         }
     };
     return InjectableFactory;
 }());
 function Injectable(options) {
-    var injectableFactory = new injectable_InjectableFactory();
     if (typeof options === 'function') {
-        return injectableFactory.make(options);
+        return injectable_InjectableFactory.make(options);
     }
-    // eslint-disable-next-line func-names
-    return function (target) {
-        return injectableFactory.make(target, options);
-    };
+    return function (target) { return injectable_InjectableFactory.make(target, options); };
 }
 
 // CONCATENATED MODULE: ./src/util/decorator.ts
 /* eslint-disable no-proto */
 function createDecorator(factory) {
-    // eslint-disable-next-line func-names
     return function (target, key) {
         var Ctor = typeof target === 'function'
             ? target
@@ -596,7 +544,7 @@ function Inject(target, key) {
     }
     var service = Reflect.getMetadata(METADATA.TS_TYPE, target, key);
     if (service === undefined) {
-        throw assert(false, ERROR_MESSAGE.ERROR_010);
+        throw assert(false, ERROR_MESSAGE.ERROR_EMTY_INJECT_PARAMS);
     }
     decoratorFactory(service)(target, key);
 }
