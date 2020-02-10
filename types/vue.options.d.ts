@@ -1,3 +1,4 @@
+import Vue from 'Vue';
 import { VueInjector } from '../src/index';
 import { InjectableConstructor } from '../src/di/decorators/injectable';
 
@@ -12,5 +13,11 @@ declare module 'vue/types/options' {
   interface ComponentOptions<V extends Vue> {
     readonly injector?: VueInjector;
     providers?: { [key: string]: InjectableConstructor };
+  }
+}
+
+declare global {
+  interface Window {
+    Vue: typeof Vue;
   }
 }
