@@ -39,9 +39,5 @@
   "include": [
     "**/*.ts",
     "**/*.vue"
-  ],
-  "files": [
-    "types/vue.d.ts",
-    "types/vue.options.d.ts"
   ]
 }
