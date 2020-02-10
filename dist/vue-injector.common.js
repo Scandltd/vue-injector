@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.1
+ *   @scandltd/vue-injector v3.3.2
  *   (c) 2020 Scandltd
  *   @license GPL-2.0
  * 
@@ -543,6 +543,7 @@ function Inject(target, key) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VueInjector", function() { return src_VueInjector; });
 /* concated harmony reexport Injectable */__webpack_require__.d(__webpack_exports__, "Injectable", function() { return Injectable; });
 /* concated harmony reexport Inject */__webpack_require__.d(__webpack_exports__, "Inject", function() { return Inject; });
+
 
 
 

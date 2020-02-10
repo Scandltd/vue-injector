@@ -1,3 +1,5 @@
+import '../types/vue.options';
+
 import Vue, { PluginFunction, PluginObject } from 'vue';
 
 import { install } from './install';
