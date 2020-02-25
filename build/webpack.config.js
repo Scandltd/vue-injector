@@ -16,12 +16,7 @@ module.exports = {
   entry: path.join(__dirname, '..', 'src', 'index.ts'),
 
   output: {
-    path: path.join(__dirname, '..', 'dist'),
-    library: 'Vue-injector',
-    libraryTarget: 'umd',
-    libraryExport: 'default',
-    // See https://github.com/webpack/webpack/issues/6522
-    globalObject: 'typeof self !== \'undefined\' ? self : this'
+    path: path.join(__dirname, '..', 'dist')
   },
 
   externals: {
