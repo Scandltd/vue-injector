@@ -5,7 +5,11 @@ import { InjectableConstructor } from '../src/di/decorators/injectable';
 declare module 'vue/types/vue' {
   interface Vue {
     readonly $injector: VueInjector;
+    $injectorInstalled: boolean;
     providers: { [key: string]: InjectableConstructor };
+  }
+  interface VueConstructor<V extends Vue> {
+    $injectorInstalled: boolean;
   }
 }
 
