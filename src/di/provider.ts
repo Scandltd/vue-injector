@@ -7,8 +7,6 @@ import { assert } from '../util/warn';
 import { METADATA } from '../enums/metadata';
 import { ERROR_MESSAGE } from '../enums/messages';
 
-const $VUE = 'Vue';
-
 export class Provider<T = any> {
   static app: Vue;
 
@@ -37,7 +35,7 @@ export class Provider<T = any> {
   }
 
   private register(): any {
-    if (this.service.name === $VUE) {
+    if (this.service === Vue) {
       this.factory = () => Provider.app;
     }
 
