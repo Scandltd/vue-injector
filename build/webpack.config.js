@@ -19,6 +19,15 @@ module.exports = {
     path: path.join(__dirname, '..', 'dist')
   },
 
+  externals: {
+    vue: {
+      commonjs: 'vue',
+      commonjs2: 'vue',
+      amd: 'vue',
+      root: 'Vue'
+    }
+  },
+
   module: {
     rules: [
       {
