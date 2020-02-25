@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.3
+ *   @scandltd/vue-injector v3.3.4
  *   (c) 2020 Scandltd
  *   @license GPL-2.0
  * 
@@ -93,37 +93,11 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.6.10
+ * Vue.js v2.6.11
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -1929,7 +1903,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
   isUsingMicroTask = true;
 } else if (typeof setImmediate !== 'undefined' && isNative(setImmediate)) {
   // Fallback to setImmediate.
-  // Techinically it leverages the (macro) task queue,
+  // Technically it leverages the (macro) task queue,
   // but it is still a better choice than setTimeout.
   timerFunc = function () {
     setImmediate(flushCallbacks);
@@ -3213,6 +3187,7 @@ function _createElement (
     ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
+      if (false) {}
       vnode = new VNode(
         config.parsePlatformTagName(tag), data, children,
         undefined, undefined, context
@@ -3334,7 +3309,7 @@ function renderMixin (Vue) {
     // render self
     var vnode;
     try {
-      // There's no need to maintain a stack becaues all render fns are called
+      // There's no need to maintain a stack because all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm;
@@ -5048,7 +5023,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.10';
+Vue.version = '2.6.11';
 
 /*  */
 
@@ -5701,7 +5676,7 @@ function createPatchFunction (backend) {
     }
   }
 
-  function removeVnodes (parentElm, vnodes, startIdx, endIdx) {
+  function removeVnodes (vnodes, startIdx, endIdx) {
     for (; startIdx <= endIdx; ++startIdx) {
       var ch = vnodes[startIdx];
       if (isDef(ch)) {
@@ -5810,7 +5785,7 @@ function createPatchFunction (backend) {
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm;
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue);
     } else if (newStartIdx > newEndIdx) {
-      removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx);
+      removeVnodes(oldCh, oldStartIdx, oldEndIdx);
     }
   }
 
@@ -5900,7 +5875,7 @@ function createPatchFunction (backend) {
         if (isDef(oldVnode.text)) { nodeOps.setTextContent(elm, ''); }
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue);
       } else if (isDef(oldCh)) {
-        removeVnodes(elm, oldCh, 0, oldCh.length - 1);
+        removeVnodes(oldCh, 0, oldCh.length - 1);
       } else if (isDef(oldVnode.text)) {
         nodeOps.setTextContent(elm, '');
       }
@@ -6106,7 +6081,7 @@ function createPatchFunction (backend) {
 
         // destroy old node
         if (isDef(parentElm)) {
-          removeVnodes(parentElm, [oldVnode], 0, 0);
+          removeVnodes([oldVnode], 0, 0);
         } else if (isDef(oldVnode.tag)) {
           invokeDestroyHook(oldVnode);
         }
@@ -7962,7 +7937,33 @@ if (inBrowser) {
 
 /* harmony default export */ __webpack_exports__["a"] = (Vue);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(0), __webpack_require__(2).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(1), __webpack_require__(2).setImmediate))
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
 /* 2 */
@@ -8032,7 +8033,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(0)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(1)))
 
 /***/ }),
 /* 3 */
@@ -8225,7 +8226,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(0), __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(1), __webpack_require__(4)))
 
 /***/ }),
 /* 4 */
@@ -8424,49 +8425,8 @@ process.umask = function() { return 0; };
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./src/install.ts
-/* eslint-disable import/no-mutable-exports */
-var $Vue;
-function install(Vue) {
-    if (install.installed && $Vue === Vue)
-        return;
-    install.installed = true;
-    $Vue = Vue;
-    var isDef = function (v) { return v !== undefined; };
-    Vue.mixin({
-        beforeCreate: function () {
-            if (isDef(this.$options.providers)) {
-                this.providers = this.$options.providers;
-            }
-            if (isDef(this.$options.injector)) {
-                this._injectorRoot = this;
-                this._injector = this.$options.injector;
-                this._injector.init(this);
-            }
-            else {
-                this._injectorRoot = (this.$parent && this.$parent._injectorRoot) || this;
-                if (this._injectorRoot._injector)
-                    this._injectorRoot._injector.initComponent(this);
-            }
-        }
-    });
-    Object.defineProperty(Vue.prototype, '$injector', {
-        get: function () {
-            return this._injectorRoot && this._injectorRoot._injector;
-        }
-    });
-    // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
-    var strats = Vue.config.optionMergeStrategies;
-    // eslint-disable-next-line func-names
-    strats._injectorRoot = function (parentVal, childVal) {
-        return childVal === undefined
-            ? parentVal
-            : childVal;
-    };
-}
-
-// CONCATENATED MODULE: ./src/util/dom.ts
-var inBrowser = typeof window !== 'undefined';
+// EXTERNAL MODULE: ./node_modules/vue/dist/vue.runtime.esm.js
+var vue_runtime_esm = __webpack_require__(0);
 
 // CONCATENATED MODULE: ./src/enums/messages.ts
 var ERROR_MESSAGE;
@@ -8515,13 +8475,52 @@ function isError(err) {
     return Object.prototype.toString.call(err).indexOf('Error') > -1;
 }
 
+// CONCATENATED MODULE: ./src/install.ts
+
+
+function install(Vue) {
+    if (install.installed)
+        return;
+    install.installed = true;
+    if (vue_runtime_esm["a" /* default */] !== Vue) {
+        throw assert(false, 'Multiple instances of Vue detected');
+    }
+    var isDef = function (v) { return v !== undefined; };
+    if (Vue.$injectorInstalled)
+        return;
+    Vue.$injectorInstalled = true;
+    Vue.mixin({
+        beforeCreate: function () {
+            if (isDef(this.$options.providers)) {
+                this.providers = this.$options.providers;
+            }
+            if (isDef(this.$options.injector)) {
+                Object.defineProperty(this, '$injector', {
+                    configurable: false,
+                    writable: false,
+                    value: Vue.observable(this.$options.injector)
+                });
+                this.$injector.init(this);
+            }
+            else {
+                Object.defineProperty(this, '$injector', {
+                    configurable: false,
+                    writable: false,
+                    value: (this.$parent && this.$parent.$injector) || this
+                });
+                this.$injector.initComponent(this);
+            }
+        }
+    });
+}
+
+// CONCATENATED MODULE: ./src/util/dom.ts
+var inBrowser = typeof window !== 'undefined';
+
 // CONCATENATED MODULE: ./src/util/object.ts
 function checkObject(obj) {
     return !Array.isArray(obj) && typeof obj === 'object' && obj !== null;
 }
-
-// EXTERNAL MODULE: ./node_modules/vue/dist/vue.runtime.esm.js
-var vue_runtime_esm = __webpack_require__(1);
 
 // CONCATENATED MODULE: ./src/di/bindings/binding.ts
 var ServiceBinding = /** @class */ (function () {
