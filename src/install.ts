@@ -35,7 +35,9 @@ export function install(Vue: VueConstructor) {
           value: (this.$parent && this.$parent.$injector) || this
         });
 
-        this.$injector.initComponent(this);
+        if (this.$injector && this.$injector.initComponent && typeof this.$injector.initComponent === 'function') {
+          this.$injector.initComponent(this);
+        }
       }
     }
   });

@@ -10,8 +10,7 @@
       "email": "telitsyn@scand.com"
     }
   ],
-  "main": "dist/vue-injector.common.js",
-  "module": "dist/vue-injector.esm.js",
+  "main": "dist/vue-injector.js",
   "unpkg": "dist/vue-injector.js",
   "jsdelivr": "dist/vue-injector.js",
   "sideEffects": false,
