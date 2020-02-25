@@ -614,4 +614,4 @@ if (inBrowser && window.Vue) {
 
 
 /***/ })
-/******/ ]);
+/******/ ])["default"];
