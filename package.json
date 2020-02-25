@@ -104,7 +104,7 @@
     "webpack-dev-middleware": "^3.7.2"
   },
   "peerDependencies": {
-    "core-js": "^3.4.2"
+    "vue": "^2.6.10"
   },
   "bugs": {
     "url": "https://github.com/Scandltd/vue-injector/issues"

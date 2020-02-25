@@ -1,13 +1,18 @@
-/* eslint-disable import/no-mutable-exports */
-export let $Vue;
+import OurVue, { VueConstructor } from 'vue';
+import { assert } from './util/warn';
 
-export function install(Vue) {
-  if ((install as any).installed && $Vue === Vue) return;
+export function install(Vue: VueConstructor) {
+  if ((install as any).installed) return;
   (install as any).installed = true;
 
-  $Vue = Vue;
+  if (OurVue !== Vue) {
+    throw assert(false, 'Multiple instances of Vue detected');
+  }
 
   const isDef = (v) => v !== undefined;
+
+  if (Vue.$injectorInstalled) return;
+  Vue.$injectorInstalled = true;
 
   Vue.mixin({
     beforeCreate() {
@@ -16,28 +21,22 @@ export function install(Vue) {
       }
 
       if (isDef(this.$options.injector)) {
-        this._injectorRoot = this;
-        this._injector = this.$options.injector;
-        this._injector.init(this);
+        Object.defineProperty(this, '$injector', {
+          configurable: false,
+          writable: false,
+          value: Vue.observable(this.$options.injector)
+        });
+
+        this.$injector.init(this);
       } else {
-        this._injectorRoot = (this.$parent && this.$parent._injectorRoot) || this;
-        if (this._injectorRoot._injector) this._injectorRoot._injector.initComponent(this);
+        Object.defineProperty(this, '$injector', {
+          configurable: false,
+          writable: false,
+          value: (this.$parent && this.$parent.$injector) || this
+        });
+
+        this.$injector.initComponent(this);
       }
     }
   });
-
-  Object.defineProperty(Vue.prototype, '$injector', {
-    get() {
-      return this._injectorRoot && this._injectorRoot._injector;
-    }
-  });
-
-  // use simple mergeStrategies to prevent _injectorRoot instance lose '__proto__'
-  const strats = Vue.config.optionMergeStrategies;
-  // eslint-disable-next-line func-names
-  strats._injectorRoot = function (parentVal, childVal) {
-    return childVal === undefined
-      ? parentVal
-      : childVal;
-  };
 }
