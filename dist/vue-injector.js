@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.6
+ *   @scandltd/vue-injector v3.3.7
  *   (c) 2020 Scandltd
  *   @license GPL-2.0
  * 
@@ -10,11 +10,11 @@
 		module.exports = factory(require("vue"));
 	else if(typeof define === 'function' && define.amd)
 		define(["vue"], factory);
-	else if(typeof exports === 'object')
-		exports["Vue-injector"] = factory(require("vue"));
-	else
-		root["Vue-injector"] = factory(root["Vue"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE__0__) {
+	else {
+		var a = typeof exports === 'object' ? factory(require("vue")) : factory(root["Vue"]);
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
+})(window, function(__WEBPACK_EXTERNAL_MODULE__0__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -625,5 +625,5 @@ if (inBrowser && window.Vue) {
 
 
 /***/ })
-/******/ ])["default"];
+/******/ ]);
 });
