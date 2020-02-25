@@ -1,6 +1,6 @@
 {
   "name": "@scandltd/vue-injector",
-  "version": "3.3.5",
+  "version": "3.3.6",
   "description": "Dependency Injection for Vue.js 2",
   "type": "library",
   "license": "GPL-2.0",
@@ -10,8 +10,7 @@
       "email": "telitsyn@scand.com"
     }
   ],
-  "main": "dist/vue-injector.common.js",
-  "module": "dist/vue-injector.esm.js",
+  "main": "dist/vue-injector.js",
   "unpkg": "dist/vue-injector.js",
   "jsdelivr": "dist/vue-injector.js",
   "sideEffects": false,

@@ -5,7 +5,8 @@
  *   @license GPL-2.0
  * 
  */
-(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+exports["Vue-injector"] =
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -613,4 +614,4 @@ if (inBrowser && window.Vue) {
 
 
 /***/ })
-/******/ ])));
+/******/ ])["default"];
