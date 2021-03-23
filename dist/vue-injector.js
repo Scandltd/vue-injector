@@ -1,7 +1,7 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.7
- *   (c) 2020 Scandltd
+ *   @scandltd/vue-injector v3.3.8
+ *   (c) 2021 Scandltd
  *   @license GPL-2.0
  * 
  */
