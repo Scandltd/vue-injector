@@ -4,7 +4,6 @@ import { UseFactory } from './UseFactory';
 import { UseValue } from './UseValue';
 import { Instance } from './Instance';
 
-
 export interface FactoryInterface {
   getFactory<T, R>(Service: InjectableConstructor<T>): () => R;
 }

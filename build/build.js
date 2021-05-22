@@ -5,9 +5,11 @@ const webpack = require('webpack');
 const WebpackConfig = require('./webpack.config');
 const configs = require('./configs');
 
-if (!fs.existsSync('dist')) {
-  fs.mkdirSync('dist');
+if (fs.existsSync('dist')) {
+  fs.rmdirSync('dist', { recursive: true });
 }
+
+fs.mkdirSync('dist');
 
 function getSize(size) {
   return `${(size / 1024).toFixed(2)}kb`;
@@ -17,14 +19,16 @@ function blue(str) {
   return `\x1b[1m\x1b[34m${str}\x1b[39m\x1b[22m`;
 }
 
-function write(dest, size, zip) {
+function write(dest, zip) {
   return new Promise((resolve, reject) => {
+    const file = fs.readFileSync(dest);
+
     function report(extra) {
       // eslint-disable-next-line no-console
       console.log(
         blue(path.relative(process.cwd(), dest)),
         ' ',
-        getSize(size),
+        getSize(file.byteLength),
         (extra || '')
       );
 
@@ -32,7 +36,7 @@ function write(dest, size, zip) {
     }
 
     if (zip) {
-      zlib.gzip(fs.readFileSync(dest), (err, { length }) => {
+      zlib.gzip(file, (err, { length }) => {
         if (err) return reject(err);
         report(` (gzipped: ${getSize(length)})`);
       });
@@ -56,10 +60,15 @@ function build(builds) {
         minimize: mode
       }
     }, (err, stats) => {
-      //TODO: get assets
-      const assets = stats.toJson().assets;
-      const chank = assets[assets.length - 1];
-      write(path.join(__dirname, '..', 'dist', chank.name), chank.size, true);
+      if (err) console.error(err);
+
+      const json = stats.toJson();
+
+      if (json.errors.length) console.error(json.errors);
+
+      const { chunks: [chank] } = json;
+
+      write(path.join(__dirname, '..', 'dist', chank.files[0]), true);
     });
   });
 }

@@ -29,7 +29,7 @@ class InjectableFactory {
   /* checks whether all options given are allowed. Allowed options (useValue, useFactory) */
   private static isOtherProperty(options: InjectableOptions): boolean {
     return !InjectableFactory.getOptionKeys(options).every(
-      (prop: PropertyKey) => InjectableFactory.whitelist.indexOf(prop) !== -1
+      (prop: PropertyKey) => InjectableFactory.whitelist.indexOf(String(prop)) !== -1
     );
   }
 

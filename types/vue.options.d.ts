@@ -9,7 +9,7 @@ declare module 'vue/types/vue' {
             [key: string]: InjectableConstructor;
         };
     }
-    interface VueConstructor<V extends Vue> {
+    interface VueConstructor {
         $injectorInstalled: boolean;
     }
 }

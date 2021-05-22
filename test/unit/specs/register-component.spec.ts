@@ -129,13 +129,13 @@ describe('register component', () => {
     expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
     expect(injector.injector.get(ServiceTwo) instanceof ServiceTwo).toBe(true);
     expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
-    expect(injector.injector.get(ServiceTwo).Service).toEqual(jasmine.any(Object));
+    expect(injector.injector.get(ServiceTwo).Service).toEqual(expect.any(Object));
     expect(injector.injector.get(ServiceTwo).Service).toEqual(injector.injector.get(Service));
 
     expect(mockComponent.Service instanceof Service).toBe(true);
     expect(mockComponent.Service).toEqual(injector.injector.get(Service));
     expect(mockComponent.ServiceTwo instanceof ServiceTwo).toBe(true);
-    expect(mockComponent.ServiceTwo.Service).toEqual(jasmine.any(Object));
+    expect(mockComponent.ServiceTwo.Service).toEqual(expect.any(Object));
 
     expect(mockComponent.Service).toEqual(injector.injector.get(Service));
     expect(mockComponent.ServiceTwo).toEqual(injector.injector.get(ServiceTwo));

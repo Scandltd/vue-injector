@@ -1,6 +1,6 @@
 const path = require('path');
 const { BannerPlugin } = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const { version: packageVersion } = require('../package.json');
 
 const version = process.env.VERSION || packageVersion;
@@ -57,14 +57,10 @@ module.exports = {
   },
 
   optimization: {
-    minimize: false,
-    minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: false
-      })
-    ]
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      extractComments: false
+    })]
   },
 
   plugins: [
