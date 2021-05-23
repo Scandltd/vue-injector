@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && apt-get update \
