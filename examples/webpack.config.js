@@ -78,9 +78,8 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         shared: {
-          name: 'shared',
-          chunks: 'initial',
-          minChunks: 2
+          name: 'shared.chunk',
+          chunks: 'all'
         }
       }
     }
