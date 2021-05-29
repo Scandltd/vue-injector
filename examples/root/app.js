@@ -1,10 +1,8 @@
-import Vue from 'vue';
-
 /** 0. Setup vue injector */
-import('../demo.setup');
+import app from '../demo.setup';
 
 /** 1. Define components */
-Vue.component('VueInjector', {
+app.component('VueInjector', {
   name: 'RootComponent',
   template:
     '<div class="block"></div>',
@@ -13,3 +11,6 @@ Vue.component('VueInjector', {
     this.demo(this.RootService);
   }
 });
+
+/** 3. Mount root instance. */
+app.mount('#app');

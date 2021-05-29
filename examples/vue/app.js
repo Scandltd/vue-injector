@@ -1,17 +1,16 @@
-import Vue from 'vue';
 import { Injectable, Inject } from '@scandltd/vue-injector';
 
 /** 0. Setup vue injector */
-import('../demo.setup');
+import app from '../demo.setup';
 
 /** 1. Create services */
 @Injectable
 class LogService {
-  @Inject(Vue) vm;
+  @Inject(app) vm;
 }
 
 /** 2. Define components */
-Vue.component('VueInjector', {
+app.component('VueInjector', {
   name: 'TransportComponent',
   providers: {
     $logger: LogService
@@ -22,3 +21,6 @@ Vue.component('VueInjector', {
     this.demo(this.$logger);
   }
 });
+
+/** 3. Mount root instance. */
+app.mount('#app');

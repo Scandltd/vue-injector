@@ -1,9 +1,8 @@
 /* eslint-disable max-classes-per-file */
-import Vue from 'vue';
 import { Injectable, Inject } from '@scandltd/vue-injector';
 
 /** 0. Setup vue injector */
-import('../demo.setup');
+import app from '../demo.setup';
 
 /** 1. Some kind of 3rd HTTP client */
 class Client {
@@ -29,7 +28,7 @@ class HttpService {
 }
 
 /** 4. Define components */
-Vue.component('VueInjector', {
+app.component('VueInjector', {
   name: 'TodoComponent',
   providers: {
     $Http: HttpService
@@ -40,3 +39,6 @@ Vue.component('VueInjector', {
     this.demo(this.$Http);
   }
 });
+
+/** 5. Mount root instance. */
+app.mount('#app');

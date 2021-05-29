@@ -1,8 +1,7 @@
-import Vue from 'vue';
 import { Injectable } from '@scandltd/vue-injector';
 
 /** 0. Setup vue injector */
-import('../demo.setup');
+import app from '../demo.setup';
 
 /** 1. Create services */
 @Injectable({
@@ -11,7 +10,7 @@ import('../demo.setup');
 class TokenService {}
 
 /** 2. Define components */
-Vue.component('VueInjector', {
+app.component('VueInjector', {
   name: 'TokenComponent',
   providers: {
     $TOKEN: TokenService
@@ -22,3 +21,6 @@ Vue.component('VueInjector', {
     this.demo(this.$TOKEN);
   }
 });
+
+/** 3. Mount root instance. */
+app.mount('#app');

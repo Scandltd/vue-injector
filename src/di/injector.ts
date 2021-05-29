@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { App, Component } from 'vue';
 import { assert } from '../util/warn';
 import { InjectableConstructor, InjectedObject } from './decorators/injectable';
 import { checkObject } from '../util/object';
@@ -6,12 +6,12 @@ import { ERROR_MESSAGE } from '../enums/messages';
 import { Provider } from './provider';
 
 export class Injector {
-  app: Vue;
+  app: App;
   services: Map<InjectableConstructor, Provider>;
 
   rootServices: Array<InjectableConstructor> = [];
 
-  constructor(app: Vue, rootServices) {
+  constructor(app: App, rootServices) {
     Provider.app = app;
 
     this.app = app;
@@ -20,7 +20,7 @@ export class Injector {
     this.services = new Map();
   }
 
-  registerComponent(component: Vue) {
+  registerComponent(component: Component) {
     this.provideAllServices(component);
 
     if (this.rootServices.length) {
@@ -40,7 +40,7 @@ export class Injector {
     customName?: string
   ) {
     if (!this.services.has(service)) {
-      if (service.prototype.providers) {
+      if (service?.prototype?.providers) {
         this.registerDependencies<T>(service.prototype);
       }
 

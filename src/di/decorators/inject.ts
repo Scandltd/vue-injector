@@ -17,7 +17,7 @@ export interface Inject {
 export function Inject(servise: InjectableConstructor): any
 export function Inject(target: InjectedObject, key: string): any
 export function Inject(target: InjectableConstructor | InjectedObject, key?: string): any {
-  if (typeof target === 'function') {
+  if (typeof target === 'function' || key === undefined) {
     return decoratorFactory(target);
   }
 

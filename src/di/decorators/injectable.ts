@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { Component } from 'vue';
 
 import { assert, warn } from '../../util/warn';
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
@@ -15,7 +15,7 @@ export interface InjectableOptions {
   useValue?: any;
 }
 
-export type InjectedObject = Vue | InjectableConstructor | any;
+export type InjectedObject = Component | InjectableConstructor | any;
 
 class InjectableFactory {
   private static get whitelist() {

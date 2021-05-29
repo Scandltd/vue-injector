@@ -68,8 +68,8 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
-      vuex: 'vuex/dist/vuex.esm.js',
-      vue: 'vue/dist/vue.esm.js',
+      vuex: 'vuex/dist/vuex.esm-browser',
+      vue: 'vue/dist/vue.esm-browser',
       '@scandltd/vue-injector': path.join(__dirname, '..', 'src')
     }
   },

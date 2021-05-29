@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { App } from 'vue';
 import { InjectableConstructor, InjectedObject } from './decorators/injectable';
 import { ServiceBinding } from './bindings/binding';
 import { ServiceFactory } from './factory/Factory';
@@ -8,12 +8,12 @@ import { METADATA } from '../enums/metadata';
 import { ERROR_MESSAGE } from '../enums/messages';
 
 export class Provider<T = any> {
-  static app: Vue;
+  static app: App;
 
   private factory: () => any = null;
 
   constructor(
-    public service: InjectableConstructor<T>
+    public service: InjectableConstructor<T> | App
   ) {
     this.register();
   }
@@ -34,12 +34,14 @@ export class Provider<T = any> {
     return !!Reflect.getMetadata(METADATA.SERVICE, this.service);
   }
 
-  private register(): any {
-    if (this.service === Vue) {
-      this.factory = () => Provider.app;
-    }
+  private isApp(service: InjectableConstructor<T> | App): service is App {
+    return service === Provider.app;
+  }
 
-    if (!this.factory && this.isService) {
+  private register(): any {
+    if (this.isApp(this.service)) {
+      this.factory = () => Provider.app;
+    } else if (!this.factory && this.isService) {
       this.factory = ServiceFactory.make(this.service);
     }
 

@@ -1,25 +1,23 @@
-import Vue from 'vue';
-import { VueInjector, Injectable } from '@scandltd/vue-injector';
+import { createApp, defineComponent } from 'vue';
+import plugin, { Injectable } from '@scandltd/vue-injector';
 
 import Demo from './demo.mixin';
 
-/** Use mixin for showing injectable object */
-Vue.mixin(Demo);
+const root = defineComponent({});
 
-/** 1. Use plugins. */
-Vue.use(VueInjector);
+/** 0. Create vue app */
+const app = createApp(root);
+
+/** 1. Use mixin for showing injectable object */
+app.mixin(Demo);
 
 /** 2. Create root service */
 @Injectable
 class RootService {}
 
 /** 3. Create the provider */
-const injector = new VueInjector({
+app.use(plugin, {
   root: [RootService]
 });
 
-/** 4. Create and mount root instance. */
-export default new Vue({
-  el: '#app',
-  injector
-});
+export default app;

@@ -1,16 +1,15 @@
 /* eslint-disable no-param-reassign */
-import Vue from 'vue';
 import { Injectable } from '@scandltd/vue-injector';
 
 /** 0. Setup vue injector */
-import('../demo.setup.vuex');
+import app from '../demo.setup.vuex';
 
-// 3. Create services
+// 1. Create services
 @Injectable
 class StoreService {}
 
-// 4. Define components
-Vue.component('VueInjector', {
+// 2. Define components
+app.component('VueInjector', {
   name: 'anyComponent',
   providers: {
     $StoreService: StoreService
@@ -22,3 +21,6 @@ Vue.component('VueInjector', {
     this.demo(this.$StoreService);
   }
 });
+
+/** 3. Mount root instance. */
+app.mount('#app');

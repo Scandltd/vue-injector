@@ -1,18 +1,23 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { VueInjector } from '@scandltd/vue-injector';
+import { createApp, defineComponent } from 'vue';
+import { createStore } from 'vuex';
+import plugin, { Injectable } from '@scandltd/vue-injector';
 
 import Demo from './demo.mixin';
 
-/** Use mixin for showing injectable object */
-Vue.mixin(Demo);
+const root = defineComponent({});
 
-/** 1. Use plugins. */
-Vue.use(VueInjector);
-Vue.use(Vuex);
+/** 0. Create vue app */
+const app = createApp(root);
 
-/** 2. Create vuex store. */
-const store = new Vuex.Store({
+/** 1. Use mixin for showing injectable object */
+app.mixin(Demo);
+
+/** 2. Create root service */
+@Injectable
+class RootService {}
+
+/** 3. Create vuex store. */
+const store = createStore({
   state: {
     count: 0
   },
@@ -23,20 +28,18 @@ const store = new Vuex.Store({
   },
   actions: {
     increment(context) {
-      // this.$injector.get(Service)
+      this.$injector.get(RootService);
       context.commit('increment');
     }
   }
 });
 
-/** 3. Create the provider */
-const injector = new VueInjector({
-  store
+app.use(store);
+
+/** 4. Create the provider */
+app.use(plugin, {
+  store,
+  root: [RootService]
 });
 
-/** 4. Create and mount root instance. */
-export default new Vue({
-  el: '#app',
-  store,
-  injector
-});
+export default app;

@@ -91,19 +91,19 @@
     "ts-loader": "^9.2.1",
     "typescript": "^4.2.4",
     "uglify-js": "^3.13.7",
-    "vue": "^2.6.10",
-    "vue-class-component": "^7.1.0",
-    "vue-loader": "^15.7.2",
+    "vue": "^3.0.11",
+    "vue-class-component": "^7.2.6",
+    "vue-loader": "^15.9.7",
     "vue-property-decorator": "^9.1.2",
-    "vue-template-compiler": "^2.6.10",
-    "vuepress": "^1.2.0",
-    "vuex": "^3.1.2",
+    "vue-template-compiler": "^2.6.12",
+    "vuepress": "^1.8.2",
+    "vuex": "^4.0.1",
     "webpack": "^5.37.1",
     "webpack-cli": "^4.7.0",
     "webpack-dev-middleware": "^4.3.0"
   },
   "peerDependencies": {
-    "vue": "^2.6.10"
+    "vue": "^3.0.11"
   },
   "bugs": {
     "url": "https://github.com/Scandltd/vue-injector/issues"
