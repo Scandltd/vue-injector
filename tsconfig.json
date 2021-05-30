@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "lib": [
-      "es2017.object",
-      "es6",
-      "es5",
-      "dom",
-      "es2015.promise",
-      "es2015.core"
+      "DOM",
+      "ES2020",
+      "ES2020.Promise",
+      "ES2019.Object",
+      "ESNext",
+      "ES2015.core"
     ],
     "target": "es5",
     "module": "esnext",

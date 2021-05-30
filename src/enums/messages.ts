@@ -18,7 +18,7 @@ export enum WARNING_MESSAGE {
 
 export function message(str: string, arg: Object = {}): string {
   let newStr = str;
-  const spareParameters = Reflect.ownKeys(arg).filter((val) => str.match(new RegExp(`{${String(val)}}`)) === null);
+  const spareParameters = Reflect.ownKeys(arg).filter((val) => str.match(new RegExp(`\\{${String(val)}\\}`)) === null);
 
   if (spareParameters.length) {
     // eslint-disable-next-line no-console
@@ -26,8 +26,8 @@ export function message(str: string, arg: Object = {}): string {
   }
 
   Object.keys(arg).forEach((key) => {
-    const regex = new RegExp(`{${key}}`);
-    newStr = str.replace(regex, arg[key]);
+    const regex = new RegExp(`\\{${key}\\}`);
+    newStr = newStr.replace(regex, arg[key]);
   });
 
   return newStr;
