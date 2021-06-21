@@ -2,7 +2,7 @@
 
 ## Direct Download / CDN
 
-[https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js](https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js)
+[https://unpkg.com/@scandltd/vue-injector@next/dist/vue-injector.js](https://unpkg.com/@scandltd/vue-injector@next/dist/vue-injector.js)
 
 <!--email_off-->
 [Unpkg.com](https://unpkg.com) Provides npm-based CDN links. The above link will always point to the latest release on npm. You can also use a specific version/tag via URLs like:  `https://unpkg.com/@scandltd/vue-injector@1.0.0/dist/vue-injector.js`.
@@ -18,7 +18,7 @@ Include `vue-injector` after Vue and it will install itself automatically:
 ## npm
 
 ``` bash
-npm install @scandltd/vue-injector core-js
+npm install @scandltd/vue-injector@next core-js
 ```
 
 Vue-injector requires a modern JavaScript engine with support for:
@@ -37,16 +37,14 @@ If your environment doesn't support one of these you will need to import a shim 
 When used with a module system, you must explicitly install the injector via `Vue.use()`:
 
 ``` js
-import Vue from 'vue'
-import { VueInjector } from '@scandltd/vue-injector'
+import { createApp } from 'vue';
+import { VueInjector } from '@scandltd/vue-injector';
 
-Vue.use(VueInjector)
+const app = createApp(root);
 
-const injector = new VueInjector()
+app.use(plugin);
 
-new Vue({
-  injector
-}).$mount('#app')
+app.mount('#app')
 ```
 
 You don't need to do this when using global `script` tags.

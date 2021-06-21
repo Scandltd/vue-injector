@@ -1,7 +1,7 @@
 # Getting Started
 
 ::: warning Required
-[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+[ECMAScript stage 2 decorators](https://github.com/tc39/proposal-decorators).
 If you use Babel, [@babel/plugin-proposal-decorators](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators) is needed.
 If you use TypeScript, enable `--experimentalDecorators` and `--emitDecoratorMetadata` flags.
 :::
@@ -42,19 +42,17 @@ Using DI with Vue Injector is dead simple. Here’s a basic example:
 ## JavaScript
 
 ``` js
-// 0. When using modular system (for ex. through vue-cli),
-//  import Vue and VueInjector and then call `Vue.use(VueInjector)`.
+// When using modular system (for ex. through vue-cli),
+// import Vue and VueInjector and then call `app.use(plugin)`.
 
-// 1. Construct injector instance
-// new VueInjector({ store, root: [Service] })
-const injector = new VueInjector()
+import { createApp } from 'vue';
+import { VueInjector } from '@scandltd/vue-injector';
 
-// 2. Construct and mount an application’s root instance.
-// Make sure you transferred the instance of the plugin using the option
-// `injector`, so the application accommodates its existence.
-const app = new Vue({
-  injector
-}).$mount('#app')
+const app = createApp(root);
+
+app.use(plugin);
+
+app.mount('#app')
 
 // Your application works! ;)
 ```
@@ -80,7 +78,7 @@ class LogService extends Inject {}
 import LogService from 'logger'
 
 // Inject dependency into the component.
-Vue.component('logger', {
+app.component('logger', {
   name: 'logger',
   providers: {
     LogService

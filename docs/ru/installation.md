@@ -18,7 +18,7 @@
 ## npm
 
 ``` bash
-npm install @scandltd/vue-injector core-js
+npm install @scandltd/vue-injector@next core-js
 ```
 
 Vue-injector requires a modern JavaScript engine with support for:
@@ -37,10 +37,14 @@ If your environment doesn't support one of these you will need to import a shim 
 При использовании модульной системы необходимо явно обозначить использование инжектора при помощи `Vue.use()`:
 
 ``` js
-import Vue from 'vue'
-import { VueInjector } from '@scandltd/vue-injector'
+import { createApp } from 'vue';
+import { VueInjector } from '@scandltd/vue-injector';
 
-Vue.use(VueInjector)
+const app = createApp(root);
+
+app.use(plugin);
+
+app.mount('#app')
 ```
 
 Это не требуется при подключении через глобальный тег `script`.

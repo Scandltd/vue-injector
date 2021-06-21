@@ -3,11 +3,11 @@
 Внедрение `Vue` в сервис:
 
 ```js
-import Vue from 'vue'
+import app from './setup'
 
 @Injectable
 class UserService {
-    @Inject(Vue) vm;
+    @Inject(app) vm;
     
     constructor () {
         console.log(this.vm)

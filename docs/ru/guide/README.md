@@ -1,7 +1,7 @@
 # Начало работы
 
 ::: warning Зависимости
-[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+[ECMAScript stage 2 decorators](https://github.com/tc39/proposal-decorators).
 Если вы используете Babel, необходим [@babel/plugin-proposal-decorators](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators).
 Если вы используете TypeScript, включите флаги `--experimentalDecorators` и `--emitDecoratorMetadata`.
 :::
@@ -42,20 +42,17 @@ If your environment doesn't support one of these you will need to import a shim 
 ## JavaScript
 
 ``` js
-// 0. Если используем модульную систему (например через vue-cli), 
-// импортируем Vue и VueInjector и затем вызываем `Vue.use(VueInjector)`.
+// Если используем модульную систему (например через vue-cli), 
+// импортируем Vue и VueInjector и затем вызываем `app.use(VueInjector)`.
 
-// 1. Создаём экземпляр инжектора
-// new VueInjector({ store, root: [Service] })
-const injector = new VueInjector()
+import { createApp } from 'vue';
+import { VueInjector } from '@scandltd/vue-injector';
 
-// 2. Создаём и монтируем корневой экземпляр приложения.
-// Убедитесь, что передали экземпляр плагина в опции
-// `injector`, чтобы позволить приложению знать о его наличии.
-const app = new Vue({
-  injector
-}).$mount('#app')
+const app = createApp(root);
 
+app.use(plugin);
+
+app.mount('#app')
 // Всё, приложение работает! ;)
 ```
 

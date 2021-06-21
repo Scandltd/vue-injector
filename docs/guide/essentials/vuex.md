@@ -5,22 +5,17 @@
 To use `vue-injector` in the store, you must pass the `Store` instance to the plugin constructor:
 
 ```js
-import Vue from 'vue'
-import Vuex from 'vuex'
-import { VueInjector } from '@scandltd/vue-injector'
+import { createApp, defineComponent } from 'vue';
+import { createStore } from 'vuex';
 
-Vue.use(Vuex)
-Vue.use(VueInjector)
+const root = defineComponent({});
+const app = createApp(root);
+const store = createStore({});
 
-const store = new Vuex.Store()
-
-const injector = new VueInjector({ store })
-
-new Vue({
+app.use(store);
+app.use(plugin, {
   store,
-  injector,
-  el: '#app'
-})
+});
 ```
 
 After that `$injector` will be available in the context of actions:

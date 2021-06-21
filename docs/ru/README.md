@@ -7,4 +7,4 @@ Vue Injector — библиотека Dependency Injection для [Vue.js](https
 - Доступ к приложению Vue из сервиса
 - Использование декораторов для удобной работы
 
-[Начать знакомство](./guide/) или поиграться с [примерами](https://github.com/Scandltd/vue-injector/tree/develop/examples) (см. [`README.md`](https://github.com/Scandltd/vue-injector) для их запуска).
+[Начать знакомство](./guide/) или поиграться с [примерами](https://github.com/Scandltd/vue-injector/tree/next/examples) (см. [`README.md`](https://github.com/Scandltd/vue-injector) для их запуска).

@@ -8,7 +8,7 @@ Dependency Injection for [Vue.js](http://vuejs.org).
 [![Version](https://img.shields.io/npm/v/@scandltd/vue-injector.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/@scandltd/vue-injector)
 [![License](https://img.shields.io/npm/l/@scandltd/vue-injector.svg?longCache=true&style=flat-square)](https://www.npmjs.com/package/@scandltd/vue-injector)
 
-> This is vue-injector which works only with Vue 2.0
+> This is vue-injector which works only with Vue 3
 
 ### Introduction
 
@@ -19,20 +19,16 @@ Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/
 - Accessibility of Vue application from a service
 - Utilization of decorators for convenient operation
 
-Get started with the [documentation](https://vue-injector.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/master/examples) (see how to run them below).
-
-### Live Playground
-
-For examples of the plugin in action, go to [codesandbox](https://codesandbox.io/s/github/stelitsyn-sc/vue-injector-example).
+Get started with the [documentation](https://vue-injector.next.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/next/examples) (see how to run them below).
 
 ### Install
 
 ```bash 
-$ npm install @scandltd/vue-injector core-js
+$ npm install @scandltd/vue-injector@next core-js
 ```
 
 > :warning:
-[ECMAScript stage 1 decorators](https://github.com/wycats/javascript-decorators/blob/master/README.md).
+[ECMAScript stage 2 decorators](https://github.com/tc39/proposal-decorators).
 If you use Babel, [@babel/plugin-proposal-decorators](https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-decorators) is needed.
 If you use TypeScript, enable `--experimentalDecorators` and `--emitDecoratorMetadata` flags.
 
@@ -64,24 +60,6 @@ This is a small example of using the `vue-injector` to create an `http` service 
 
 /** ... */
 
-/** 
- *  Class-style Vue components:
- *  
- *  @Component
- *  class TodoListComponent extends Vue {
- *    @Inject(Http) httpClient;
- *  }
- *  
- *  
- *  Typescript:
- *  
- *  @Component
- *  class TodoListComponent extends Vue {
- *    @Inject httpClient: Http;
- *  }
- *  
- */
-
 import Http from '../services/http';
 
 export default {
@@ -109,28 +87,14 @@ export default {
 ```
 
 ```js
-// services/setup.js
-
-import Vue from 'vue';
-import { VueInjector } from '@scandltd/vue-injector';
-
-Vue.use(VueInjector);
-
-export default new VueInjector();
-
-```
-
-```js
 // main.js
 
-import injector from './services/setup';
+import { createApp } from 'vue';
+import { VueInjector } from '@scandltd/vue-injector';
 
-/** ... */
+const app = createApp(root);
 
-const root = new Vue({
-  /** ... */
-  injector
-});
+app.use(plugin);
 
 ```
 
