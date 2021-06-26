@@ -58,11 +58,13 @@ jobs:
           name: Add types
           command: yarn types
       - run:
-          when: master
+          when:
+            - equal: [ master, << pipeline.git.branch >> ]
           name: Publish package
           command: npm publish --tag latest || exit 0
       - run:
-          when: next
+          when: 
+            - equal: [ next, << pipeline.git.branch >> ]
           name: Publish package
           command: npm publish --tag next || exit 0
 
