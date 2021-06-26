@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.9
+ *   @scandltd/vue-injector v3.4.0
  *   (c) 2021 Scandltd
  *   @license GPL-2.0
  * 

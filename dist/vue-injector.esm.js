@@ -1,7 +1,7 @@
 /*!
  * 
- *   @scandltd/vue-injector v3.3.5
- *   (c) 2020 Scandltd
+ *   @scandltd/vue-injector v3.4.0
+ *   (c) 2021 Scandltd
  *   @license GPL-2.0
  * 
  */
@@ -189,7 +189,9 @@ function install(Vue) {
                     writable: false,
                     value: (this.$parent && this.$parent.$injector) || this
                 });
-                this.$injector.initComponent(this);
+                if (this.$injector && this.$injector.initComponent && typeof this.$injector.initComponent === 'function') {
+                    this.$injector.initComponent(this);
+                }
             }
         }
     });
@@ -614,4 +616,4 @@ if (inBrowser && window.Vue) {
 
 
 /***/ })
-/******/ ])["default"];
+/******/ ]);
