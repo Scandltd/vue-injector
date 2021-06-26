@@ -9,5 +9,13 @@ module.exports = [
     file: 'vue-injector.min.js',
     format: 'umd',
     env: 'production'
+  },
+  {
+    file: 'vue-injector.common.js',
+    format: 'commonjs'
+  },
+  {
+    file: 'vue-injector.esm.js',
+    format: 'commonjs-module'
   }
 ];
