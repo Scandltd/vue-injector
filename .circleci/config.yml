@@ -59,7 +59,13 @@ jobs:
           command: yarn types
       - run:
           name: Publish package
-          command: npm publish || exit 0
+          command: |
+            if [ "$CIRCLE_BRANCH" = "master" ]; then
+                npm publish --tag latest || exit 0
+            fi
+            if [ "$CIRCLE_BRANCH" = "next" ]; then
+                npm publish --tag next || exit 0
+            fi
 
 workflows:
   version: 2
