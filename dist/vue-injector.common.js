@@ -3,56 +3,108 @@
  *   @scandltd/vue-injector v4.0.0
  *   (c) 2021 Scandltd
  *   @license GPL-2.0
- *
+ * 
  */
-/******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
-/******/ 	// The require scope
-/******/ 	var __webpack_require__ = {};
-/******/ 	
-/************************************************************************/
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
+(function(e, a) { for(var i in a) e[i] = a[i]; }(exports, /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
 /******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
 /************************************************************************/
-var __webpack_exports__ = {};
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 // ESM COMPAT FLAG
 __webpack_require__.r(__webpack_exports__);
 
 // EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Inject": () => (/* reexport */ Inject),
-  "Injectable": () => (/* reexport */ Injectable),
-  "VueInjector": () => (/* reexport */ VueInjector),
-  "default": () => (/* binding */ src)
-});
+__webpack_require__.d(__webpack_exports__, "VueInjector", function() { return /* reexport */ VueInjector_VueInjector; });
+__webpack_require__.d(__webpack_exports__, "Injectable", function() { return /* reexport */ Injectable; });
+__webpack_require__.d(__webpack_exports__, "Inject", function() { return /* reexport */ Inject; });
 
-;// CONCATENATED MODULE: ./src/enums/messages.ts
+// CONCATENATED MODULE: ./src/enums/messages.ts
 var ERROR_MESSAGE;
 (function (ERROR_MESSAGE) {
     ERROR_MESSAGE["ERROR_TYPE"] = "[@scandltd/vue-injector]:";
@@ -70,7 +122,7 @@ var WARNING_MESSAGE;
 (function (WARNING_MESSAGE) {
     WARNING_MESSAGE["WARNING_000"] = "Wrong service registration. Service name: {name}.\n@injectable can take only one parameter either useFactory or useValue, but got {options}";
 })(WARNING_MESSAGE || (WARNING_MESSAGE = {}));
-function message(str, arg) {
+function messages_message(str, arg) {
     if (arg === void 0) { arg = {}; }
     var newStr = str;
     var spareParameters = Reflect.ownKeys(arg).filter(function (val) { return str.match(new RegExp("\\{" + String(val) + "\\}")) === null; });
@@ -85,7 +137,7 @@ function message(str, arg) {
     return newStr;
 }
 
-;// CONCATENATED MODULE: ./src/util/warn.ts
+// CONCATENATED MODULE: ./src/util/warn.ts
 
 function assert(condition, message) {
     if (!condition) {
@@ -99,7 +151,7 @@ function isError(err) {
     return Object.prototype.toString.call(err).indexOf('Error') > -1;
 }
 
-;// CONCATENATED MODULE: ./src/enums/metadata.ts
+// CONCATENATED MODULE: ./src/enums/metadata.ts
 var METADATA = {
     TYPE: Symbol('inject:type'),
     VALUE: Symbol('inject:value'),
@@ -113,11 +165,11 @@ var FACTORY_TYPES;
     FACTORY_TYPES["useValue"] = "useValue";
 })(FACTORY_TYPES || (FACTORY_TYPES = {}));
 
-;// CONCATENATED MODULE: ./src/di/decorators/injectable.ts
+// CONCATENATED MODULE: ./src/di/decorators/injectable.ts
 
 
 
-var InjectableFactory = /** @class */ (function () {
+var injectable_InjectableFactory = /** @class */ (function () {
     function InjectableFactory() {
     }
     Object.defineProperty(InjectableFactory, "whitelist", {
@@ -155,10 +207,10 @@ var InjectableFactory = /** @class */ (function () {
         return null;
     };
     InjectableFactory.errorMassage = function () {
-        throw assert(false, message(ERROR_MESSAGE.ERROR_INJECTABLE_OPTIONS_CONFLICT, { names: JSON.stringify(InjectableFactory.whitelist) }));
+        throw assert(false, messages_message(ERROR_MESSAGE.ERROR_INJECTABLE_OPTIONS_CONFLICT, { names: JSON.stringify(InjectableFactory.whitelist) }));
     };
     InjectableFactory.warnMassage = function (target, options) {
-        warn(false, message(WARNING_MESSAGE.WARNING_000, {
+        warn(false, messages_message(WARNING_MESSAGE.WARNING_000, {
             name: target.name, options: JSON.stringify(options)
         }));
     };
@@ -187,12 +239,12 @@ var InjectableFactory = /** @class */ (function () {
 }());
 function Injectable(options) {
     if (typeof options === 'function') {
-        return InjectableFactory.make(options);
+        return injectable_InjectableFactory.make(options);
     }
-    return function (target) { return InjectableFactory.make(target, options); };
+    return function (target) { return injectable_InjectableFactory.make(target, options); };
 }
 
-;// CONCATENATED MODULE: ./src/util/decorator.ts
+// CONCATENATED MODULE: ./src/util/decorator.ts
 /* eslint-disable no-proto */
 function createDecorator(factory) {
     return function (target, key) {
@@ -212,7 +264,7 @@ function createDecorator(factory) {
     };
 }
 
-;// CONCATENATED MODULE: ./src/di/decorators/inject.ts
+// CONCATENATED MODULE: ./src/di/decorators/inject.ts
 
 
 
@@ -233,12 +285,12 @@ function Inject(target, key) {
     decoratorFactory(service)(target, key);
 }
 
-;// CONCATENATED MODULE: ./src/util/object.ts
+// CONCATENATED MODULE: ./src/util/object.ts
 function checkObject(obj) {
     return !Array.isArray(obj) && typeof obj === 'object' && obj !== null;
 }
 
-;// CONCATENATED MODULE: ./src/di/bindings/binding.ts
+// CONCATENATED MODULE: ./src/di/bindings/binding.ts
 var ServiceBinding = /** @class */ (function () {
     function ServiceBinding() {
     }
@@ -253,18 +305,18 @@ var ServiceBinding = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/di/factory/UseFactory.ts
+// CONCATENATED MODULE: ./src/di/factory/UseFactory.ts
 
 
 
-var UseFactory = /** @class */ (function () {
+var UseFactory_UseFactory = /** @class */ (function () {
     function UseFactory() {
     }
     UseFactory.prototype.getFactory = function (Service) {
         var name = Reflect.getMetadata(METADATA.NAME, Service);
         var factory = Reflect.getMetadata(METADATA.VALUE, Service);
         if (factory && typeof factory !== 'function') {
-            throw assert(false, message(ERROR_MESSAGE.ERROR_USE_FACTORY_TYPE, { name: name }));
+            throw assert(false, messages_message(ERROR_MESSAGE.ERROR_USE_FACTORY_TYPE, { name: name }));
         }
         var result = factory();
         if (!result) {
@@ -276,11 +328,11 @@ var UseFactory = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/di/factory/UseValue.ts
+// CONCATENATED MODULE: ./src/di/factory/UseValue.ts
 
 
 
-var UseValue = /** @class */ (function () {
+var UseValue_UseValue = /** @class */ (function () {
     function UseValue() {
     }
     UseValue.prototype.getFactory = function (Service) {
@@ -294,7 +346,7 @@ var UseValue = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/di/factory/Instance.ts
+// CONCATENATED MODULE: ./src/di/factory/Instance.ts
 var Instance = /** @class */ (function () {
     function Instance() {
     }
@@ -306,12 +358,12 @@ var Instance = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/di/factory/Factory.ts
+// CONCATENATED MODULE: ./src/di/factory/Factory.ts
 
 
 
 
-var ServiceFactory = /** @class */ (function () {
+var Factory_ServiceFactory = /** @class */ (function () {
     function ServiceFactory() {
     }
     ServiceFactory.make = function (Service) {
@@ -322,9 +374,9 @@ var ServiceFactory = /** @class */ (function () {
     ServiceFactory.getFactoryByName = function (name) {
         switch (name) {
             case FACTORY_TYPES.useFactory:
-                return new UseFactory();
+                return new UseFactory_UseFactory();
             case FACTORY_TYPES.useValue:
-                return new UseValue();
+                return new UseValue_UseValue();
             default:
                 return new Instance();
         }
@@ -333,13 +385,13 @@ var ServiceFactory = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/di/provider.ts
+// CONCATENATED MODULE: ./src/di/provider.ts
 
 
 
 
 
-var Provider = /** @class */ (function () {
+var provider_Provider = /** @class */ (function () {
     function Provider(service) {
         this.service = service;
         this.factory = null;
@@ -377,7 +429,7 @@ var Provider = /** @class */ (function () {
             this.factory = function () { return Provider.app; };
         }
         else if (!this.factory && this.isService) {
-            this.factory = ServiceFactory.make(this.service);
+            this.factory = Factory_ServiceFactory.make(this.service);
         }
         if (this.factory) {
             return this.factory;
@@ -388,15 +440,15 @@ var Provider = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/di/injector.ts
+// CONCATENATED MODULE: ./src/di/injector.ts
 
 
 
 
-var Injector = /** @class */ (function () {
+var injector_Injector = /** @class */ (function () {
     function Injector(app, rootServices) {
         this.rootServices = [];
-        Provider.app = app;
+        provider_Provider.app = app;
         this.app = app;
         this.rootServices = rootServices;
         this.services = new Map();
@@ -420,7 +472,7 @@ var Injector = /** @class */ (function () {
             if ((_a = service === null || service === void 0 ? void 0 : service.prototype) === null || _a === void 0 ? void 0 : _a.providers) {
                 this.registerDependencies(service.prototype);
             }
-            this.services.set(service, new Provider(service));
+            this.services.set(service, new provider_Provider(service));
         }
         var provider = this.services.get(service);
         if (target) {
@@ -452,9 +504,9 @@ var Injector = /** @class */ (function () {
 }());
 
 
-;// CONCATENATED MODULE: ./src/VueInjector.ts
+// CONCATENATED MODULE: ./src/VueInjector.ts
 
-var VueInjector = /** @class */ (function () {
+var VueInjector_VueInjector = /** @class */ (function () {
     function VueInjector(_a) {
         var app = _a.app, root = _a.root, store = _a.store;
         this.rootServices = [];
@@ -476,7 +528,7 @@ var VueInjector = /** @class */ (function () {
             return;
         }
         this.app = app;
-        this.injector = new Injector(this.app, this.rootServices);
+        this.injector = new injector_Injector(this.app, this.rootServices);
     };
     VueInjector.prototype.initComponent = function (component) {
         return this.injector && this.injector.registerComponent(component);
@@ -487,9 +539,9 @@ var VueInjector = /** @class */ (function () {
     return VueInjector;
 }());
 
-VueInjector.version = '__VERSION__';
+VueInjector_VueInjector.version = '__VERSION__';
 
-;// CONCATENATED MODULE: ./src/index.ts
+// CONCATENATED MODULE: ./src/index.ts
 var __assign = (undefined && undefined.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -507,9 +559,9 @@ var __assign = (undefined && undefined.__assign) || function () {
 
 
 var isDef = function (v) { return v !== undefined; };
-/* harmony default export */ const src = ({
+/* harmony default export */ var src = __webpack_exports__["default"] = ({
     install: function (app, options) {
-        app.config.globalProperties.$injector = new VueInjector(__assign(__assign({}, options), { app: app }));
+        app.config.globalProperties.$injector = new VueInjector_VueInjector(__assign(__assign({}, options), { app: app }));
         app.mixin({
             beforeCreate: function () {
                 var _a;
@@ -524,8 +576,6 @@ var isDef = function (v) { return v !== undefined; };
     }
 });
 
-var __webpack_export_target__ = exports;
-for(var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
-if(__webpack_exports__.__esModule) Object.defineProperty(__webpack_export_target__, "__esModule", { value: true });
-/******/ })()
-;
+
+/***/ })
+/******/ ])));

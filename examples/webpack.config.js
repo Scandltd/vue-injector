@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const VuePlugin = require('vue-loader/lib/plugin');
+const { VueLoaderPlugin: VuePlugin } = require('vue-loader');
 
 module.exports = {
   // Expose __dirname to allow automatically setting basename.
@@ -78,7 +78,7 @@ module.exports = {
     splitChunks: {
       cacheGroups: {
         shared: {
-          name: 'shared.chunk',
+          name: 'shared',
           chunks: 'all'
         }
       }

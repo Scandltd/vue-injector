@@ -19,7 +19,7 @@ Vue Injector — Dependency Injection library for [Vue.js](https://ru.vuejs.org/
 - Accessibility of Vue application from a service
 - Utilization of decorators for convenient operation
 
-Get started with the [documentation](https://vue-injector.next.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/next/examples) (see how to run them below).
+Get started with the [documentation](https://vue-injector-next.netlify.com/guide/), or play with the [examples](https://github.com/Scandltd/vue-injector/tree/next/examples) (see how to run them below).
 
 ### Install
 
