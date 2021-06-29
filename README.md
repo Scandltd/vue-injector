@@ -1,7 +1,7 @@
 # vue-injector
 Dependency Injection for [Vue.js](http://vuejs.org). 
 
-> This is vue-injector which works only with Vue 2. For the Vue 3 see the [next version](https://www.npmjs.com/package/@scandltd/vue-injector/v/4.0.0).
+> This is vue-injector which works only with Vue 2. For the Vue 3 see the [next version](https://www.npmjs.com/package/@scandltd/vue-injector/v/next).
 
 [![Build Status](https://img.shields.io/circleci/project/github/Scandltd/vue-injector/master.svg?longCache=true&style=flat-square)](https://circleci.com/gh/Scandltd/vue-injector)
 [![Coverage Status](https://img.shields.io/coveralls/github/Scandltd/vue-injector?style=flat-square)](https://coveralls.io/github/Scandltd/vue-injector)
