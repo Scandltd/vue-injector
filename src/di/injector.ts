@@ -1,4 +1,4 @@
-import { App, Component } from 'vue';
+import { App, ComponentPublicInstance } from 'vue';
 import { assert } from '../util/warn';
 import { InjectableConstructor, InjectedObject } from './decorators/injectable';
 import { checkObject } from '../util/object';
@@ -20,7 +20,7 @@ export class Injector {
     this.services = new Map();
   }
 
-  registerComponent(component: Component) {
+  registerComponent(component: ComponentPublicInstance) {
     this.provideAllServices(component);
 
     if (this.rootServices.length) {
@@ -39,6 +39,10 @@ export class Injector {
     target: InjectedObject = null,
     customName?: string
   ) {
+    if (target && Object.hasOwnProperty.call(target, '$setupInjector')) {
+      delete target.$setupInjector;
+    }
+
     if (!this.services.has(service)) {
       if (service?.prototype?.providers) {
         this.registerDependencies<T>(service.prototype);

@@ -59,6 +59,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.14.2",
     "@babel/preset-typescript": "^7.13.0",
+    "@testing-library/vue": "^6.4.2",
     "@types/core-js": "^2.5.4",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.6.0",
@@ -66,8 +67,8 @@
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "@vue/babel-preset-app": "^4.5.13",
-    "@vue/compiler-sfc": "^3.1.2",
-    "@vue/test-utils": "^2.0.0-rc.6",
+    "@vue/compiler-sfc": "^3.2.12",
+    "@vue/test-utils": "^2.0.0-rc.14",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
@@ -93,12 +94,11 @@
     "ts-loader": "^8.3.0",
     "typescript": "^4.2.4",
     "uglify-js": "^3.13.7",
-    "vue": "^3.1.1",
-    "vue-class-component": "^7.2.6",
-    "vue-loader": "^16.2.0",
+    "vue": "^3.2.11",
+    "vue-class-component": "^8.0.0-rc.1",
+    "vue-jest": "^5.0.0-alpha.10",
+    "vue-loader": "^16.5.0",
     "vue-property-decorator": "^9.1.2",
-    "vue-server-renderer": "^2.6.14",
-    "vue-template-compiler": "^2.6.14",
     "vuepress": "^1.8.2",
     "vuex": "^4.0.1",
     "webpack": "^4.45.0",
@@ -113,15 +113,23 @@
   },
   "homepage": "https://scand.com/products/vue-injector/",
   "jest": {
-    "preset": "ts-jest",
     "testRegex": "/test/unit/.*(\\.test.ts|\\.spec.ts)$",
+    "transform": {
+      ".*\\.jsx?$": "babel-jest",
+      ".*\\.tsx?$": "ts-jest",
+      ".*\\.(vue)$": "vue-jest"
+    },
     "setupFiles": [
       "./src/polyfill.ts"
     ],
+    "moduleNameMapper": {
+      "@scandltd/vue-injector": "<rootDir>/src/index"
+    },
     "moduleFileExtensions": [
       "js",
       "ts",
-      "json"
+      "json",
+      "vue"
     ],
     "modulePaths": [
       "<rootDir>",
