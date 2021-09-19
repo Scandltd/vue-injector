@@ -3,6 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-classes-per-file */
 import { createApp } from 'vue';
+import { Options, Vue } from 'vue-class-component';
+import { mount } from '@vue/test-utils';
 import plugin, { VueInjector, Injectable, Inject } from '../../../src/index';
 import { ERROR_MESSAGE } from '../../../src/enums/messages';
 import { METADATA } from '../../../src/enums/metadata';
@@ -50,6 +52,38 @@ describe('register component', () => {
     injector.injector.registerComponent(mockComponent);
 
     expect(mockComponent.Service).toEqual(injector.injector.get(Service));
+    expect(VueInjector).toEqual(VueInjector.app);
+  });
+
+  it('register with @Inject', () => {
+    @Injectable
+    class Service {}
+
+    @Options({
+      template: '<div></div>'
+    })
+    class MockComponent extends Vue {
+      @Inject service: Service;
+      @Inject service2: Service;
+    }
+
+    // @ts-ignore
+    const mockComponent = mount(MockComponent, {
+      global: {
+        mixins: [{
+          beforeCreate() {
+            if (this.$options.providers) {
+              this.providers = this.$options.providers;
+            }
+
+            injector.initComponent(this);
+          }
+        }]
+      }
+    });
+
+    expect(mockComponent.vm.service).toEqual(injector.injector.get(Service));
+    expect(mockComponent.vm.service2).toEqual(injector.injector.get(Service));
     expect(VueInjector).toEqual(VueInjector.app);
   });
 

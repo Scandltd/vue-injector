@@ -31,6 +31,29 @@ describe('registerComponent service', () => {
     expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
   });
 
+  it('register with @Inject', () => {
+    @Injectable
+    class Service {}
+
+    @Injectable
+    class ServiceTwo {
+      @Inject service: Service;
+    }
+
+    const service = injector.injector.provide(Service);
+    const serviceTwo = injector.injector.provide(ServiceTwo);
+
+    expect(injector.injector.services.size).toBe(2);
+
+    expect(Reflect.getMetadata(METADATA.NAME, Service)).toEqual('Service');
+    expect(Reflect.getMetadata(METADATA.NAME, ServiceTwo)).toEqual('ServiceTwo');
+
+    expect(service).toEqual(injector.injector.get(Service));
+    expect(serviceTwo).toEqual(injector.injector.get(ServiceTwo));
+
+    expect(serviceTwo.service).toEqual(injector.injector.get(Service));
+  });
+
   it('register two', () => {
     @Injectable
     class Service {}
