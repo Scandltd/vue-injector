@@ -76,7 +76,7 @@
     "babel-plugin-istanbul": "^6.0.0",
     "buble": "^0.20.0",
     "core-js": "^3.12.1",
-    "coveralls": "^3.1.0",
+    "coveralls": "^3.1.1",
     "cross-spawn": "^7.0.3",
     "css-loader": "5.2.5",
     "eslint": "^7.27.0",

@@ -39,12 +39,6 @@ jobs:
       - attach_workspace:
           at: ~/project
       - run: yarn test:unit
-      - run:
-          name: report coverage
-          command: |
-            if [[ -z $CI_PULL_REQUEST ]]; then
-              yarn test:cover
-            fi
       
   deploy:
     <<: *defaults
