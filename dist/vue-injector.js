@@ -1,6 +1,6 @@
 /*!
  * 
- *   @scandltd/vue-injector v4.0.2
+ *   @scandltd/vue-injector v4.0.3
  *   (c) 2021 Scandltd
  *   @license GPL-2.0
  * 
@@ -256,6 +256,22 @@ function Injectable(options) {
 
 // CONCATENATED MODULE: ./src/util/decorator.ts
 /* eslint-disable no-proto */
+/**
+ * TODO: target.constructor._vccOpts makes a component miss template
+ *
+ * @param target
+ * @param key
+ * @param factory
+ */
+function addLifeCycleHook(target, key, factory) {
+    var originSetupInjector = target.$setupInjector;
+    target.$setupInjector = function (componentOptions) {
+        if (originSetupInjector) {
+            originSetupInjector(componentOptions);
+        }
+        factory(componentOptions, key);
+    };
+}
 function createDecorator(factory) {
     return function (target, key) {
         var Ctor = typeof target === 'function'
@@ -268,7 +284,7 @@ function createDecorator(factory) {
                 return this.__proto__[key];
             }
         };
-        Reflect.defineProperty(target, key, descriptor);
+        addLifeCycleHook(target, key, factory);
         (Ctor.__decorators__ || (Ctor.__decorators__ = [])).push(function (options) { return factory(options, key); });
         return descriptor;
     };
@@ -478,6 +494,9 @@ var injector_Injector = /** @class */ (function () {
     Injector.prototype.provide = function (service, target, customName) {
         var _a;
         if (target === void 0) { target = null; }
+        if (target && Object.hasOwnProperty.call(target, '$setupInjector')) {
+            delete target.$setupInjector;
+        }
         if (!this.services.has(service)) {
             if ((_a = service === null || service === void 0 ? void 0 : service.prototype) === null || _a === void 0 ? void 0 : _a.providers) {
                 this.registerDependencies(service.prototype);
@@ -541,6 +560,11 @@ var VueInjector_VueInjector = /** @class */ (function () {
         this.injector = new injector_Injector(this.app, this.rootServices);
     };
     VueInjector.prototype.initComponent = function (component) {
+        var _a, _b;
+        if ((_b = (_a = component === null || component === void 0 ? void 0 : component.$options) === null || _a === void 0 ? void 0 : _a.methods) === null || _b === void 0 ? void 0 : _b.$setupInjector) {
+            component.$options.methods.$setupInjector(component);
+            delete component.$options.methods.$setupInjector;
+        }
         return this.injector && this.injector.registerComponent(component);
     };
     VueInjector.prototype.get = function (Provider) {

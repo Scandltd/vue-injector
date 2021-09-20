@@ -8,12 +8,9 @@ services:
     image: injector_node
     volumes:
       - .:/app
-      - node_modules:/app/node_modules/
+      - /app/node_modules
       - ${GIT_SSH_KEY}:/root/.ssh/tmp
     ports:
       - ${PUBLIC_PORT}:8080
     env_file:
       - ./.env
-
-volumes:
-  node_modules:

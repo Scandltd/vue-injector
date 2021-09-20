@@ -1,4 +1,4 @@
-import { App, Component } from 'vue';
+import { App, ComponentPublicInstance } from 'vue';
 import { Injector } from './di/injector';
 import { InjectableConstructor } from './di/decorators/injectable';
 import { VueInjectorOptions } from './index';
@@ -39,7 +39,12 @@ export class VueInjector {
     this.injector = new Injector(this.app, this.rootServices);
   }
 
-  initComponent(component: Component) {
+  initComponent(component: ComponentPublicInstance) {
+    if (component?.$options?.methods?.$setupInjector) {
+      component.$options.methods.$setupInjector(component);
+      delete component.$options.methods.$setupInjector;
+    }
+
     return this.injector && this.injector.registerComponent(component);
   }
 

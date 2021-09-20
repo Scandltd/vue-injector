@@ -3,6 +3,7 @@ import { InjectableConstructor } from '../src/di/decorators/injectable';
 
 declare module '@vue/runtime-core' {
   export interface ComponentCustomProperties {
+    $setupInjector?: () => void;
     readonly $injector: VueInjector;
     providers: { [key: string]: InjectableConstructor };
   }

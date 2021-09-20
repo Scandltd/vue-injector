@@ -1,13 +1,14 @@
-import { Component } from 'vue';
+import { ComponentPublicInstance } from 'vue';
 
 import { assert, warn } from '../../util/warn';
 import { ERROR_MESSAGE, message, WARNING_MESSAGE } from '../../enums/messages';
 import { FACTORY_TYPES, METADATA } from '../../enums/metadata';
 
 export type InjectableConstructor<T = any> = {
+  $setupInjector?: () => void;
   __decorators__?: Array<Function>;
   providers?: { [key: string]: InjectableConstructor };
-  new (): T;
+  new (...args: unknown[]): T;
 }
 
 export interface InjectableOptions {
@@ -15,7 +16,7 @@ export interface InjectableOptions {
   useValue?: any;
 }
 
-export type InjectedObject = Component | InjectableConstructor | any;
+export type InjectedObject = InstanceType<InjectableConstructor> | ComponentPublicInstance;
 
 class InjectableFactory {
   private static get whitelist() {
@@ -108,12 +109,14 @@ class InjectableFactory {
 
 export interface Injectable extends InjectableOptions {}
 
-export function Injectable(target: InjectableConstructor): any
-export function Injectable(options: InjectableOptions): any
-export function Injectable(options: InjectableOptions | InjectableConstructor): any {
+export function Injectable(target: InjectableConstructor): InjectableConstructor
+export function Injectable(options: InjectableOptions):
+  (target: InjectableConstructor) => InjectableConstructor
+export function Injectable(options: InjectableOptions | InjectableConstructor):
+  InjectableConstructor | ((target: InjectableConstructor) => InjectableConstructor) {
   if (typeof options === 'function') {
     return InjectableFactory.make(options);
   }
 
-  return (target) => InjectableFactory.make(target, options);
+  return (target: InjectableConstructor) => InjectableFactory.make(target, options);
 }
